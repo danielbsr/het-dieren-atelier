@@ -34,7 +34,7 @@ const shapes = ['tall', 'portrait', 'portrait', 'portrait', 'tall', 'square'] as
             type="button"
             data-filter={filter.id}
             aria-pressed={i === 0 ? 'true' : 'false'}
-            class="rounded-full border border-forest/20 px-5 py-2 font-body text-sm text-forest transition-colors hover:border-forest aria-[pressed=true]:border-forest aria-[pressed=true]:bg-forest aria-[pressed=true]:text-cream"
+            class="rounded-full border border-forest/20 px-5 py-2 font-body text-sm text-forest btn btn-outline aria-[pressed=true]:border-forest aria-[pressed=true]:bg-forest aria-[pressed=true]:text-cream"
           >
             {filter.label}
           </button>
@@ -75,7 +75,7 @@ const shapes = ['tall', 'portrait', 'portrait', 'portrait', 'tall', 'square'] as
               </p>
               <a
                 href={CTA.book.href}
-                class="shrink-0 rounded-full bg-forest px-8 py-3.5 font-body font-medium text-cream transition-colors hover:bg-forest-deep"
+                class="shrink-0 rounded-full bg-forest px-8 py-3.5 font-body font-medium text-cream btn btn-solid"
               >
                 {CTA.book.label}
               </a>

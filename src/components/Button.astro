@@ -13,15 +13,16 @@ const {
   class: className = '',
 } = Astro.props;
 
-const base =
-  'inline-flex items-center justify-center gap-2 font-body font-medium transition-colors duration-200';
+const base = 'inline-flex items-center justify-center gap-2 font-body font-medium';
 
+/*
+  The pill variants carry their motion in the .btn layer (global.css);
+  only `link` stays a plain text affordance, so it keeps its own hover.
+*/
 const variants = {
-  solid:
-    'rounded-full bg-forest text-cream hover:bg-forest-deep',
-  outline:
-    'rounded-full border border-forest/25 text-forest hover:border-forest hover:bg-forest hover:text-cream',
-  link: 'text-forest underline-offset-4 hover:underline',
+  solid: 'btn btn-solid rounded-full bg-forest text-cream',
+  outline: 'btn btn-outline rounded-full border border-forest/25 text-forest',
+  link: 'text-forest underline-offset-4 transition-colors duration-200 hover:underline',
 };
 
 const sizes = {

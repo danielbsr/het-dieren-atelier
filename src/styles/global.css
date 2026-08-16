@@ -33,6 +33,12 @@
   --text-section: clamp(2rem, 3.6vw, 3rem); /* section headlines */
   --text-sub: clamp(1.75rem, 2.6vw, 2.25rem); /* sub headlines */
   --text-lead: clamp(1.125rem, 1.4vw, 1.3rem); /* editorial body */
+
+  /* --- Motion ---------------------------------------------------------- */
+  /* One easing for the whole site — reveals, menu, buttons. Defined here
+     rather than next to the reveals because buttons need it too, and
+     "one easing" should be literally one declaration. */
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -98,6 +104,116 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Buttons                                                             */
+/*                                                                     */
+/* Every action on the site shares one gesture: the fill rises from    */
+/* the bottom edge while the button lifts a hair off the page. Same    */
+/* easing and same upward direction as the scroll reveals, only much   */
+/* faster — the page may be unhurried, an action may not be.           */
+/*                                                                     */
+/* Deliberately unlayered. Hovering an outline button has to repaint   */
+/* its label and border, and `text-forest` at the call site lives in   */
+/* Tailwind's utilities layer — layers beat specificity, so a rule in  */
+/* @layer components would lose and leave forest text on a forest      */
+/* fill. Unlayered wins over every layer; the resting colour still     */
+/* comes from the utility, because these rules only match on :hover.   */
+/*                                                                     */
+/* Movement only. Padding, radius and resting colour stay at the call  */
+/* site, so a button can be restyled without coming back here.         */
+/* Variants set --btn-fill and nothing else.                           */
+/*                                                                     */
+/* Lime is deliberately absent. It earns its weight by being rare — on */
+/* every button hover it would stop reading as an accent.              */
+/* ------------------------------------------------------------------ */
+
+.btn {
+  position: relative;
+  isolation: isolate;
+  /* Clips the rising fill to the pill radius. */
+  overflow: hidden;
+  transition:
+    transform 320ms var(--ease-reveal),
+    box-shadow 320ms var(--ease-reveal),
+    color 240ms var(--ease-reveal),
+    border-color 320ms var(--ease-reveal);
+}
+
+/*
+  The fill. A negative z-index inside the button's own stacking context
+  puts it above the button's background but below its label, so the
+  text never has to change layer — and `inset: 0` stops at the padding
+  box, leaving the border free to animate on its own.
+*/
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--btn-fill, var(--color-forest));
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 420ms var(--ease-reveal);
+}
+
+.btn:hover::before,
+.btn:focus-visible::before {
+  transform: scaleY(1);
+}
+
+.btn:hover,
+.btn:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px -14px rgb(20 42 32 / 0.65);
+}
+
+/* Press: the lift collapses under the cursor, quickly. */
+.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 9px -7px rgb(20 42 32 / 0.6);
+  transition-duration: 90ms;
+}
+
+/* Solid: deepens from the bottom up. */
+.btn-solid {
+  --btn-fill: var(--color-forest-deep);
+}
+
+/* Outline: floods, and the label turns as the fill passes it. */
+.btn-outline {
+  --btn-fill: var(--color-forest);
+}
+
+.btn-outline:hover,
+.btn-outline:focus-visible {
+  color: var(--color-cream);
+  border-color: var(--color-forest);
+}
+
+/*
+  Dense grids — the calendar — take the fill without the lift. Thirty
+  cells rising under one cursor reads as noise; one filling reads as
+  an answer.
+*/
+.btn-flat:hover,
+.btn-flat:focus-visible,
+.btn-flat:active {
+  transform: none;
+  box-shadow: none;
+}
+
+/* A control that cannot be used does not answer. */
+.btn:disabled:hover,
+.btn:disabled:focus-visible {
+  transform: none;
+  box-shadow: none;
+  color: inherit;
+}
+
+.btn:disabled::before {
+  transform: scaleY(0);
+}
+
+/* ------------------------------------------------------------------ */
 /* Motion                                                              */
 /*                                                                     */
 /* Reveals are gated twice: on `html.js`, so nothing is ever hidden    */
@@ -107,10 +223,6 @@
 /* ------------------------------------------------------------------ */
 
 @media (prefers-reduced-motion: no-preference) {
-  :root {
-    --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
   html.js [data-reveal] {
     opacity: 0;
     transition-property: opacity, transform, filter, clip-path;
@@ -201,5 +313,16 @@
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+
+  /*
+    Zeroing the duration would still snap the button 2px upward. Drop the
+    lift entirely and let the fill do the work as a plain colour change.
+  */
+  .btn:hover,
+  .btn:focus-visible,
+  .btn:active {
+    transform: none;
+    box-shadow: none;
   }
 }

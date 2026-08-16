@@ -39,7 +39,7 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
     <div class="flex items-center gap-3">
       <a
         href={CTA.book.href}
-        class="hidden rounded-full bg-forest px-6 py-2.5 font-body text-[0.9rem] font-medium text-cream transition-colors hover:bg-forest-deep sm:inline-flex"
+        class="hidden rounded-full bg-forest px-6 py-2.5 font-body text-[0.9rem] font-medium text-cream btn btn-solid sm:inline-flex"
       >
         {CTA.book.label}
       </a>
@@ -49,7 +49,7 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
         id="menu-toggle"
         aria-expanded="false"
         aria-controls="mobile-menu"
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-forest/20 text-forest lg:hidden"
+        class="btn btn-outline flex h-10 w-10 items-center justify-center rounded-full border border-forest/20 text-forest lg:hidden"
       >
         <span class="sr-only">Open menu</span>
         <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true">

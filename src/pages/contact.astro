@@ -90,7 +90,7 @@ import { PACKAGES, STUDIO } from '../data/site';
             <button
               type="button"
               id="cal-prev"
-              class="flex h-9 w-9 items-center justify-center rounded-full border border-forest/20 text-forest transition-colors hover:bg-forest hover:text-cream disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-forest"
+              class="flex h-9 w-9 items-center justify-center rounded-full border border-forest/20 text-forest btn btn-outline disabled:opacity-30"
             >
               <span class="sr-only">Previous month</span>
               <svg width="8" height="12" viewBox="0 0 8 12" fill="none" aria-hidden="true">
@@ -103,7 +103,7 @@ import { PACKAGES, STUDIO } from '../data/site';
             <button
               type="button"
               id="cal-next"
-              class="flex h-9 w-9 items-center justify-center rounded-full border border-forest/20 text-forest transition-colors hover:bg-forest hover:text-cream"
+              class="flex h-9 w-9 items-center justify-center rounded-full border border-forest/20 text-forest btn btn-outline"
             >
               <span class="sr-only">Next month</span>
               <svg width="8" height="12" viewBox="0 0 8 12" fill="none" aria-hidden="true">
@@ -274,7 +274,7 @@ import { PACKAGES, STUDIO } from '../data/site';
         <div class="mt-10" data-reveal="rise">
           <button
             type="submit"
-            class="rounded-full bg-forest px-9 py-4 font-body font-medium text-cream transition-colors hover:bg-forest-deep"
+            class="rounded-full bg-forest px-9 py-4 font-body font-medium text-cream btn btn-solid"
           >
             Confirm booking request
           </button>
@@ -414,7 +414,7 @@ import { PACKAGES, STUDIO } from '../data/site';
         ? 'aspect-square rounded-lg font-body text-sm text-muted/40 cursor-not-allowed'
         : selected === value
           ? 'aspect-square rounded-lg bg-forest font-body text-sm text-cream'
-          : 'aspect-square rounded-lg border border-forest/15 font-body text-sm text-ink transition-colors hover:border-forest hover:bg-forest/5';
+          : 'aspect-square rounded-lg border border-forest/15 font-body text-sm text-ink btn btn-outline btn-flat';
 
       if (!closed) {
         cell.addEventListener('click', () => {
