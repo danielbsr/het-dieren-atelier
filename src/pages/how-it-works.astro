@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Section from '../components/Section.astro';
+import Scene from '../components/Scene.astro';
+import Faq from '../components/Faq.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import { FAQ_FULL, STEPS } from '../data/site';
+
+/** The shot brief that belongs with each step. */
+const briefs = [
+  'A date being picked — calendar on a laptop beside a coffee and a dog lead on the table.',
+  'The studio door and waiting corner: daylight, a water bowl on the floor, nobody rushing.',
+  'The photographer flat on the studio floor, treat raised, at the animal’s eye height.',
+  'The online gallery open on a laptop over coffee, print samples fanned out beside it.',
+];
+---
+
+<Layout
+  title="How a pet photo session works"
+  description="From booking to the print on your wall: settling-in time, short rounds, breaks. Built for nervous dogs and shy cats."
+>
+  <PageHeader
+    eyebrow="How it works"
+    title="How a session works."
+    intro="From booking to the print on your wall — this is what to expect, step by step. The short version: your animal sets the pace."
+  />
+
+  <!-- The four steps, expanded -->
+  <Section space="normal">
+    <div class="space-y-20 md:space-y-32">
+      {
+        STEPS.map((step, i) => (
+          <article class="grid items-center gap-8 md:grid-cols-2 md:gap-16 lg:gap-20">
+            <Scene brief={briefs[i]} class={i % 2 === 1 ? 'md:order-2' : ''} />
+
+            <div>
+              <span class="block font-display text-[3rem] leading-none text-forest/25" data-reveal="rise">
+                {step.number}
+              </span>
+              <h2 class="mt-5 font-display text-sub text-ink" data-reveal="line">
+                {step.title}
+              </h2>
+              <p
+                class="mt-5 max-w-[34rem] font-body text-[1.05rem] leading-relaxed text-muted"
+                data-reveal="rise"
+              >
+                {step.long}
+              </p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- For nervous animals -->
+  <Section space="normal">
+    <div class="rounded-3xl border border-line px-8 py-14 md:px-16 md:py-20">
+      <div class="mx-auto max-w-[42rem] text-center">
+        <h2 class="text-section leading-[1.1] text-ink" data-reveal="line">
+          Restless, shy or stubborn? Good — welcome.
+        </h2>
+        <p class="mt-8 font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+          Most animals we photograph are not trained models. They bark, hide under the chair, or
+          ignore us completely for the first ten minutes. That is planned for. The session has
+          buffers, the studio has calm corners, and the photographer works at floor level, at your
+          animal's height. What we need from you: their favourite treat, and no worrying. Your calm
+          is contagious.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Full FAQ -->
+  <Section space="normal">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
+      <h2 class="text-section text-ink" data-reveal="line">All questions answered.</h2>
+      <Faq items={FAQ_FULL} />
+    </div>
+  </Section>
+
+  <ClosingCta
+    headline="Ready to plan it?"
+    body="Choose a package, pick a date — the rest happens calmly, in the studio."
+    tone="sage"
+  />
+</Layout>

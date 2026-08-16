@@ -1,0 +1,140 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Section from '../components/Section.astro';
+import PackageCards from '../components/PackageCards.astro';
+import Portrait from '../components/Portrait.astro';
+import Faq from '../components/Faq.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import { ADD_ONS, COMPARISON, FAQ_BOOKING, PACKAGES, PACKAGE_NOTE } from '../data/site';
+---
+
+<Layout
+  title="Sessions & pricing — packages from €249"
+  description="Three clear packages: Essential €249, Signature €379, Collection €549. Session length, edited photos and backdrops compared."
+>
+  <PageHeader
+    eyebrow="Sessions & pricing"
+    title="Sessions & pricing."
+    intro="Three packages, one difference: time and variety. Every session includes the same care, the same studio and the same editing quality."
+  />
+
+  <!-- Packages -->
+  <Section space="normal">
+    <PackageCards />
+    <p class="mx-auto mt-14 max-w-[46rem] text-center font-body text-[1.05rem] leading-relaxed text-muted" data-reveal="rise">
+      {PACKAGE_NOTE}
+    </p>
+  </Section>
+
+  <!-- Full comparison -->
+  <Section space="normal">
+    <h2 class="text-section text-ink" data-reveal="line">Compared, line by line.</h2>
+
+    <div class="-mx-6 mt-12 overflow-x-auto px-6 md:mx-0 md:mt-16 md:px-0" data-reveal="rise">
+      <table class="w-full min-w-[42rem] border-collapse text-left">
+        <caption class="sr-only">Comparison of the Essential, Signature and Collection packages</caption>
+        <thead>
+          <tr class="border-b border-forest/25">
+            <th scope="col" class="py-5 pr-6 font-body text-sm font-medium text-muted">
+              <span class="sr-only">Feature</span>
+            </th>
+            {
+              PACKAGES.map((pkg) => (
+                <th scope="col" class="py-5 pr-6 align-bottom">
+                  <span class="block font-display text-xl text-ink">{pkg.name}</span>
+                  {pkg.featured && (
+                    <span class="mt-2 inline-block rounded-full bg-lime px-3 py-0.5 font-body text-[0.65rem] font-medium uppercase tracking-[0.14em] text-forest-deep">
+                      Most chosen
+                    </span>
+                  )}
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            COMPARISON.map((row) => (
+              <tr class="border-b border-line">
+                <th scope="row" class="py-5 pr-6 font-body text-[0.95rem] font-normal text-muted">
+                  {row.label}
+                </th>
+                {row.values.map((value, i) => (
+                  <td
+                    class={`py-5 pr-6 font-body text-[0.95rem] ${
+                      i === 1 ? 'text-ink' : 'text-ink/80'
+                    }`}
+                  >
+                    {value}
+                  </td>
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </Section>
+
+  <!-- What "more backdrops" actually buys -->
+  <Section space="tight">
+    <div class="grid grid-cols-3 gap-4 md:gap-6">
+      <Portrait tone="sage" animal="dog" ratio="square" crop="tight" />
+      <Portrait tone="terracotta" animal="dog" ratio="square" crop="tight" />
+      <Portrait tone="cobalt" animal="dog" ratio="square" crop="tight" />
+    </div>
+    <p class="mt-5 font-body text-sm text-muted" data-reveal="rise">
+      One session, three backdrops — the same animal, three different portraits.
+    </p>
+  </Section>
+
+  <!-- Add-ons -->
+  <Section space="normal">
+    <h2 class="text-section text-ink" data-reveal="line">Add-ons.</h2>
+    <div class="mt-12 grid gap-6 md:mt-14 md:grid-cols-2">
+      {
+        ADD_ONS.map((addOn) => (
+          <div class="rounded-2xl border border-line p-8" data-reveal="rise">
+            <div class="flex items-baseline justify-between gap-4">
+              <h3 class="font-display text-xl text-ink">{addOn.title}</h3>
+              <span class="shrink-0 font-display text-xl text-forest">{addOn.price}</span>
+            </div>
+            <p class="mt-3 font-body text-[0.95rem] leading-relaxed text-muted">{addOn.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- Which package fits? -->
+  <Section space="normal">
+    <h2 class="text-section text-ink" data-reveal="line">Which package fits?</h2>
+    <dl class="mt-12 space-y-10 md:mt-14">
+      {
+        PACKAGES.map((pkg) => (
+          <div class="grid gap-3 border-t border-line pt-8 md:grid-cols-[10rem_1fr] md:gap-10" data-reveal="rise">
+            <dt class="font-display text-xl text-forest">{pkg.name}</dt>
+            <dd class="max-w-[44rem] font-body text-[1.05rem] leading-relaxed text-muted">
+              {pkg.guidance}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Section>
+
+  <!-- Booking questions -->
+  <Section space="normal">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
+      <h2 class="text-section text-ink" data-reveal="line">Before you book.</h2>
+      <Faq items={FAQ_BOOKING} />
+    </div>
+  </Section>
+
+  <ClosingCta
+    headline="Pick your package."
+    body="Choose a package, pick a date — the rest happens calmly, in the studio."
+    tone="olive"
+  />
+</Layout>

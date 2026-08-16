@@ -1,0 +1,42 @@
+---
+/**
+ * Placeholder subject for portraits that have no photograph yet.
+ * Abstract, bottom-anchored silhouettes with a soft key light from the
+ * upper left — enough to read the crop and the backdrop tone while
+ * judging layout. Replaced the moment a real `src` reaches <Portrait />.
+ */
+interface Props {
+  animal?: 'dog' | 'cat' | 'rabbit';
+  class?: string;
+}
+
+const { animal = 'dog', class: className = '' } = Astro.props;
+
+const paths = {
+  // Head with drop ears flaring wider than the shoulders — the outline
+  // that reads "dog" fastest at small sizes.
+  dog: 'M100 262 C62 262 45 240 48 208 C50 182 60 162 74 152 C58 148 46 136 44 116 C42 96 46 76 56 66 C62 60 70 62 74 71 C80 57 89 50 100 50 C111 50 120 57 126 71 C130 62 138 60 144 66 C154 76 158 96 156 116 C154 136 142 148 126 152 C140 162 150 182 152 208 C155 240 138 262 100 262 Z',
+  cat: 'M100 262 C62 262 45 237 47 205 C49 177 61 158 73 148 C59 138 53 122 53 106 L45 58 L79 82 C92 76 108 76 121 82 L155 58 L147 106 C147 122 141 138 127 148 C139 158 151 177 153 205 C155 237 138 262 100 262 Z',
+  rabbit:
+    'M100 262 C66 262 50 238 52 208 C54 180 66 162 78 152 C66 144 60 130 60 114 C60 98 68 86 78 80 C70 62 66 40 68 24 C69 14 78 12 84 22 C92 36 96 58 96 74 C98 73 102 73 104 74 C104 58 108 36 116 22 C122 12 131 14 132 24 C134 40 130 62 122 80 C132 86 140 98 140 114 C140 130 134 144 122 152 C134 162 146 180 148 208 C150 238 134 262 100 262 Z',
+};
+
+// Gradient ids must stay unique across the many portraits on a page.
+const uid = `sil-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<svg
+  viewBox="0 0 200 262"
+  class={className}
+  aria-hidden="true"
+  preserveAspectRatio="xMidYMax meet"
+>
+  <defs>
+    <radialGradient id={uid} cx="34%" cy="22%" r="88%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.16"></stop>
+      <stop offset="55%" stop-color="#000" stop-opacity="0.28"></stop>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.42"></stop>
+    </radialGradient>
+  </defs>
+  <path d={paths[animal]} fill={`url(#${uid})`} />
+</svg>

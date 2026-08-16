@@ -1,0 +1,116 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Portrait from '../components/Portrait.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import { CTA, PORTFOLIO, PORTFOLIO_FILTERS } from '../data/site';
+
+/** An inline CTA band interrupts the grid every nine portraits. */
+const CHUNK = 9;
+const chunks = Array.from({ length: Math.ceil(PORTFOLIO.length / CHUNK) }, (_, i) =>
+  PORTFOLIO.slice(i * CHUNK, i * CHUNK + CHUNK)
+);
+
+/** Varied crops so the grid reads as a wall, not a contact sheet. */
+const shapes = ['tall', 'portrait', 'portrait', 'portrait', 'tall', 'square'] as const;
+---
+
+<Layout
+  title="Portfolio — Dog & cat portraits"
+  description="Recent studio portraits: dogs, cats and other pets on hand-picked backdrops. See the work before you book."
+>
+  <PageHeader
+    eyebrow="Portfolio"
+    title="The portfolio."
+    intro="A selection of recent sessions — dogs, cats and the occasional surprise. Every portrait was made in the studio, with time and patience."
+  />
+
+  <!-- Filters -->
+  <div class="mx-auto max-w-[75rem] px-6 pb-10 pt-10 md:px-10 md:pb-14 md:pt-14">
+    <div class="flex flex-wrap gap-2" role="group" aria-label="Filter portraits" data-reveal="rise">
+      {
+        PORTFOLIO_FILTERS.map((filter, i) => (
+          <button
+            type="button"
+            data-filter={filter.id}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            class="rounded-full border border-forest/20 px-5 py-2 font-body text-sm text-forest transition-colors hover:border-forest aria-[pressed=true]:border-forest aria-[pressed=true]:bg-forest aria-[pressed=true]:text-cream"
+          >
+            {filter.label}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  {
+    chunks.map((chunk, chunkIndex) => (
+      <>
+        <div class="mx-auto max-w-[75rem] px-6 md:px-10">
+          <div class="grid grid-cols-2 gap-5 md:grid-cols-3 md:gap-7">
+            {chunk.map((item, i) => (
+              <Portrait
+                data-species={item.species}
+                tone={item.tone}
+                name={item.name}
+                animal={item.animal}
+                src={item.src}
+                ratio={shapes[(chunkIndex * CHUNK + i) % shapes.length]}
+                crop={i % 4 === 0 ? 'tight' : 'full'}
+                caption
+                class="portfolio-item"
+              />
+            ))}
+          </div>
+        </div>
+
+        {chunkIndex < chunks.length - 1 && (
+          <div class="mx-auto max-w-[75rem] px-6 py-16 md:px-10 md:py-24">
+            <div
+              class="flex flex-col items-center gap-6 rounded-2xl border border-line px-8 py-12 text-center md:flex-row md:justify-between md:text-left"
+              data-reveal="rise"
+            >
+              <p class="font-display text-2xl text-ink md:text-3xl">
+                Imagining your own animal here?
+              </p>
+              <a
+                href={CTA.book.href}
+                class="shrink-0 rounded-full bg-forest px-8 py-3.5 font-body font-medium text-cream transition-colors hover:bg-forest-deep"
+              >
+                {CTA.book.label}
+              </a>
+            </div>
+          </div>
+        )}
+      </>
+    ))
+  }
+
+  <div class="h-16 md:h-28"></div>
+
+  <ClosingCta
+    headline="Your animal. On your wall."
+    body="Choose a package, pick a date — the rest happens calmly, in the studio."
+    tone="sage"
+  />
+</Layout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = document.querySelectorAll<HTMLElement>('.portfolio-item');
+
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const active = button.dataset.filter;
+
+      for (const other of buttons) {
+        other.setAttribute('aria-pressed', String(other === button));
+      }
+
+      for (const item of items) {
+        const match = active === 'all' || item.dataset.species === active;
+        item.hidden = !match;
+      }
+    });
+  }
+</script>

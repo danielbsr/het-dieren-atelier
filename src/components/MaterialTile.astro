@@ -1,0 +1,65 @@
+---
+/**
+ * Object-like material sample: paper grain, brushed metal, acrylic edge.
+ * Rendered with CSS until photographed samples exist — swap the inner
+ * block for a raking-light close-up shot.
+ */
+interface Props {
+  material: 'print' | 'aluminium' | 'acrylic';
+  label: string;
+  from: string;
+}
+
+const { material, label, from } = Astro.props;
+
+const surfaces = {
+  print:
+    'background:linear-gradient(135deg,#f3efe2,#e6e0cd);box-shadow:inset 0 0 0 1px rgba(0,0,0,0.05)',
+  aluminium:
+    'background:repeating-linear-gradient(100deg,#c9cbc7 0 2px,#b9bcb7 2px 4px),linear-gradient(120deg,#d9dbd6,#a9aca6)',
+  acrylic:
+    'background:linear-gradient(125deg,#dfe4e2 0%,#f7f9f6 32%,#c5ccc8 55%,#eef1ec 78%,#cdd3cf 100%)',
+};
+---
+
+<div class="group" data-reveal="image">
+  <div class="relative aspect-[5/4] overflow-hidden rounded-lg" style={surfaces[material]}>
+    <!--
+      A cropped piece of a portrait, so the sample reads as a finished
+      product: paper keeps a visible border, the frameless finishes do not.
+    -->
+    <div
+      class={material === 'print' ? 'absolute inset-[13%] rounded-[2px]' : 'absolute inset-0'}
+      style="background:radial-gradient(ellipse 70% 60% at 50% 34%, #a4b39c, #6f7f68 62%, #46503f 100%)"
+    >
+    </div>
+
+    {/* Surface character: a matte metal wash, or a hard acrylic sheen. */}
+    {
+      material === 'aluminium' && (
+        <div
+          class="absolute inset-0"
+          style="background:repeating-linear-gradient(102deg,rgba(255,255,255,0.10) 0 2px,rgba(0,0,0,0.05) 2px 4px)"
+        />
+      )
+    }
+    {
+      material === 'acrylic' && (
+        <div
+          class="absolute inset-0"
+          style="background:linear-gradient(118deg,rgba(255,255,255,0.55) 0%,rgba(255,255,255,0.05) 26%,transparent 44%,rgba(255,255,255,0.28) 62%,transparent 78%)"
+        />
+      )
+    }
+    {
+      material === 'print' && (
+        <div
+          class="absolute inset-0"
+          style="background:linear-gradient(115deg,rgba(255,255,255,0.3) 0%,transparent 42%)"
+        />
+      )
+    }
+  </div>
+  <p class="mt-4 font-body text-sm text-ink">{label}</p>
+  <p class="font-body text-sm text-muted">{from}</p>
+</div>

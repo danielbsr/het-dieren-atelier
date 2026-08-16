@@ -1,0 +1,50 @@
+---
+/**
+ * Behind-the-scenes photo slot. Renders a warm placeholder that names
+ * the shot still to be made, so the brief travels with the layout.
+ * Pass `src` to replace it with the real photograph.
+ */
+interface Props {
+  brief: string;
+  src?: string;
+  alt?: string;
+  ratio?: 'wide' | 'portrait' | 'square' | 'landscape';
+  class?: string;
+}
+
+const { brief, src, alt, ratio = 'landscape', class: className = '' } = Astro.props;
+
+const ratios = {
+  wide: 'aspect-[21/9]',
+  landscape: 'aspect-[4/3]',
+  square: 'aspect-square',
+  portrait: 'aspect-[4/5]',
+};
+---
+
+<div class={`relative overflow-hidden rounded-xl ${ratios[ratio]} ${className}`} data-reveal="image">
+  {
+    src ? (
+      <img src={src} alt={alt ?? brief} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+    ) : (
+      <>
+        <div
+          class="absolute inset-0"
+          style="background:linear-gradient(155deg,#efe9dc 0%,#e2dac8 55%,#cfc6b1 100%)"
+        />
+        <div
+          class="absolute inset-0"
+          style="background:radial-gradient(ellipse 60% 70% at 18% 14%, rgba(255,255,255,0.6), transparent 64%)"
+        />
+        <div class="absolute inset-0 flex items-center justify-center p-8">
+          <p class="max-w-[24rem] text-center font-body text-sm leading-relaxed text-ink/45">
+            <span class="mb-2 block text-[0.65rem] uppercase tracking-[0.18em] text-ink/35">
+              Photo to be made
+            </span>
+            {brief}
+          </p>
+        </div>
+      </>
+    )
+  }
+</div>

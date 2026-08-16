@@ -1,0 +1,108 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Scene from '../components/Scene.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+
+/**
+ * The story is still TO BE SUPPLIED. Rather than invent a biography,
+ * each paragraph slot states what belongs there — the structure from the
+ * concept, visible in place, ready to be overwritten.
+ *
+ * Decide "we" vs "I" once and apply it across the whole site.
+ */
+const paragraphs = [
+  'Who — name, how long photographing animals, why animals specifically. Written in first person.',
+  'The approach — patience, floor-level work, sessions built around the animal. One concrete anecdote beats three adjectives.',
+  'The studio — where it is, what makes the space calm, one line about the neighbourhood and parking.',
+];
+---
+
+<Layout
+  title="About the studio & photographer"
+  description="The photographer and studio behind Het Dieren Atelier: calm space, floor-level work, sessions built around your animal."
+>
+  <Section space="normal">
+    <div class="grid items-center gap-12 md:grid-cols-2 md:gap-16 lg:gap-20">
+      <Scene
+        brief="The photographer sitting on the studio floor, an animal in frame, both relaxed. Not a formal headshot."
+        ratio="portrait"
+      />
+
+      <div>
+        <p class="eyebrow" data-reveal="rise">About</p>
+        <h1 class="mt-5 text-page leading-[1.04] text-ink" data-reveal="line">
+          The person your pet will meet.
+        </h1>
+
+        <div class="mt-10 space-y-4" data-reveal="rise">
+          {
+            paragraphs.map((brief, i) => (
+              <p class="rounded-lg border border-dashed border-line bg-cream-deep/50 p-5 font-body text-[0.95rem] leading-relaxed text-ink/45">
+                <span class="mb-1.5 block text-[0.65rem] uppercase tracking-[0.18em] text-ink/35">
+                  Paragraph {i + 1} — to be supplied
+                </span>
+                {brief}
+              </p>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- The studio -->
+  <Section space="normal">
+    <div class="grid gap-12 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-20">
+      <h2 class="text-section text-ink" data-reveal="line">The studio.</h2>
+      <div>
+        <p class="max-w-[44rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+          A quiet, private space — no walk-in traffic, no other clients during your session.
+          Daylight-independent lighting, room to move, and corners to hide in for the ones who need
+          them.
+        </p>
+        <p class="mt-4 font-body text-sm text-ink/45">[Adjust to the real space.]</p>
+
+        <div class="mt-12 grid gap-6 sm:grid-cols-2">
+          <Scene brief="The empty studio: backdrop rolled down, lights in position, floor clear." />
+          <Scene brief="A calm corner of the studio — blanket, water bowl, room for a cat to hide." />
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- The approach -->
+  <Section space="normal">
+    <div class="grid gap-12 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-20">
+      <h2 class="text-section text-ink" data-reveal="line">The approach.</h2>
+      <p class="max-w-[44rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+        We photograph at floor level, in short rounds, with breaks built into every session. No
+        commands, no pressure, no performance. The animal decides when it is ready — our job is to
+        be patient enough to wait for it, and fast enough to catch it.
+      </p>
+    </div>
+  </Section>
+
+  <!-- The animals of the house -->
+  <Section space="normal">
+    <div class="grid gap-12 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-20">
+      <h2 class="text-section text-ink" data-reveal="line">The animals of the house.</h2>
+      <p
+        class="max-w-[44rem] rounded-lg border border-dashed border-line bg-cream-deep/50 p-5 font-body text-[0.95rem] leading-relaxed text-ink/45"
+        data-reveal="rise"
+      >
+        <span class="mb-1.5 block text-[0.65rem] uppercase tracking-[0.18em] text-ink/35">
+          To be supplied
+        </span>
+        The studio's own dog or cat, if there is one — name, character, whether they are present
+        during sessions. If there is no studio animal, delete this block.
+      </p>
+    </div>
+  </Section>
+
+  <ClosingCta
+    headline="Come meet us in person."
+    body="Choose a package, pick a date — the rest happens calmly, in the studio."
+    tone="olive"
+  />
+</Layout>

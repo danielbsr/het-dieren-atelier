@@ -1,34 +1,205 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --font-display: var(--font-display);
-  --font-body: var(--font-body);
+@theme {
+  /* --- Surfaces -------------------------------------------------------- */
+  /* Cream is the one and only background. Section rhythm comes from
+     spacing and typography, never from alternating surface colours. */
+  --color-cream: #f6f4ec;
+  --color-cream-deep: #efebdd;
+  --color-line: #ddd8c7;
+
+  /* --- Interaction ----------------------------------------------------- */
+  /* Forest green carries every action on the site: buttons, links,
+     eyebrows, the sticky CTA. One conversion colour, trained by repetition. */
+  --color-forest: #1d3b2e;
+  --color-forest-deep: #142a20;
+  --color-forest-soft: #34584a;
+
+  /* Lime: logo gradient, active states, the "Most chosen" badge.
+     Never a surface. Its rarity is what keeps it premium. */
+  --color-lime: #a9c93c;
+
+  /* --- Type ------------------------------------------------------------ */
+  --color-ink: #1f1c17;
+  --color-muted: #6c6659;
+
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Deliberately large jumps. Timid scales signal templates. */
+  --text-hero: clamp(2.75rem, 6.4vw, 5.5rem); /* home headline */
+  --text-page: clamp(2.5rem, 5.4vw, 4.25rem); /* page titles */
+  --text-close: clamp(2.25rem, 4.4vw, 3.5rem); /* closing CTAs */
+  --text-section: clamp(2rem, 3.6vw, 3rem); /* section headlines */
+  --text-sub: clamp(1.75rem, 2.6vw, 2.25rem); /* sub headlines */
+  --text-lead: clamp(1.125rem, 1.4vw, 1.3rem); /* editorial body */
 }
 
-:root {
-  --background: #fafaf9;
-  --foreground: #1c1917;
-  --muted: #78716c;
-  --accent: #dc2626;
-  --font-display: "Space Grotesk", sans-serif;
-  --font-body: "DM Sans", sans-serif;
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #fafaf9;
-    --muted: #78716c;
-    --accent: #f87171;
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-forest);
+    color: var(--color-cream);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    /* Fraunces optical sizing: large display cut for headlines. */
+    font-variation-settings: "opsz" 120, "SOFT" 20;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-body);
+@layer components {
+  /* Small letterspaced forest label that opens a section. */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-forest);
+  }
+
+  /* Body copy inside narrow editorial columns. */
+  .prose-calm p {
+    font-size: var(--text-lead);
+    line-height: 1.7;
+    color: var(--color-muted);
+  }
+
+  .prose-calm p + p {
+    margin-top: 1.25rem;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion                                                              */
+/*                                                                     */
+/* Reveals are gated twice: on `html.js`, so nothing is ever hidden    */
+/* behind an effect that cannot play, and on prefers-reduced-motion.   */
+/* One easing, one direction, long durations — the site should feel    */
+/* unhurried, not animated.                                            */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html.js [data-reveal] {
+    opacity: 0;
+    transition-property: opacity, transform, filter, clip-path;
+    transition-duration: var(--reveal-duration, 900ms);
+    transition-timing-function: var(--ease-reveal);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  /* Text and blocks: rise into place. */
+  html.js [data-reveal="rise"] {
+    transform: translateY(1.5rem);
+  }
+
+  /*
+    Display headlines: a focus pull. They settle and sharpen at once,
+    the way a lens finds its subject — quieter than a slide, and it
+    survives any line count. (A clip-path wipe was tried first; it
+    reliably clipped text boxes while working fine on the media below.)
+  */
+  html.js [data-reveal="line"] {
+    --reveal-duration: 1100ms;
+    transform: translateY(0.32em);
+    filter: blur(7px);
+  }
+
+  /* Photography: a slow curtain opening from the centre. */
+  html.js [data-reveal="image"] {
+    --reveal-duration: 1250ms;
+    clip-path: inset(15% 0 15% 0);
+  }
+
+  html.js [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  html.js [data-reveal="image"].is-revealed {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* The mobile menu drops in when the header un-hides it. */
+  #mobile-menu {
+    animation: menu-in 320ms var(--ease-reveal) both;
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.75rem);
+    }
+  }
+}
+
+/*
+  Accordion open/close. Guarded by @supports because collapsing
+  ::details-content without interpolate-size would leave the answers
+  permanently invisible in browsers that support only one of the two.
+*/
+@supports (interpolate-size: allow-keywords) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root {
+      interpolate-size: allow-keywords;
+    }
+
+    details::details-content {
+      block-size: 0;
+      overflow: hidden;
+      transition:
+        block-size 420ms var(--ease-reveal),
+        content-visibility 420ms allow-discrete;
+    }
+
+    details[open]::details-content {
+      block-size: auto;
+    }
+  }
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

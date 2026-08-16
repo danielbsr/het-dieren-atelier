@@ -1,0 +1,114 @@
+---
+import Logo from './Logo.astro';
+import MapEmbed from './MapEmbed.astro';
+import { NAV, CTA, STUDIO, withBase } from '../data/site';
+
+const allPages = [...NAV, { label: 'Contact & Booking', href: withBase('/contact') }];
+---
+
+<footer class="border-t border-line">
+  <!-- Footer CTA, above the columns on every page -->
+  <div class="mx-auto max-w-[75rem] px-6 py-20 text-center md:px-10 md:py-28">
+    <h2 class="text-close text-ink" data-reveal="line">Ready when you are.</h2>
+    <a
+      href={CTA.book.href}
+      class="mt-8 inline-flex rounded-full bg-forest px-9 py-4 font-body font-medium text-cream transition-colors hover:bg-forest-deep"
+      data-reveal="rise"
+    >
+      {CTA.book.label}
+    </a>
+  </div>
+
+  <div class="border-t border-line">
+    <div
+      class="mx-auto grid max-w-[75rem] gap-12 px-6 py-16 md:grid-cols-2 md:px-10 lg:grid-cols-4"
+    >
+      <div>
+        <a href={withBase('/')} aria-label="Het Dieren Atelier — home">
+          <Logo class="text-[1.15rem]" />
+        </a>
+        <p class="mt-5 max-w-[22rem] font-body text-sm leading-relaxed text-muted">
+          {STUDIO.tagline} {STUDIO.city}, {STUDIO.country}.
+        </p>
+      </div>
+
+      <nav aria-label="Footer">
+        <h3 class="font-body text-xs font-medium uppercase tracking-[0.16em] text-ink">Pages</h3>
+        <ul class="mt-5 space-y-3">
+          <li>
+            <a
+              href={withBase('/')}
+              class="font-body text-sm text-muted transition-colors hover:text-forest"
+            >
+              Home
+            </a>
+          </li>
+          {
+            allPages.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="font-body text-sm text-muted transition-colors hover:text-forest"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div>
+        <h3 class="font-body text-xs font-medium uppercase tracking-[0.16em] text-ink">Contact</h3>
+        <address class="mt-5 space-y-3 font-body text-sm not-italic text-muted">
+          <p>{STUDIO.address}</p>
+          <p>
+            <a href={`mailto:${STUDIO.email}`} class="transition-colors hover:text-forest">
+              {STUDIO.email}
+            </a>
+          </p>
+          <p>
+            <a href={`tel:${STUDIO.phone}`} class="transition-colors hover:text-forest">
+              {STUDIO.phone}
+            </a>
+          </p>
+        </address>
+        <a
+          href={STUDIO.instagramUrl}
+          class="mt-4 inline-flex items-center gap-2 font-body text-sm text-muted transition-colors hover:text-forest"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect
+              x="2.5"
+              y="2.5"
+              width="19"
+              height="19"
+              rx="5.5"
+              stroke="currentColor"
+              stroke-width="1.6"></rect>
+            <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"></circle>
+            <circle cx="17.6" cy="6.4" r="1.2" fill="currentColor"></circle>
+          </svg>
+          {STUDIO.instagram}
+        </a>
+      </div>
+
+      <div>
+        <h3 class="font-body text-xs font-medium uppercase tracking-[0.16em] text-ink">The studio</h3>
+        <MapEmbed class="mt-5 h-40 rounded-lg" />
+      </div>
+    </div>
+
+    <div class="border-t border-line">
+      <div
+        class="mx-auto flex max-w-[75rem] flex-col gap-2 px-6 py-6 font-body text-xs text-muted md:flex-row md:items-center md:justify-between md:px-10"
+      >
+        <p>© {new Date().getFullYear()} {STUDIO.name}</p>
+        <p class="flex gap-5">
+          <span>Privacy [TO BE SUPPLIED]</span>
+          <span>Terms [TO BE SUPPLIED]</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Section from '../components/Section.astro';
+import RoomMockup from '../components/RoomMockup.astro';
+import MaterialTile from '../components/MaterialTile.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import { WALL_ART_PRODUCTS } from '../data/site';
+
+/** Room furnishing and material sample per product. */
+const staging = {
+  'fine-art': { furniture: 'sofa', material: 'print', animal: 'dog' },
+  framed: { furniture: 'console', material: 'print', animal: 'cat' },
+  aluminium: { furniture: 'console', material: 'aluminium', animal: 'dog' },
+  acrylic: { furniture: 'bed', material: 'acrylic', animal: 'cat' },
+} as const;
+---
+
+<Layout
+  title="Wall art — fine art prints, aluminium & acrylic"
+  description="Your pet's portrait as fine art print, framed, aluminium or acrylic glass. Shown in the studio after your session, from €99."
+>
+  <PageHeader
+    eyebrow="Wall art"
+    title="From file to wall."
+    intro="Photos live longest in print. After your session we look at these options together in the studio — with real samples, in real size. Nothing here can be ordered online, and nothing has to be decided today."
+  />
+
+  <Section space="normal">
+    <div class="space-y-24 md:space-y-36">
+      {
+        WALL_ART_PRODUCTS.map((product, i) => {
+          const stage = staging[product.id as keyof typeof staging];
+          return (
+            <article class="grid items-center gap-10 md:grid-cols-2 md:gap-16 lg:gap-20">
+              <div class={i % 2 === 1 ? 'md:order-2' : ''}>
+                <RoomMockup
+                  tone={product.tone}
+                  animal={stage.animal}
+                  furniture={stage.furniture}
+                  room={product.room}
+                />
+              </div>
+
+              <div>
+                <div class="flex items-baseline justify-between gap-6 border-b border-line pb-5">
+                  <h2 class="font-display text-sub text-ink" data-reveal="line">
+                    {product.name}
+                  </h2>
+                  <span class="shrink-0 font-display text-xl text-forest">{product.price}</span>
+                </div>
+
+                <p
+                  class="mt-7 max-w-[34rem] font-body text-[1.05rem] leading-relaxed text-muted"
+                  data-reveal="rise"
+                >
+                  {product.blurb}
+                </p>
+
+                <ul class="mt-8 space-y-3" data-reveal="rise">
+                  {product.points.map((point) => (
+                    <li class="flex gap-3 font-body text-[0.95rem] text-ink/85">
+                      <span class="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-lime" aria-hidden="true" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+
+                <div class="mt-9 max-w-[13rem]">
+                  <MaterialTile
+                    material={stage.material}
+                    label={`${product.name} — surface`}
+                    from="Sample shown in the studio"
+                  />
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </Section>
+
+  <!-- Large formats -->
+  <Section space="normal">
+    <div class="border-y border-line py-14 md:py-20">
+      <div class="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+          <h2 class="text-section leading-[1.1] text-ink" data-reveal="line">
+            Large premium formats.
+          </h2>
+          <p class="mt-6 max-w-[38rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+            For portraits that carry a whole wall. We advise on size in the studio, against your
+            room's measurements.
+          </p>
+        </div>
+        <p class="font-display text-2xl text-forest md:text-3xl" data-reveal="rise">
+          €349 / €449 / €599+
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Credit explainer -->
+  <Section width="text" space="normal" class="text-center">
+    <h2 class="text-section leading-[1.1] text-ink" data-reveal="line">
+      Your package already contributes.
+    </h2>
+    <div class="prose-calm mt-8" data-reveal="rise">
+      <p>
+        The Signature package includes €50 wall art credit, the Collection package €100 — applied to
+        any product on this page. <span class="text-ink/50">[Confirm: credit applies to all
+        products — TO BE SUPPLIED]</span>
+      </p>
+    </div>
+  </Section>
+
+  <ClosingCta
+    headline="First the session, then the wall."
+    body="Choose a package, pick a date — the rest happens calmly, in the studio."
+    tone="cream"
+  />
+</Layout>

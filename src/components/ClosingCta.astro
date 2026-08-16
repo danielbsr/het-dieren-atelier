@@ -1,0 +1,42 @@
+---
+import Portrait from './Portrait.astro';
+import { CTA, type BackdropKey } from '../data/site';
+
+/**
+ * The closing block. A portrait with direct eye contact sits beside the
+ * decision — eye contact at the moment of choice pulls attention here.
+ */
+interface Props {
+  headline: string;
+  body?: string;
+  tone?: BackdropKey;
+}
+
+const {
+  headline,
+  body = 'Choose a package, pick a date — the rest happens calmly, in the studio.',
+  tone = 'sage',
+} = Astro.props;
+---
+
+<section class="border-t border-line">
+  <div
+    class="mx-auto grid max-w-[75rem] items-center gap-12 px-6 py-20 md:grid-cols-2 md:gap-20 md:px-10 md:py-32"
+  >
+    <Portrait tone={tone} animal="dog" ratio="portrait" crop="tight" class="max-w-md" />
+
+    <div>
+      <h2 class="text-close leading-[1.05] text-ink" data-reveal="line">{headline}</h2>
+      <p class="mt-6 max-w-[34rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+        {body}
+      </p>
+      <a
+        href={CTA.book.href}
+        class="mt-9 inline-flex rounded-full bg-forest px-9 py-4 font-body font-medium text-cream transition-colors hover:bg-forest-deep"
+        data-reveal="rise"
+      >
+        {CTA.book.label}
+      </a>
+    </div>
+  </div>
+</section>

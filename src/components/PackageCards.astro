@@ -1,0 +1,58 @@
+---
+import { PACKAGES } from '../data/site';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`grid items-center gap-6 md:grid-cols-3 md:gap-5 ${className}`}>
+  {
+    PACKAGES.map((pkg) => (
+      <article
+        data-reveal="rise"
+        class={
+          pkg.featured
+            ? 'relative rounded-2xl border-2 border-forest bg-cream p-8 md:-my-4 md:p-9'
+            : 'relative rounded-2xl border border-line bg-cream p-8'
+        }
+      >
+        {pkg.featured && (
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-lime px-4 py-1 font-body text-[0.7rem] font-medium uppercase tracking-[0.14em] text-forest-deep">
+            Most chosen
+          </span>
+        )}
+
+        <h3 class="font-display text-2xl text-ink">{pkg.name}</h3>
+        <p class="mt-1 font-display text-[2.5rem] leading-none text-forest">{pkg.price}</p>
+        <p class="mt-4 font-body text-sm leading-relaxed text-muted">{pkg.blurb}</p>
+
+        <ul class="mt-7 space-y-3 border-t border-line pt-7">
+          {pkg.highlights.map((line) => (
+            <li class="flex gap-3 font-body text-[0.95rem] text-ink/85">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                class="mt-1.5 shrink-0 text-forest"
+                aria-hidden="true"
+              >
+                <path
+                  d="M1 7.5 5 11.5 13 2.5"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              {line}
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))
+  }
+</div>

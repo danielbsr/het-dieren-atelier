@@ -1,0 +1,38 @@
+---
+/**
+ * Two-line serif wordmark. The forest → lime gradient is the only place
+ * lime appears at any size; everywhere else it is a hairline accent.
+ */
+interface Props {
+  class?: string;
+  inverted?: boolean;
+}
+
+const { class: className = '', inverted = false } = Astro.props;
+---
+
+<span
+  class={`block font-display leading-[0.92] tracking-[-0.03em] ${className}`}
+  aria-label="Het Dieren Atelier"
+>
+  <span
+    class="block bg-clip-text text-transparent"
+    style={
+      inverted
+        ? 'background-image:linear-gradient(115deg,#f6f4ec 0%,#a9c93c 130%)'
+        : 'background-image:linear-gradient(115deg,#1d3b2e 0%,#34584a 45%,#a9c93c 135%)'
+    }
+  >
+    Het Dieren
+  </span>
+  <span
+    class="block bg-clip-text text-transparent"
+    style={
+      inverted
+        ? 'background-image:linear-gradient(115deg,#dfe6c4 -30%,#a9c93c 90%)'
+        : 'background-image:linear-gradient(115deg,#34584a -20%,#a9c93c 95%)'
+    }
+  >
+    Atelier
+  </span>
+</span>

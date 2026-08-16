@@ -1,0 +1,100 @@
+---
+import AnimalSilhouette from './AnimalSilhouette.astro';
+import { BACKDROPS, type BackdropKey } from '../data/site';
+
+/**
+ * A studio portrait on a hand-picked backdrop.
+ *
+ * Pass `src` once real photography exists — the tinted placeholder is
+ * only a stand-in so layout, crop and colour curation can be judged now.
+ * Everything else (caption, ratio, tone label) stays identical.
+ */
+interface Props {
+  tone: BackdropKey;
+  name?: string;
+  src?: string;
+  alt?: string;
+  animal?: 'dog' | 'cat' | 'rabbit';
+  ratio?: 'tall' | 'portrait' | 'square' | 'wide' | 'banner';
+  /** 'tight' zooms the subject in, as a close face crop would. */
+  crop?: 'tight' | 'full';
+  caption?: boolean;
+  class?: string;
+  /** Extra attributes (e.g. data-species) land on the <figure>. */
+  [key: string]: unknown;
+}
+
+const {
+  tone,
+  name,
+  src,
+  alt,
+  animal = 'dog',
+  ratio = 'portrait',
+  crop = 'full',
+  caption = false,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const backdrop = BACKDROPS[tone];
+
+const ratios = {
+  tall: 'aspect-[3/4.4]',
+  portrait: 'aspect-[4/5]',
+  square: 'aspect-square',
+  wide: 'aspect-[16/9]',
+  banner: 'aspect-[21/8]',
+};
+
+const toneName = backdrop.name.toLowerCase();
+const article = /^[aeiou]/.test(toneName) ? 'an' : 'a';
+
+const altText =
+  alt ??
+  (name
+    ? `Studio portrait of ${name} on ${article} ${toneName} backdrop`
+    : `Studio portrait on ${article} ${toneName} backdrop`);
+---
+
+<figure class={className} data-reveal="image" {...rest}>
+  <div
+    class={`relative overflow-hidden ${ratios[ratio]}`}
+    style={`background-color:${backdrop.hex}`}
+  >
+    {
+      src ? (
+        <img src={src} alt={altText} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+      ) : (
+        <>
+          {/* Studio key light falling on the backdrop. */}
+          <div
+            class="absolute inset-0"
+            style="background:radial-gradient(ellipse 70% 55% at 50% 32%, rgba(255,255,255,0.22), transparent 68%)"
+          >
+          </div>
+          <div
+            class="absolute inset-0"
+            style="background:radial-gradient(ellipse 90% 80% at 50% 45%, transparent 45%, rgba(0,0,0,0.28))"
+          >
+          </div>
+          <AnimalSilhouette
+            animal={animal}
+            class={`absolute left-1/2 w-auto max-w-none -translate-x-1/2 ${
+              crop === 'tight' ? 'bottom-[-35%] h-[135%]' : 'bottom-0 h-[82%]'
+            }`}
+          />
+          <span class="sr-only">{altText} — placeholder, awaiting photography</span>
+        </>
+      )
+    }
+  </div>
+
+  {
+    caption && name && (
+      <figcaption class="mt-3 font-body text-sm text-muted">
+        {name} — {backdrop.name.toLowerCase()}
+      </figcaption>
+    )
+  }
+</figure>

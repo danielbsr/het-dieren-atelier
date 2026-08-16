@@ -1,0 +1,98 @@
+---
+import Portrait from './Portrait.astro';
+import { type BackdropKey } from '../data/site';
+
+/**
+ * A framed portrait hanging in a room. Abstract but inhabited — real
+ * light, furniture below, the portrait large on the wall.
+ *
+ * Replace wholesale with a photographed in-room shot when available;
+ * the props (tone, room) exist so the swap keeps the same call sites.
+ */
+interface Props {
+  tone?: BackdropKey;
+  animal?: 'dog' | 'cat' | 'rabbit';
+  room?: string;
+  furniture?: 'sofa' | 'console' | 'bed' | 'none';
+  class?: string;
+}
+
+const {
+  tone = 'sage',
+  animal = 'dog',
+  room,
+  furniture = 'sofa',
+  class: className = '',
+} = Astro.props;
+---
+
+<div
+  class={`relative aspect-[4/3] overflow-hidden rounded-xl ${className}`}
+  style="background:linear-gradient(168deg,#efe9dd 0%,#e5dece 58%,#d8d0be 100%)"
+  data-reveal="image"
+>
+  <!-- Daylight falling from the left. -->
+  <div
+    class="absolute inset-0"
+    style="background:radial-gradient(ellipse 55% 90% at 8% 12%, rgba(255,255,255,0.55), transparent 62%)"
+  >
+  </div>
+
+  <!-- The framed portrait, large on the wall. -->
+  <div
+    class="absolute left-1/2 top-[9%] w-[34%] -translate-x-1/2"
+    style="box-shadow:0 18px 34px -14px rgba(60,48,30,0.45)"
+  >
+    <div style="background:#c2ac86;padding:5%">
+      <div style="background:#f7f4ec;padding:7%">
+        <Portrait tone={tone} animal={animal} ratio="portrait" crop="tight" />
+      </div>
+    </div>
+  </div>
+
+  {
+    furniture === 'sofa' && (
+      <div class="absolute inset-x-[9%] bottom-0 h-[26%]">
+        <div class="absolute inset-x-0 bottom-[38%] h-[62%] rounded-t-lg bg-[#8e8471]/85" />
+        <div class="absolute inset-x-[-3%] bottom-[18%] h-[34%] rounded-md bg-[#a1957f]" />
+        <div class="absolute bottom-0 left-[6%] h-[20%] w-[3%] bg-[#6d604b]" />
+        <div class="absolute bottom-0 right-[6%] h-[20%] w-[3%] bg-[#6d604b]" />
+      </div>
+    )
+  }
+
+  {
+    furniture === 'console' && (
+      <div class="absolute inset-x-[16%] bottom-0 h-[20%]">
+        <div class="absolute inset-x-0 top-0 h-[16%] rounded-sm bg-[#9a8c74]" />
+        <div class="absolute bottom-0 left-[4%] top-[16%] w-[3%] bg-[#7a6d58]" />
+        <div class="absolute bottom-0 right-[4%] top-[16%] w-[3%] bg-[#7a6d58]" />
+      </div>
+    )
+  }
+
+  {
+    furniture === 'bed' && (
+      <div class="absolute inset-x-[6%] bottom-0 h-[22%]">
+        <div class="absolute inset-x-0 bottom-0 h-[62%] rounded-t-md bg-[#ded5c3]" />
+        <div class="absolute bottom-[46%] left-[8%] h-[38%] w-[26%] rounded-md bg-[#efe9dc]" />
+        <div class="absolute bottom-[46%] right-[8%] h-[38%] w-[26%] rounded-md bg-[#efe9dc]" />
+      </div>
+    )
+  }
+
+  <!-- Floor shadow, so the room has a ground. -->
+  <div
+    class="absolute inset-x-0 bottom-0 h-[34%]"
+    style="background:linear-gradient(to top,rgba(90,74,50,0.22),transparent)"
+  >
+  </div>
+
+  {
+    room && (
+      <span class="absolute bottom-3 right-4 font-body text-[0.7rem] tracking-wide text-ink/40">
+        {room}
+      </span>
+    )
+  }
+</div>

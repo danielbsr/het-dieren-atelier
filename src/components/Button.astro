@@ -1,0 +1,42 @@
+---
+interface Props {
+  href: string;
+  variant?: 'solid' | 'outline' | 'link';
+  size?: 'md' | 'lg';
+  class?: string;
+}
+
+const {
+  href,
+  variant = 'solid',
+  size = 'md',
+  class: className = '',
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 font-body font-medium transition-colors duration-200';
+
+const variants = {
+  solid:
+    'rounded-full bg-forest text-cream hover:bg-forest-deep',
+  outline:
+    'rounded-full border border-forest/25 text-forest hover:border-forest hover:bg-forest hover:text-cream',
+  link: 'text-forest underline-offset-4 hover:underline',
+};
+
+const sizes = {
+  md: variant === 'link' ? 'text-base' : 'px-7 py-3 text-[0.95rem]',
+  lg: variant === 'link' ? 'text-lg' : 'px-9 py-4 text-base',
+};
+---
+
+<a href={href} class={`${base} ${variants[variant]} ${sizes[size]} ${className}`}>
+  <slot />
+  {
+    variant === 'link' && (
+      <span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">
+        →
+      </span>
+    )
+  }
+</a>

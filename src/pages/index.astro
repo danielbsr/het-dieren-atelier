@@ -1,95 +1,396 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Portrait from '../components/Portrait.astro';
+import PackageCards from '../components/PackageCards.astro';
+import Faq from '../components/Faq.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import RoomMockup from '../components/RoomMockup.astro';
+import MaterialTile from '../components/MaterialTile.astro';
+import {
+  BACKDROPS,
+  COLOUR_STRIP,
+  CTA,
+  FAQ_SHORT,
+  HOME_SELECTION,
+  HAS_REVIEWS,
+  REVIEWS,
+  GOOGLE_REVIEWS,
+  PACKAGE_NOTE,
+  STEPS,
+  WALL_ART_TILES,
+} from '../data/site';
+
+/**
+ * Curated wall: two large portraits, four smaller, uneven — so the grid
+ * reads as a selection rather than a database dump.
+ */
+const layout = [
+  { span: 'md:col-span-5', ratio: 'tall' as const, crop: 'full' as const },
+  { span: 'md:col-span-4 md:self-end', ratio: 'portrait' as const, crop: 'tight' as const },
+  { span: 'md:col-span-3 md:self-end', ratio: 'square' as const, crop: 'full' as const },
+  { span: 'md:col-span-4', ratio: 'portrait' as const, crop: 'full' as const },
+  { span: 'md:col-span-5', ratio: 'tall' as const, crop: 'tight' as const },
+  { span: 'md:col-span-3 md:self-end', ratio: 'square' as const, crop: 'full' as const },
+];
 ---
 
-<Layout title="Ship Studio Starter">
-  <main class="min-h-screen px-6 py-16 md:px-12 lg:px-24">
-    <div class="mx-auto max-w-3xl">
-      <!-- Hero Section -->
-      <section class="mb-24">
-        <p class="mb-4 text-sm font-medium tracking-wide text-muted uppercase">
-          Ship Studio
-        </p>
-        <h1 class="mb-6 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-          How professionals build with AI.
+<Layout
+  title="Het Dieren Atelier — Studio portraits of dogs, cats & pets"
+  description="Premium studio portraits of your dog, cat or other pet. Calm sessions, hand-picked backdrops, finished as wall art. Book your session."
+>
+  <!-- ============================================================ 2.1 Hero -->
+  <section class="border-b border-line">
+    <div
+      class="mx-auto grid max-w-[75rem] items-center gap-10 px-6 pb-16 pt-10 md:min-h-[82vh] md:grid-cols-2 md:gap-16 md:px-10 md:pb-24 md:pt-16 lg:gap-24"
+    >
+      <div class="order-2 md:order-1">
+        <p class="eyebrow" data-reveal="rise">Studio portraits of dogs, cats &amp; other pets</p>
+
+        <h1 class="mt-7 text-hero leading-[0.98] text-ink" data-reveal="line">
+          Your pet, as a work of art.
         </h1>
-        <p class="text-lg text-muted">
-          Just describe what you want. Your AI builds it, refines it, and helps you ship.
+
+        <p
+          class="mt-8 max-w-[34rem] font-body text-lg leading-relaxed text-muted md:text-xl"
+          data-reveal="rise"
+        >
+          Professional studio portraits, made calmly and with time — and finished as a piece you
+          will want on your wall for years.
         </p>
-      </section>
 
-      <!-- Getting Started Section -->
-      <section class="mb-24">
-        <h2 class="mb-8 font-display text-2xl font-semibold">Getting started</h2>
-        <div class="space-y-6">
-          <div class="flex gap-4">
-            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/10 font-display text-sm font-medium">
-              1
-            </div>
-            <div>
-              <h3 class="font-display font-medium">Start a conversation</h3>
-              <p class="text-muted">Describe your project naturally. Share examples, reference other sites, or just explain what you're building.</p>
-            </div>
-          </div>
-          <div class="flex gap-4">
-            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/10 font-display text-sm font-medium">
-              2
-            </div>
-            <div>
-              <h3 class="font-display font-medium">AI builds it</h3>
-              <p class="text-muted">Watch as your AI generates pages, styles, and components in real-time. Everything runs locally in your project.</p>
-            </div>
-          </div>
-          <div class="flex gap-4">
-            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/10 font-display text-sm font-medium">
-              3
-            </div>
-            <div>
-              <h3 class="font-display font-medium">Refine together</h3>
-              <p class="text-muted">Keep iterating until it's right. Ask for changes, try different layouts, add new sections. No pressure.</p>
-            </div>
-          </div>
+        <div
+          class="mt-11 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8"
+          data-reveal="rise"
+        >
+          <a
+            href={CTA.book.href}
+            class="inline-flex rounded-full bg-forest px-9 py-4 font-body font-medium text-cream transition-colors hover:bg-forest-deep"
+          >
+            {CTA.book.label}
+          </a>
+          <a
+            href={CTA.portfolio.href}
+            class="group inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+          >
+            {CTA.portfolio.label}
+            <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+          </a>
         </div>
-      </section>
+      </div>
 
-      <!-- Commands Section -->
-      <section class="mb-24">
-        <h2 class="mb-8 font-display text-2xl font-semibold">Available commands</h2>
-        <div class="space-y-4">
-          <div class="rounded-lg border border-foreground/10 p-4">
-            <code class="font-mono text-accent">/onboarding</code>
-            <p class="mt-1 text-sm text-muted">Sets up new projects with personalized planning and structure.</p>
-          </div>
-          <div class="rounded-lg border border-foreground/10 p-4">
-            <code class="font-mono text-accent">/page-remake</code>
-            <p class="mt-1 text-sm text-muted">Rebuilds your site based on a shared example or reference.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- What You Can Build Section -->
-      <section class="mb-24">
-        <h2 class="mb-8 font-display text-2xl font-semibold">What you can build</h2>
-        <div class="mb-6 flex flex-wrap gap-2">
-          <span class="rounded-full bg-foreground/5 px-3 py-1 text-sm">Landing pages</span>
-          <span class="rounded-full bg-foreground/5 px-3 py-1 text-sm">Portfolios</span>
-          <span class="rounded-full bg-foreground/5 px-3 py-1 text-sm">Company sites</span>
-          <span class="rounded-full bg-foreground/5 px-3 py-1 text-sm">Web apps</span>
-          <span class="rounded-full bg-foreground/5 px-3 py-1 text-sm">Dashboards</span>
-          <span class="rounded-full bg-foreground/5 px-3 py-1 text-sm">Event sites</span>
-          <span class="rounded-full bg-foreground/5 px-3 py-1 text-sm">Personal sites</span>
-          <span class="rounded-full bg-foreground/5 px-3 py-1 text-sm">Anything you can imagine</span>
-        </div>
-        <p class="text-muted">All built with AI, at professional quality.</p>
-      </section>
-
-      <!-- CTA Section -->
-      <section class="rounded-xl bg-foreground/5 p-8 text-center">
-        <p class="font-display text-lg font-medium">
-          Just describe what you want to build.
-        </p>
-        <p class="mt-2 text-muted">Your AI takes it from there.</p>
-      </section>
+      <!-- One still, confident image. This sets the quality bar for the site. -->
+      <div class="order-1 md:order-2">
+        <Portrait
+          tone="sage"
+          animal="dog"
+          ratio="tall"
+          crop="tight"
+          alt="Studio portrait of a dog on a sage backdrop"
+          class="md:ml-auto md:max-w-[30rem]"
+        />
+      </div>
     </div>
-  </main>
+  </section>
+
+  <!-- ====================================================== 2.2 What we do -->
+  <Section width="text" space="loose" class="text-center">
+    <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
+      A portrait session built around your animal.
+    </h2>
+    <div class="prose-calm mt-8" data-reveal="rise">
+      <p>
+        Het Dieren Atelier is a photography studio for animals. Dogs, cats, rabbits — every pet with
+        a face and a personality. We work slowly, with breaks, treats and time to settle in. The
+        result is not a quick photo. It is a portrait: your animal's character, held still for once,
+        printed and framed for your wall.
+      </p>
+    </div>
+    <a
+      href={CTA.process.href}
+      class="group mt-9 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+      data-reveal="rise"
+    >
+      {CTA.process.label}
+      <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+    </a>
+  </Section>
+
+  <!-- =============================================== 2.3 Portfolio selection -->
+  <Section space="normal">
+    <h2 class="text-section text-ink" data-reveal="line">Recent work.</h2>
+
+    <div class="mt-12 grid grid-cols-2 gap-5 md:mt-16 md:grid-cols-12 md:gap-6">
+      {
+        HOME_SELECTION.map((item, i) => (
+          <Portrait
+            tone={item.tone}
+            name={item.name}
+            animal={item.animal}
+            src={item.src}
+            ratio={layout[i].ratio}
+            crop={layout[i].crop}
+            caption
+            class={layout[i].span}
+          />
+        ))
+      }
+    </div>
+
+    <div class="mt-14 text-center" data-reveal="rise">
+      <a
+        href={CTA.portfolio.href}
+        class="inline-flex rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest transition-colors hover:bg-forest hover:text-cream"
+      >
+        {CTA.portfolio.label}
+      </a>
+    </div>
+  </Section>
+
+  <!-- ========================================= 2.4 Choose your colour (signature) -->
+  <Section space="loose">
+    <div class="max-w-[44rem]">
+      <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
+        Every session starts with a colour.
+      </h2>
+      <p class="mt-7 font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+        Each portrait is shot on a hand-picked backdrop — from quiet sage to deep red. Together we
+        choose the tones that fit your animal's coat, eyes and character. One backdrop is included
+        in every session; larger packages include up to three.
+      </p>
+    </div>
+
+    <!--
+      The swatch chart. Identical crop and scale across all seven —
+      the uniformity is what turns "loud" into "curated".
+    -->
+    <div class="-mx-6 mt-14 overflow-x-auto px-6 pb-2 md:mx-0 md:mt-16 md:overflow-visible md:px-0">
+      <ul class="flex min-w-max gap-3 md:grid md:min-w-0 md:grid-cols-7 md:gap-4">
+        {
+          COLOUR_STRIP.map((key, i) => (
+            <li class="w-36 md:w-auto">
+              <Portrait
+                tone={key}
+                animal={i % 3 === 1 ? 'cat' : 'dog'}
+                ratio="portrait"
+                crop="tight"
+                alt={`Studio portrait on a ${BACKDROPS[key].name.toLowerCase()} backdrop`}
+              />
+              <div class="mt-3 flex items-center gap-2">
+                <span
+                  class="h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-inset ring-black/10"
+                  style={`background-color:${BACKDROPS[key].hex}`}
+                  aria-hidden="true"
+                />
+                <span class="font-body text-sm text-muted">{BACKDROPS[key].name}</span>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <p class="mt-8 font-body text-sm text-muted" data-reveal="rise">
+      Backdrop availability may vary per session date.
+    </p>
+
+    <a
+      href={CTA.packages.href}
+      class="group mt-6 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+      data-reveal="rise"
+    >
+      {CTA.packages.label}
+      <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+    </a>
+  </Section>
+
+  <!-- ================================================== 2.5 Package preview -->
+  <Section space="normal">
+    <div class="mx-auto max-w-[40rem] text-center">
+      <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
+        Three ways to book.
+      </h2>
+    </div>
+
+    <PackageCards class="mt-16" />
+
+    <p
+      class="mx-auto mt-14 max-w-[46rem] text-center font-body text-[1.05rem] leading-relaxed text-muted"
+      data-reveal="rise"
+    >
+      {PACKAGE_NOTE}
+    </p>
+
+    <div
+      class="mt-10 flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-8"
+      data-reveal="rise"
+    >
+      <a
+        href={CTA.packages.href}
+        class="inline-flex rounded-full bg-forest px-9 py-4 font-body font-medium text-cream transition-colors hover:bg-forest-deep"
+      >
+        {CTA.packages.label}
+      </a>
+      <a
+        href={CTA.book.href}
+        class="group inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+      >
+        {CTA.book.label}
+        <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+  </Section>
+
+  <!-- ==================================================== 2.6 How it works -->
+  <Section space="normal">
+    <h2 class="max-w-[24ch] text-section leading-[1.08] text-ink" data-reveal="line">
+      Calm from the first minute.
+    </h2>
+
+    <ol class="mt-14 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:mt-16 md:grid-cols-4">
+      {
+        STEPS.map((step) => (
+          <li class="bg-cream p-8 lg:p-9" data-reveal="rise">
+            <span class="block font-display text-[2.75rem] leading-none text-forest/25">
+              {step.number}
+            </span>
+            <h3 class="mt-6 font-display text-xl text-ink">{step.title}</h3>
+            <p class="mt-3 font-body text-[0.95rem] leading-relaxed text-muted">{step.short}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p
+      class="mx-auto mt-14 max-w-[44rem] text-center font-body text-lg italic leading-relaxed text-ink/80"
+      data-reveal="rise"
+    >
+      No animal has to perform here. Restless dogs and shy cats are our daily work — the session
+      adapts to them, never the other way around.
+    </p>
+
+    <div class="mt-8 text-center" data-reveal="rise">
+      <a
+        href={CTA.process.href}
+        class="group inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+      >
+        {CTA.process.label}
+        <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+  </Section>
+
+  <!-- ======================================================= 2.7 Wall art -->
+  <Section space="normal">
+    <div class="grid items-center gap-12 md:grid-cols-2 md:gap-16 lg:gap-20">
+      <RoomMockup tone="sage" animal="dog" furniture="sofa" />
+
+      <div>
+        <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
+          Made to be printed.
+        </h2>
+        <p class="mt-7 max-w-[34rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+          A portrait this deliberate should not live in a phone. After your session, we help you
+          choose the format and material that fits your home — from fine art prints to aluminium and
+          acrylic glass. You decide calmly, after seeing your photos.
+        </p>
+        <a
+          data-reveal="rise"
+          href={CTA.wallArt.href}
+          class="mt-9 inline-flex rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest transition-colors hover:bg-forest hover:text-cream"
+        >
+          {CTA.wallArt.label}
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-16 grid grid-cols-3 gap-5 md:mt-20 md:gap-8">
+      <MaterialTile material="print" label={WALL_ART_TILES[0].label} from={WALL_ART_TILES[0].from} />
+      <MaterialTile
+        material="aluminium"
+        label={WALL_ART_TILES[1].label}
+        from={WALL_ART_TILES[1].from}
+      />
+      <MaterialTile
+        material="acrylic"
+        label={WALL_ART_TILES[2].label}
+        from={WALL_ART_TILES[2].from}
+      />
+    </div>
+
+    <p class="mt-10 font-body text-sm text-muted" data-reveal="rise">
+      Signature and Collection packages include a wall art credit of €50 or €100.
+    </p>
+  </Section>
+
+  <!-- ======================================================== 2.8 Reviews -->
+  {
+    HAS_REVIEWS ? (
+      <Section space="normal">
+        <h2 class="text-section text-ink">What owners say.</h2>
+
+        <div class="mt-14 grid gap-6 md:mt-16 md:grid-cols-3">
+          {REVIEWS.map((review) => (
+            <blockquote class="rounded-2xl border border-line p-9">
+              <p class="font-display text-xl leading-[1.45] text-ink">“{review.quote}”</p>
+              <footer class="mt-7 font-body text-sm text-muted">{review.author}</footer>
+            </blockquote>
+          ))}
+        </div>
+
+        {GOOGLE_REVIEWS && (
+          <a
+            href={GOOGLE_REVIEWS.url}
+            class="group mt-10 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+          >
+            {GOOGLE_REVIEWS.rating} stars · Read all {GOOGLE_REVIEWS.count} reviews on Google
+            <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">
+              →
+            </span>
+          </a>
+        )}
+      </Section>
+    ) : (
+      /*
+        Fallback while no real client quotes exist. Invented quotes would
+        break rule 4 of the voice guide and the trust they are meant to build.
+        Set HAS_REVIEWS to true in src/data/site.ts once three quotes are in.
+      */
+      <Section space="normal">
+        <Portrait
+          tone="olive"
+          animal="dog"
+          ratio="banner"
+          crop="tight"
+          alt="Studio portrait of a dog on an olive backdrop"
+        />
+      </Section>
+    )
+  }
+
+  <!-- ====================================================== 2.9 Short FAQ -->
+  <Section space="normal">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
+      <div>
+        <h2 class="text-section text-ink" data-reveal="line">Good to know.</h2>
+        <a
+          href={CTA.process.href}
+          class="group mt-8 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+          data-reveal="rise"
+        >
+          All questions answered
+          <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+
+      <Faq items={FAQ_SHORT} />
+    </div>
+  </Section>
+
+  <!-- =================================================== 2.10 Closing CTA -->
+  <ClosingCta
+    headline="Your animal. On your wall."
+    body="Choose a package, pick a date — the rest happens calmly, in the studio."
+    tone="terracotta"
+  />
 </Layout>
