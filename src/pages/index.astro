@@ -48,7 +48,7 @@ const layout = [
     <div
       class="mx-auto grid max-w-[75rem] items-center gap-8 px-6 pb-14 pt-8 md:min-h-[82vh] md:grid-cols-2 md:gap-16 md:px-10 md:pb-24 md:pt-16 lg:gap-24"
     >
-      <div class="order-2 md:order-1">
+      <div>
         <p class="eyebrow" data-reveal="rise">
           Studio portraits of dogs, cats, birds &amp; rabbits
         </p>
@@ -81,12 +81,16 @@ const layout = [
       </div>
 
       <!--
-        One still, confident image. It sets the quality bar for the site —
-        but on a phone a 3:4.4 crop is a whole screen of picture before a
-        single word, so the hero squares off there and the headline, the
-        promise and the button all land on the first screen.
+        One still, confident image. It sets the quality bar for the site.
+
+        On a phone it follows the words rather than leading them: a
+        photograph of a dog says nothing about what is being sold, and
+        leading with one pushed the booking button clean off the first
+        screen. Text first puts the button at ~490px, and the top of the
+        photo still shows above the fold as a reason to keep scrolling.
+        The 3:4.4 crop squares off there for the same reason.
       -->
-      <div class="order-1 md:order-2">
+      <div>
         <Portrait
           tone="sage"
           animal="dog"
