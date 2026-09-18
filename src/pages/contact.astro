@@ -3,467 +3,193 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import MapEmbed from '../components/MapEmbed.astro';
 import Portrait from '../components/Portrait.astro';
-import { PACKAGES, STUDIO } from '../data/site';
+import BookButton from '../components/BookButton.astro';
+import ContactCards from '../components/ContactCards.astro';
+import { photo } from '../data/photos';
+import { BOOKING_URL, CTA, STUDIO } from '../data/site';
+
+/**
+ * Booking is Calendly's job now.
+ *
+ * This page used to carry a hand-built availability calendar filled with
+ * invented free days and a form that posted nowhere. Both are gone: a
+ * calendar that cannot be trusted is worse than no calendar, and two
+ * booking routes — one real, one decorative — is the fastest way to lose
+ * a booking. What is left is the real calendar, and the ways to reach a
+ * person before using it.
+ *
+ * Branded to the site palette through Calendly's embed parameters, so
+ * the widget does not arrive in somebody else's blue.
+ */
+const calendlyEmbed = `${BOOKING_URL}?hide_gdpr_banner=1&background_color=f6f4ec&text_color=1f1c17&primary_color=1d3b2e`;
 ---
 
 <Layout
   title="Book your session — Het Dieren Atelier"
-  description="Choose a package, pick your date in the calendar and book your pet's studio session. Confirmed personally within one working day."
+  description="Pick your date in the calendar and book your pet's studio session in Blokker — or ask a question first. Studio and on-location sessions."
   showMobileCta={false}
+  showFooterCta
 >
   <Section space="tight">
-    <div class="grid items-center gap-10 md:grid-cols-[1fr_auto] md:gap-16">
+    <div class="grid items-center gap-8 md:grid-cols-[1fr_auto] md:gap-16">
       <div>
         <p class="eyebrow" data-reveal="rise">Contact &amp; booking</p>
         <h1 class="mt-5 max-w-[16ch] text-page leading-[1.03] text-ink" data-reveal="line">
           Book your session.
         </h1>
-        <p class="mt-7 max-w-[38rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
-          Pick a package and a date — you'll receive a confirmation and a short preparation guide.
-          Questions first? Call or mail, we answer personally.
+        <p
+          class="mt-6 max-w-[38rem] font-body text-[1.0625rem] leading-relaxed text-muted md:mt-7 md:text-lg"
+          data-reveal="rise"
+        >
+          Pick a date and time in the calendar below — you'll receive a confirmation and a short
+          preparation guide. Not sure which package yet? Choose the date first; we settle the rest
+          together before the session.
         </p>
+
+        <a
+          href={CTA.packages.href}
+          class="group mt-7 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+          data-reveal="rise"
+        >
+          {CTA.packages.label}
+          <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+        </a>
       </div>
 
-      <Portrait tone="sage" animal="cat" ratio="square" crop="tight" class="w-40 md:w-48" />
+      <!-- Hidden on a phone: the calendar is what this page is for, and a
+           decorative square only pushes it further down the screen. -->
+      <Portrait
+        tone="pearl"
+        src={photo('mila')}
+        sizes="192px"
+        ratio="square"
+        crop="tight"
+        class="hidden w-48 md:block"
+      />
     </div>
   </Section>
 
-  <!-- ================================================== The booking flow -->
-  <Section space="normal">
-    <form id="booking-form" class="space-y-20" novalidate>
-      <!-- Step 1 — package -->
-      <fieldset>
-        <legend class="font-display text-2xl text-ink md:text-3xl" data-reveal="rise">
-          <span class="text-forest/40">1.</span> Your package
-        </legend>
-
-        <div class="mt-10 grid gap-4 md:grid-cols-3">
-          {
-            PACKAGES.map((pkg) => (
-              <label
-                data-reveal="rise"
-                class="relative block cursor-pointer rounded-2xl border border-line p-7 transition-colors has-[:checked]:border-forest has-[:checked]:bg-forest/[0.03] hover:border-forest/40"
-              >
-                <input
-                  type="radio"
-                  name="package"
-                  value={pkg.name}
-                  class="peer sr-only"
-                  required
-                />
-
-                {pkg.featured && (
-                  <span class="absolute -top-3 left-7 rounded-full bg-lime px-3 py-1 font-body text-[0.65rem] font-medium uppercase tracking-[0.14em] text-forest-deep">
-                    Most chosen
-                  </span>
-                )}
-
-                <div class="flex items-baseline justify-between gap-3 pr-9">
-                  <span class="font-display text-xl text-ink">{pkg.name}</span>
-                  <span class="font-display text-xl text-forest">{pkg.price}</span>
-                </div>
-
-                <ul class="mt-5 space-y-1.5">
-                  {pkg.highlights.slice(0, 3).map((line) => (
-                    <li class="font-body text-sm text-muted">{line}</li>
-                  ))}
-                </ul>
-
-                <span
-                  class="absolute right-6 top-6 h-4 w-4 rounded-full border border-forest/30 peer-checked:border-[5px] peer-checked:border-forest"
-                  aria-hidden="true"
-                />
-              </label>
-            ))
-          }
-        </div>
-      </fieldset>
-
-      <!-- Step 2 — date -->
-      <fieldset>
-        <legend class="font-display text-2xl text-ink md:text-3xl" data-reveal="rise">
-          <span class="text-forest/40">2.</span> Your date
-        </legend>
-
-        <div class="mt-10 max-w-[34rem] rounded-2xl border border-line p-6 md:p-8" data-reveal="rise">
-          <div class="flex items-center justify-between">
-            <button
-              type="button"
-              id="cal-prev"
-              class="flex h-9 w-9 items-center justify-center rounded-full border border-forest/20 text-forest btn btn-outline disabled:opacity-30"
-            >
-              <span class="sr-only">Previous month</span>
-              <svg width="8" height="12" viewBox="0 0 8 12" fill="none" aria-hidden="true">
-                <path d="M7 1 2 6l5 5" stroke="currentColor" stroke-width="1.5"></path>
-              </svg>
-            </button>
-
-            <p id="cal-label" class="font-display text-xl text-ink" aria-live="polite"></p>
-
-            <button
-              type="button"
-              id="cal-next"
-              class="flex h-9 w-9 items-center justify-center rounded-full border border-forest/20 text-forest btn btn-outline"
-            >
-              <span class="sr-only">Next month</span>
-              <svg width="8" height="12" viewBox="0 0 8 12" fill="none" aria-hidden="true">
-                <path d="m1 1 5 5-5 5" stroke="currentColor" stroke-width="1.5"></path>
-              </svg>
-            </button>
-          </div>
-
-          <div
-            class="mt-7 grid grid-cols-7 gap-1 text-center font-body text-[0.7rem] uppercase tracking-wider text-muted"
-            aria-hidden="true"
-          >
-            <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span
-            ><span>Su</span>
-          </div>
-
-          <div id="cal-grid" class="mt-2 grid grid-cols-7 gap-1" role="group" aria-label="Available dates"></div>
-
-          <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-body text-xs text-muted">
-            <span class="flex items-center gap-2">
-              <span class="h-2.5 w-2.5 rounded-full bg-forest" aria-hidden="true"></span>Selected
-            </span>
-            <span class="flex items-center gap-2">
-              <span class="h-2.5 w-2.5 rounded-full border border-forest/30" aria-hidden="true"
-              ></span>Available
-            </span>
-            <span class="flex items-center gap-2">
-              <span class="h-2.5 w-2.5 rounded-full bg-line" aria-hidden="true"></span>Not available
-            </span>
-          </div>
-        </div>
-
-        <p class="mt-4 font-body text-sm text-ink/45">
-          [Availability is placeholder data — connect to the real calendar. Time slots TO BE
-          SUPPLIED: fixed slots or free times?]
-        </p>
-      </fieldset>
-
-      <!-- Step 3 — details -->
-      <fieldset>
-        <legend class="font-display text-2xl text-ink md:text-3xl" data-reveal="rise">
-          <span class="text-forest/40">3.</span> Your details
-        </legend>
-
-        <div class="mt-10 grid max-w-[46rem] gap-6 md:grid-cols-2" data-reveal="rise">
-          <div class="md:col-span-2">
-            <label for="name" class="block font-body text-sm text-ink">Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              autocomplete="name"
-              required
-              class="mt-2 w-full rounded-lg border border-line bg-transparent px-4 py-3 font-body text-ink placeholder:text-muted/60 focus:border-forest focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label for="email" class="block font-body text-sm text-ink">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              autocomplete="email"
-              required
-              class="mt-2 w-full rounded-lg border border-line bg-transparent px-4 py-3 font-body text-ink focus:border-forest focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label for="phone" class="block font-body text-sm text-ink">Phone</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              autocomplete="tel"
-              class="mt-2 w-full rounded-lg border border-line bg-transparent px-4 py-3 font-body text-ink focus:border-forest focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label for="pet-type" class="block font-body text-sm text-ink">Type of pet</label>
-            <select
-              id="pet-type"
-              name="pet-type"
-              class="mt-2 w-full rounded-lg border border-line bg-transparent px-4 py-3 font-body text-ink focus:border-forest focus:outline-none"
-            >
-              <option>Dog</option>
-              <option>Cat</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="pet-count" class="block font-body text-sm text-ink">Number of pets</label>
-            <input
-              type="number"
-              id="pet-count"
-              name="pet-count"
-              min="1"
-              max="6"
-              value="1"
-              class="mt-2 w-full rounded-lg border border-line bg-transparent px-4 py-3 font-body text-ink focus:border-forest focus:outline-none"
-            />
-          </div>
-
-          <div class="md:col-span-2">
-            <label for="pet-other" class="block font-body text-sm text-ink">
-              If other — which animal?
-            </label>
-            <input
-              type="text"
-              id="pet-other"
-              name="pet-other"
-              class="mt-2 w-full rounded-lg border border-line bg-transparent px-4 py-3 font-body text-ink focus:border-forest focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label for="date" class="block font-body text-sm text-ink">Preferred date</label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              required
-              class="mt-2 w-full rounded-lg border border-line bg-transparent px-4 py-3 font-body text-ink focus:border-forest focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label for="package-field" class="block font-body text-sm text-ink">Chosen package</label>
-            <select
-              id="package-field"
-              name="package-field"
-              class="mt-2 w-full rounded-lg border border-line bg-transparent px-4 py-3 font-body text-ink focus:border-forest focus:outline-none"
-            >
-              <option value="">Choose a package</option>
-              {PACKAGES.map((pkg) => <option value={pkg.name}>{pkg.name} — {pkg.price}</option>)}
-            </select>
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="flex cursor-pointer items-start gap-3">
-              <input
-                type="checkbox"
-                name="wall-art"
-                class="mt-1 h-4 w-4 shrink-0 rounded border-line accent-[#1d3b2e]"
-              />
-              <span class="font-body text-[0.95rem] text-muted">
-                I'd like to see wall art options after the session
-              </span>
-            </label>
-          </div>
-
-          <div class="md:col-span-2">
-            <label for="message" class="block font-body text-sm text-ink">
-              Anything we should know? Nervous animal, special wish, question — write it here.
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              rows="5"
-              class="mt-2 w-full rounded-lg border border-line bg-transparent px-4 py-3 font-body text-ink focus:border-forest focus:outline-none"
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="mt-10" data-reveal="rise">
-          <button
-            type="submit"
-            class="rounded-full bg-forest px-9 py-4 font-body font-medium text-cream btn btn-solid"
-          >
-            Confirm booking request
-          </button>
-          <p class="mt-4 max-w-[34rem] font-body text-sm text-muted">
-            No payment due online. We confirm your date personally within one working day.
-          </p>
-          <p class="mt-2 font-body text-sm text-ink/45">
-            [Adjust to the real policy. If the calendar books bindingly, change the button to
-            "Confirm booking" and add the deposit/payment flow.]
-          </p>
-        </div>
-      </fieldset>
-    </form>
-
-    <!-- Confirmation state -->
+  <!-- ================================================== The real calendar -->
+  <Section space="tight">
     <div
-      id="booking-confirmation"
-      hidden
-      class="rounded-3xl border border-forest/25 bg-forest/[0.03] px-8 py-16 text-center md:px-16"
-      tabindex="-1"
+      class="overflow-hidden rounded-2xl border border-line bg-cream"
+      data-reveal="rise"
     >
-      <h2 class="text-section leading-[1.1] text-ink" data-reveal="line">
-        Thank you — your request is in.
-      </h2>
-      <p class="mx-auto mt-6 max-w-[36rem] font-body text-lg leading-relaxed text-muted">
-        You'll hear from us within one working day to confirm your date. The preparation guide
-        follows with the confirmation.
-      </p>
+      <div
+        class="calendly-inline-widget h-[1150px] w-full sm:h-[1050px] md:h-[760px]"
+        data-url={calendlyEmbed}
+      >
+      </div>
+    </div>
+
+    <p class="mt-5 font-body text-sm text-muted">
+      Calendar not loading?
+      <a
+        href={BOOKING_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-forest underline underline-offset-4"
+      >Open the booking page directly</a>.
+    </p>
+  </Section>
+
+  <!-- ==================================================== What happens next -->
+  <Section space="normal">
+    <div class="rounded-2xl border border-line px-6 py-10 md:px-12 md:py-14">
+      <h2 class="font-display text-sub text-ink" data-reveal="line">After you book.</h2>
+      <ol class="mt-8 grid gap-8 md:mt-10 md:grid-cols-3 md:gap-10">
+        <li data-reveal="rise">
+          <span class="block font-display text-[2rem] leading-none text-forest/25">01</span>
+          <p class="mt-4 font-body text-[0.95rem] leading-relaxed text-muted">
+            You receive a confirmation and a short preparation guide — what to bring, and what not
+            to worry about.
+          </p>
+        </li>
+        <li data-reveal="rise">
+          <span class="block font-display text-[2rem] leading-none text-forest/25">02</span>
+          <p class="mt-4 font-body text-[0.95rem] leading-relaxed text-muted">
+            We agree the package and the backdrops beforehand, by mail or phone. Nothing has to be
+            decided at the moment of booking.
+          </p>
+        </li>
+        <li data-reveal="rise">
+          <span class="block font-display text-[2rem] leading-none text-forest/25">03</span>
+          <p class="mt-4 font-body text-[0.95rem] leading-relaxed text-muted">
+            You arrive without rush. The first minutes belong to your animal.
+          </p>
+        </li>
+      </ol>
       <p class="mt-8 font-body text-sm text-ink/45">
-        [Front-end only — the form is not yet connected to an inbox or booking system.]
+        [Payment, deposit and rescheduling policy TO BE SUPPLIED — the copy above assumes no online
+        payment.]
       </p>
     </div>
+  </Section>
+
+  <!-- ====================================================== Questions first -->
+  <Section space="normal">
+    <div class="mx-auto max-w-[44rem] text-center">
+      <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">Questions first?</h2>
+      <p
+        class="mt-6 font-body text-[1.0625rem] leading-relaxed text-muted md:text-lg"
+        data-reveal="rise"
+      >
+        A nervous animal, an unusual pet, a session at your home, a present for someone else —
+        reach us however suits you. We answer personally, usually the same day.
+      </p>
+    </div>
+
+    <ContactCards class="mt-12 md:mt-16" />
   </Section>
 
   <!-- ======================================================= The studio -->
   <Section space="normal">
-    <div class="grid gap-12 border-t border-line pt-16 md:grid-cols-2 md:gap-16">
+    <div class="grid gap-10 border-t border-line pt-14 md:grid-cols-2 md:gap-16 md:pt-16">
       <div>
         <h2 class="text-section text-ink" data-reveal="line">The studio.</h2>
 
-        <address class="mt-8 space-y-5 font-body not-italic" data-reveal="rise">
-          <p class="text-lg text-muted">{STUDIO.address}</p>
+        <address class="mt-8 space-y-6 font-body not-italic" data-reveal="rise">
+          <a
+            href={STUDIO.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group block text-lg leading-relaxed text-ink transition-colors hover:text-forest"
+          >
+            <span class="block">{STUDIO.name}</span>
+            <span class="block">{STUDIO.street}</span>
+            <span class="block">{STUDIO.postcode} {STUDIO.city}</span>
+            <span class="block">{STUDIO.country}</span>
+            <span
+              class="mt-2 inline-flex items-center gap-2 font-body text-sm text-forest underline-offset-4 group-hover:underline"
+            >
+              Open in Google Maps
+              <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+            </span>
+          </a>
 
           <p class="text-muted">
             <span class="block text-sm text-ink">Parking and accessibility</span>
             {STUDIO.parking}
           </p>
 
-          <p class="flex flex-col gap-1">
-            <a href={`mailto:${STUDIO.email}`} class="text-forest underline-offset-4 hover:underline">
-              {STUDIO.email}
-            </a>
-            <a href={`tel:${STUDIO.phone}`} class="text-forest underline-offset-4 hover:underline">
-              {STUDIO.phone}
-            </a>
+          <!-- Phone and mail are three cards up; repeating them here would
+               only make the page look like it has six ways in, not three. -->
+          <p>
             <a href={STUDIO.instagramUrl} class="text-forest underline-offset-4 hover:underline">
               Instagram {STUDIO.instagram}
             </a>
           </p>
         </address>
+
+        <div class="mt-10" data-reveal="rise">
+          <BookButton block />
+        </div>
       </div>
 
-      <MapEmbed class="h-72 rounded-xl md:h-full md:min-h-[20rem]" />
+      <MapEmbed class="h-64 rounded-xl md:h-full md:min-h-[22rem]" link />
     </div>
   </Section>
 </Layout>
 
-<script>
-  /* ---------------------------------------------------------------
-     Availability calendar.
-
-     Placeholder rules until the real calendar is connected:
-     past dates and Sundays/Mondays are closed; a deterministic
-     pattern marks a few other days as taken.
-  --------------------------------------------------------------- */
-  const grid = document.getElementById('cal-grid');
-  const label = document.getElementById('cal-label');
-  const prev = document.getElementById('cal-prev') as HTMLButtonElement | null;
-  const next = document.getElementById('cal-next');
-  const dateField = document.getElementById('date') as HTMLInputElement | null;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  let view = new Date(today.getFullYear(), today.getMonth(), 1);
-  let selected: string | null = null;
-
-  const iso = (d: Date) =>
-    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
-  const isClosed = (d: Date) => {
-    const day = d.getDay();
-    if (day === 0 || day === 1) return true; // studio closed
-    if (d < today) return true;
-    return (d.getDate() * 7 + d.getMonth()) % 5 === 0; // already booked
-  };
-
-  function render() {
-    if (!grid || !label) return;
-
-    label.textContent = view.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-
-    // Disable "previous" once we are on the current month.
-    if (prev) {
-      prev.disabled =
-        view.getFullYear() === today.getFullYear() && view.getMonth() === today.getMonth();
-    }
-
-    grid.innerHTML = '';
-
-    // Monday-first offset for the leading blanks.
-    const first = new Date(view.getFullYear(), view.getMonth(), 1);
-    const offset = (first.getDay() + 6) % 7;
-    const days = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
-
-    for (let i = 0; i < offset; i++) {
-      grid.appendChild(document.createElement('span'));
-    }
-
-    for (let day = 1; day <= days; day++) {
-      const date = new Date(view.getFullYear(), view.getMonth(), day);
-      const value = iso(date);
-      const closed = isClosed(date);
-
-      const cell = document.createElement('button');
-      cell.type = 'button';
-      cell.textContent = String(day);
-      cell.dataset.date = value;
-      cell.disabled = closed;
-      cell.setAttribute('aria-pressed', String(selected === value));
-      cell.setAttribute(
-        'aria-label',
-        date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
-      );
-
-      cell.className = closed
-        ? 'aspect-square rounded-lg font-body text-sm text-muted/40 cursor-not-allowed'
-        : selected === value
-          ? 'aspect-square rounded-lg bg-forest font-body text-sm text-cream'
-          : 'aspect-square rounded-lg border border-forest/15 font-body text-sm text-ink btn btn-outline btn-flat';
-
-      if (!closed) {
-        cell.addEventListener('click', () => {
-          selected = value;
-          if (dateField) dateField.value = value;
-          render();
-        });
-      }
-
-      grid.appendChild(cell);
-    }
-  }
-
-  prev?.addEventListener('click', () => {
-    view = new Date(view.getFullYear(), view.getMonth() - 1, 1);
-    render();
-  });
-
-  next?.addEventListener('click', () => {
-    view = new Date(view.getFullYear(), view.getMonth() + 1, 1);
-    render();
-  });
-
-  render();
-
-  /* --- Step 1 selection flows into the step 3 field ------------- */
-  for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="package"]')) {
-    radio.addEventListener('change', () => {
-      const field = document.getElementById('package-field') as HTMLSelectElement | null;
-      if (field) field.value = radio.value;
-    });
-  }
-
-  /* --- Submit ---------------------------------------------------
-     Front-end only. Wire this to an inbox, a booking system or a
-     form endpoint before launch.
-  --------------------------------------------------------------- */
-  const form = document.getElementById('booking-form') as HTMLFormElement | null;
-  const confirmation = document.getElementById('booking-confirmation');
-
-  form?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
-
-    form.hidden = true;
-    if (confirmation) {
-      confirmation.hidden = false;
-      confirmation.focus();
-      confirmation.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  });
-</script>
+<!-- Calendly's own widget script. Deferred, and the page still works without it. -->
+<script is:inline async src="https://assets.calendly.com/assets/external/widget.js"></script>

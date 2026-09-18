@@ -1,6 +1,8 @@
 ---
 import Portrait from './Portrait.astro';
-import { CTA, type BackdropKey } from '../data/site';
+import BookButton from './BookButton.astro';
+import { photo } from '../data/photos';
+import { type BackdropKey } from '../data/site';
 
 /**
  * The closing block. A portrait with direct eye contact sits beside the
@@ -10,33 +12,43 @@ interface Props {
   headline: string;
   body?: string;
   tone?: BackdropKey;
+  animal?: 'dog' | 'cat' | 'rabbit' | 'bird' | 'guineapig';
+  /** Slot name in src/assets/portraits. Every page closes on a different face. */
+  photo?: string;
 }
 
 const {
   headline,
-  body = 'Choose a package, pick a date — the rest happens calmly, in the studio.',
-  tone = 'sage',
+  body = 'Pick a date in the calendar — the rest happens calmly, in the studio.',
+  tone = 'pearl',
+  animal = 'dog',
+  photo: photoSlot,
 } = Astro.props;
 ---
 
 <section class="border-t border-line">
   <div
-    class="mx-auto grid max-w-[75rem] items-center gap-12 px-6 py-20 md:grid-cols-2 md:gap-20 md:px-10 md:py-32"
+    class="mx-auto grid max-w-[75rem] items-center gap-12 px-6 py-16 md:grid-cols-2 md:gap-20 md:px-10 md:py-32"
   >
-    <Portrait tone={tone} animal="dog" ratio="portrait" crop="tight" class="max-w-md" />
+    <Portrait
+      tone={tone}
+      animal={animal}
+      src={photo(photoSlot)}
+      sizes="(min-width: 768px) 448px, 100vw"
+      ratio="portrait"
+      mobileRatio="square"
+      crop="tight"
+      class="max-w-md"
+    />
 
     <div>
       <h2 class="text-close leading-[1.05] text-ink" data-reveal="line">{headline}</h2>
       <p class="mt-6 max-w-[34rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
         {body}
       </p>
-      <a
-        href={CTA.book.href}
-        class="mt-9 inline-flex rounded-full bg-forest px-9 py-4 font-body font-medium text-cream btn btn-solid"
-        data-reveal="rise"
-      >
-        {CTA.book.label}
-      </a>
+      <div class="mt-9" data-reveal="rise">
+        <BookButton block />
+      </div>
     </div>
   </div>
 </section>

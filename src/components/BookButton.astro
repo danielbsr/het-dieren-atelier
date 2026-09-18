@@ -1,0 +1,55 @@
+---
+import { CTA } from '../data/site';
+
+/**
+ * The booking button. The only thing on the site that links to Calendly.
+ *
+ * It appears after every section that can end in a decision, so nobody
+ * ever has to scroll back up to find it. One label, one destination,
+ * one look — repetition is what makes it read as the obvious next step
+ * rather than as six different offers.
+ *
+ * Booking lives on someone else's domain, so it opens in a new tab and
+ * says so to screen readers.
+ */
+interface Props {
+  variant?: 'solid' | 'outline';
+  size?: 'md' | 'lg';
+  /** Full width below `sm`. A half-width CTA on a phone is a missed tap. */
+  block?: boolean;
+  label?: string;
+  class?: string;
+}
+
+const {
+  variant = 'solid',
+  size = 'lg',
+  block = false,
+  label = CTA.book.label,
+  class: className = '',
+} = Astro.props;
+
+const variants = {
+  solid: 'btn btn-solid bg-forest text-cream',
+  outline: 'btn btn-outline border border-forest/25 text-forest',
+};
+
+const sizes = {
+  md: 'px-7 py-3.5 text-[0.95rem]',
+  lg: 'px-9 py-4 text-base',
+};
+
+const width = block
+  ? 'flex w-full sm:inline-flex sm:w-auto'
+  : 'inline-flex';
+---
+
+<a
+  href={CTA.book.href}
+  target="_blank"
+  rel="noopener noreferrer"
+  class={`${width} items-center justify-center rounded-full text-center font-body font-medium ${variants[variant]} ${sizes[size]} ${className}`}
+>
+  {label}
+  <span class="sr-only"> (opens the booking calendar in a new tab)</span>
+</a>

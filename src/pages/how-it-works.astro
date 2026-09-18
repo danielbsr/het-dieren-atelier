@@ -5,6 +5,7 @@ import Section from '../components/Section.astro';
 import Scene from '../components/Scene.astro';
 import Faq from '../components/Faq.astro';
 import ClosingCta from '../components/ClosingCta.astro';
+import BookButton from '../components/BookButton.astro';
 import { FAQ_FULL, STEPS } from '../data/site';
 
 /** The shot brief that belongs with each step. */
@@ -28,10 +29,10 @@ const briefs = [
 
   <!-- The four steps, expanded -->
   <Section space="normal">
-    <div class="space-y-20 md:space-y-32">
+    <div class="space-y-16 md:space-y-32">
       {
         STEPS.map((step, i) => (
-          <article class="grid items-center gap-8 md:grid-cols-2 md:gap-16 lg:gap-20">
+          <article class="grid items-center gap-7 md:grid-cols-2 md:gap-16 lg:gap-20">
             <Scene brief={briefs[i]} class={i % 2 === 1 ? 'md:order-2' : ''} />
 
             <div>
@@ -52,6 +53,10 @@ const briefs = [
         ))
       }
     </div>
+
+    <div class="mt-16 text-center md:mt-24" data-reveal="rise">
+      <BookButton block class="mx-auto max-w-sm" />
+    </div>
   </Section>
 
   <!-- For nervous animals -->
@@ -68,6 +73,9 @@ const briefs = [
           animal's height. What we need from you: their favourite treat, and no worrying. Your calm
           is contagious.
         </p>
+        <div class="mt-10 flex justify-center" data-reveal="rise">
+          <BookButton block size="md" class="max-w-sm" />
+        </div>
       </div>
     </div>
   </Section>
@@ -82,7 +90,8 @@ const briefs = [
 
   <ClosingCta
     headline="Ready to plan it?"
-    body="Choose a package, pick a date — the rest happens calmly, in the studio."
-    tone="sage"
+    body="Pick a date in the calendar — the rest happens calmly, in the studio or at your home."
+    tone="charcoal"
+    photo="duo-dogs"
   />
 </Layout>

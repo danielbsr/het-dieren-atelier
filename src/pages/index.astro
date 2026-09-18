@@ -7,15 +7,15 @@ import Faq from '../components/Faq.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import RoomMockup from '../components/RoomMockup.astro';
 import MaterialTile from '../components/MaterialTile.astro';
+import Reviews from '../components/Reviews.astro';
+import BookButton from '../components/BookButton.astro';
+import { photo } from '../data/photos';
 import {
   BACKDROPS,
   COLOUR_STRIP,
   CTA,
   FAQ_SHORT,
   HOME_SELECTION,
-  HAS_REVIEWS,
-  REVIEWS,
-  GOOGLE_REVIEWS,
   PACKAGE_NOTE,
   STEPS,
   WALL_ART_TILES,
@@ -24,6 +24,10 @@ import {
 /**
  * Curated wall: two large portraits, four smaller, uneven — so the grid
  * reads as a selection rather than a database dump.
+ *
+ * On a phone the unevenness is dropped. Two columns of mismatched
+ * heights read as a broken grid, not as curation, so every tile becomes
+ * the same 4:5 and the variety comes from the animals instead.
  */
 const layout = [
   { span: 'md:col-span-5', ratio: 'tall' as const, crop: 'full' as const },
@@ -37,22 +41,24 @@ const layout = [
 
 <Layout
   title="Het Dieren Atelier — Studio portraits of dogs, cats & pets"
-  description="Premium studio portraits of your dog, cat or other pet. Calm sessions, hand-picked backdrops, finished as wall art. Book your session."
+  description="Premium studio portraits of your dog, cat, bird or rabbit — in the studio or at your home. Calm sessions, hand-picked backdrops, finished as wall art."
 >
   <!-- ============================================================ 2.1 Hero -->
   <section class="border-b border-line">
     <div
-      class="mx-auto grid max-w-[75rem] items-center gap-10 px-6 pb-16 pt-10 md:min-h-[82vh] md:grid-cols-2 md:gap-16 md:px-10 md:pb-24 md:pt-16 lg:gap-24"
+      class="mx-auto grid max-w-[75rem] items-center gap-8 px-6 pb-14 pt-8 md:min-h-[82vh] md:grid-cols-2 md:gap-16 md:px-10 md:pb-24 md:pt-16 lg:gap-24"
     >
       <div class="order-2 md:order-1">
-        <p class="eyebrow" data-reveal="rise">Studio portraits of dogs, cats &amp; other pets</p>
+        <p class="eyebrow" data-reveal="rise">
+          Studio portraits of dogs, cats, birds &amp; rabbits
+        </p>
 
-        <h1 class="mt-7 text-hero leading-[0.98] text-ink" data-reveal="line">
+        <h1 class="mt-5 text-hero leading-[1] text-ink md:mt-7 md:leading-[0.98]" data-reveal="line">
           Your pet, as a work of art.
         </h1>
 
         <p
-          class="mt-8 max-w-[34rem] font-body text-lg leading-relaxed text-muted md:text-xl"
+          class="mt-6 max-w-[34rem] font-body text-[1.0625rem] leading-relaxed text-muted md:mt-8 md:text-xl"
           data-reveal="rise"
         >
           Professional studio portraits, made calmly and with time — and finished as a piece you
@@ -60,18 +66,13 @@ const layout = [
         </p>
 
         <div
-          class="mt-11 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8"
+          class="mt-8 flex flex-col items-stretch gap-5 sm:flex-row sm:items-center sm:gap-8 md:mt-11"
           data-reveal="rise"
         >
-          <a
-            href={CTA.book.href}
-            class="inline-flex rounded-full bg-forest px-9 py-4 font-body font-medium text-cream btn btn-solid"
-          >
-            {CTA.book.label}
-          </a>
+          <BookButton block />
           <a
             href={CTA.portfolio.href}
-            class="group inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+            class="group inline-flex items-center justify-center gap-2 font-body text-forest underline-offset-4 hover:underline sm:justify-start"
           >
             {CTA.portfolio.label}
             <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
@@ -79,13 +80,22 @@ const layout = [
         </div>
       </div>
 
-      <!-- One still, confident image. This sets the quality bar for the site. -->
+      <!--
+        One still, confident image. It sets the quality bar for the site —
+        but on a phone a 3:4.4 crop is a whole screen of picture before a
+        single word, so the hero squares off there and the headline, the
+        promise and the button all land on the first screen.
+      -->
       <div class="order-1 md:order-2">
         <Portrait
           tone="sage"
           animal="dog"
+          src={photo('hero')}
           ratio="tall"
+          mobileRatio="square"
           crop="tight"
+          priority
+          sizes="(min-width: 768px) 480px, 100vw"
           alt="Studio portrait of a dog on a sage backdrop"
           class="md:ml-auto md:max-w-[30rem]"
         />
@@ -100,10 +110,10 @@ const layout = [
     </h2>
     <div class="prose-calm mt-8" data-reveal="rise">
       <p>
-        Het Dieren Atelier is a photography studio for animals. Dogs, cats, rabbits — every pet with
-        a face and a personality. We work slowly, with breaks, treats and time to settle in. The
-        result is not a quick photo. It is a portrait: your animal's character, held still for once,
-        printed and framed for your wall.
+        Het Dieren Atelier is a photography studio for animals. Dogs, cats, birds, rabbits — every
+        pet with a face and a personality. We work slowly, with breaks, treats and time to settle
+        in. The result is not a quick photo. It is a portrait: your animal's character, held still
+        for once, printed and framed for your wall.
       </p>
     </div>
     <a
@@ -116,34 +126,57 @@ const layout = [
     </a>
   </Section>
 
+  <!-- One frame, four species — the claim above, shown rather than stated. -->
+  <Section space="tight">
+    <Portrait
+      tone="charcoal"
+      src={photo('family')}
+      sizes="(min-width: 1200px) 1120px, 100vw"
+      ratio="wide"
+      mobileRatio="square"
+      hover
+      alt="Studio portrait of three dogs and a guinea pig together on a charcoal backdrop"
+    />
+  </Section>
+
   <!-- =============================================== 2.3 Portfolio selection -->
   <Section space="normal">
     <h2 class="text-section text-ink" data-reveal="line">Recent work.</h2>
+    <p class="mt-4 max-w-[36rem] font-body text-muted md:text-lg" data-reveal="rise">
+      Dogs, cats, birds and rabbits — the animals are the whole point.
+    </p>
 
-    <div class="mt-12 grid grid-cols-2 gap-5 md:mt-16 md:grid-cols-12 md:gap-6">
+    <div class="mt-10 grid grid-cols-2 gap-4 md:mt-16 md:grid-cols-12 md:gap-6">
       {
         HOME_SELECTION.map((item, i) => (
           <Portrait
             tone={item.tone}
             name={item.name}
             animal={item.animal}
-            src={item.src}
+            src={item.src ?? photo(item.photo)}
+            sizes="(min-width: 1200px) 460px, (min-width: 768px) 40vw, 50vw"
             ratio={layout[i].ratio}
+            mobileRatio="portrait"
             crop={layout[i].crop}
             caption
+            hover
             class={layout[i].span}
           />
         ))
       }
     </div>
 
-    <div class="mt-14 text-center" data-reveal="rise">
+    <div
+      class="mt-12 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6 md:mt-14"
+      data-reveal="rise"
+    >
       <a
         href={CTA.portfolio.href}
-        class="inline-flex rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest btn btn-outline"
+        class="btn btn-outline inline-flex items-center justify-center rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest"
       >
         {CTA.portfolio.label}
       </a>
+      <BookButton block />
     </div>
   </Section>
 
@@ -153,36 +186,45 @@ const layout = [
       <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
         Every session starts with a colour.
       </h2>
-      <p class="mt-7 font-body text-lg leading-relaxed text-muted" data-reveal="rise">
-        Each portrait is shot on a hand-picked backdrop — from quiet sage to deep red. Together we
-        choose the tones that fit your animal's coat, eyes and character. One backdrop is included
-        in every session; larger packages include up to three.
+      <p
+        class="mt-6 font-body text-[1.0625rem] leading-relaxed text-muted md:mt-7 md:text-lg"
+        data-reveal="rise"
+      >
+        Each portrait is shot on a hand-picked backdrop — from soft pearl to deep charcoal.
+        Together we choose the tones that fit your animal's coat, eyes and character. One backdrop
+        is included in every session; larger packages include up to three.
       </p>
     </div>
 
     <!--
       The swatch chart. Identical crop and scale across all seven —
-      the uniformity is what turns "loud" into "curated".
+      the uniformity is what turns "loud" into "curated". The subjects
+      rotate through four species, so even the colour section says the
+      studio photographs more than dogs.
     -->
-    <div class="-mx-6 mt-14 overflow-x-auto px-6 pb-2 md:mx-0 md:mt-16 md:overflow-visible md:px-0">
+    <div class="-mx-6 mt-12 overflow-x-auto px-6 pb-2 md:mx-0 md:mt-16 md:overflow-visible md:px-0">
       <ul class="flex min-w-max gap-3 md:grid md:min-w-0 md:grid-cols-7 md:gap-4">
         {
-          COLOUR_STRIP.map((key, i) => (
-            <li class="w-36 md:w-auto">
+          COLOUR_STRIP.map(({ tone, photo: slot }) => (
+            <li class="w-32 sm:w-36 md:w-auto">
               <Portrait
-                tone={key}
-                animal={i % 3 === 1 ? 'cat' : 'dog'}
+                tone={tone}
+                src={photo(slot)}
+                sizes="(min-width: 768px) 150px, 144px"
                 ratio="portrait"
                 crop="tight"
-                alt={`Studio portrait on a ${BACKDROPS[key].name.toLowerCase()} backdrop`}
+                hover
+                alt={`Studio portrait on a ${BACKDROPS[tone].name.toLowerCase()} backdrop`}
               />
               <div class="mt-3 flex items-center gap-2">
                 <span
                   class="h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-inset ring-black/10"
-                  style={`background-color:${BACKDROPS[key].hex}`}
+                  style={`background-color:${BACKDROPS[tone].hex}`}
                   aria-hidden="true"
                 />
-                <span class="font-body text-sm text-muted">{BACKDROPS[key].name}</span>
+                <span class="font-body text-[0.8rem] text-muted md:text-sm">
+                  {BACKDROPS[tone].name}
+                </span>
               </div>
             </li>
           ))
@@ -208,34 +250,32 @@ const layout = [
   <Section space="normal">
     <div class="mx-auto max-w-[40rem] text-center">
       <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
-        Three ways to book.
+        Four ways to book.
       </h2>
+      <p class="mt-5 font-body text-muted md:text-lg" data-reveal="rise">
+        Three sessions in the studio — or we bring the studio to your home.
+      </p>
     </div>
 
-    <PackageCards class="mt-16" />
+    <PackageCards class="mt-12 md:mt-16" cta={false} />
 
     <p
-      class="mx-auto mt-14 max-w-[46rem] text-center font-body text-[1.05rem] leading-relaxed text-muted"
+      class="mx-auto mt-12 max-w-[46rem] text-center font-body text-[1rem] leading-relaxed text-muted md:mt-14 md:text-[1.05rem]"
       data-reveal="rise"
     >
       {PACKAGE_NOTE}
     </p>
 
     <div
-      class="mt-10 flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-8"
+      class="mt-8 flex flex-col items-stretch gap-5 sm:flex-row sm:items-center sm:justify-center sm:gap-8 md:mt-10"
       data-reveal="rise"
     >
+      <BookButton block />
       <a
         href={CTA.packages.href}
-        class="inline-flex rounded-full bg-forest px-9 py-4 font-body font-medium text-cream btn btn-solid"
+        class="group inline-flex items-center justify-center gap-2 font-body text-forest underline-offset-4 hover:underline"
       >
         {CTA.packages.label}
-      </a>
-      <a
-        href={CTA.book.href}
-        class="group inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
-      >
-        {CTA.book.label}
         <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
       </a>
     </div>
@@ -247,14 +287,16 @@ const layout = [
       Calm from the first minute.
     </h2>
 
-    <ol class="mt-14 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:mt-16 md:grid-cols-4">
+    <ol
+      class="mt-10 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:mt-16 md:grid-cols-4"
+    >
       {
         STEPS.map((step) => (
-          <li class="bg-cream p-8 lg:p-9" data-reveal="rise">
-            <span class="block font-display text-[2.75rem] leading-none text-forest/25">
+          <li class="bg-cream p-7 md:p-8 lg:p-9" data-reveal="rise">
+            <span class="block font-display text-[2.5rem] leading-none text-forest/25 md:text-[2.75rem]">
               {step.number}
             </span>
-            <h3 class="mt-6 font-display text-xl text-ink">{step.title}</h3>
+            <h3 class="mt-5 font-display text-xl text-ink md:mt-6">{step.title}</h3>
             <p class="mt-3 font-body text-[0.95rem] leading-relaxed text-muted">{step.short}</p>
           </li>
         ))
@@ -262,7 +304,7 @@ const layout = [
     </ol>
 
     <p
-      class="mx-auto mt-14 max-w-[44rem] text-center font-body text-lg italic leading-relaxed text-ink/80"
+      class="mx-auto mt-12 max-w-[44rem] text-center font-body text-[1.0625rem] italic leading-relaxed text-ink/80 md:mt-14 md:text-lg"
       data-reveal="rise"
     >
       No animal has to perform here. Restless dogs and shy cats are our daily work — the session
@@ -281,101 +323,107 @@ const layout = [
   </Section>
 
   <!-- ======================================================= 2.7 Wall art -->
-  <Section space="normal">
-    <div class="grid items-center gap-12 md:grid-cols-2 md:gap-16 lg:gap-20">
-      <RoomMockup tone="sage" animal="dog" furniture="sofa" />
+  <!--
+    The section that has to carry the whole proposition: this is not a
+    photo shoot, it is a piece for your wall. So it is the most visual
+    block on the page — two rooms, three materials, and the portrait
+    always hanging rather than floating.
+  -->
+  <Section space="loose">
+    <div class="max-w-[46rem]">
+      <p class="eyebrow" data-reveal="rise">Wall art</p>
+      <h2 class="mt-5 text-section leading-[1.08] text-ink" data-reveal="line">
+        A portrait belongs on a wall, not in a phone.
+      </h2>
+      <p
+        class="mt-6 font-body text-[1.0625rem] leading-relaxed text-muted md:mt-7 md:text-lg"
+        data-reveal="rise"
+      >
+        After your session we help you choose the format and the material that fits your home —
+        fine art print, framed, aluminium or acrylic glass. In the studio, with real samples in
+        your hands, at real size. You decide calmly, after seeing your photos.
+      </p>
+    </div>
 
-      <div>
-        <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
-          Made to be printed.
-        </h2>
-        <p class="mt-7 max-w-[34rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
-          A portrait this deliberate should not live in a phone. After your session, we help you
-          choose the format and material that fits your home — from fine art prints to aluminium and
-          acrylic glass. You decide calmly, after seeing your photos.
-        </p>
-        <a
-          data-reveal="rise"
-          href={CTA.wallArt.href}
-          class="mt-9 inline-flex rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest btn btn-outline"
-        >
-          {CTA.wallArt.label}
-        </a>
+    <div class="mt-12 grid gap-5 md:mt-16 md:grid-cols-12 md:gap-8">
+      <RoomMockup
+        tone="caramel"
+        photo="saar"
+        furniture="sofa"
+        room="Living room"
+        class="md:col-span-7"
+      />
+      <RoomMockup
+        tone="charcoal"
+        photo="nova"
+        furniture="console"
+        room="Hallway"
+        class="md:col-span-5 md:mt-16"
+      />
+    </div>
+
+    <!-- Three materials. A scroller on a phone, where a 3-up grid makes
+         each sample too small to read as a surface at all. -->
+    <div class="-mx-6 mt-12 overflow-x-auto px-6 pb-2 md:mx-0 md:mt-20 md:overflow-visible md:px-0">
+      <div class="flex min-w-max gap-4 md:grid md:min-w-0 md:grid-cols-3 md:gap-8">
+        <div class="w-56 sm:w-64 md:w-auto">
+          <MaterialTile
+            material="print"
+            photo="bono"
+            label={WALL_ART_TILES[0].label}
+            from={WALL_ART_TILES[0].from}
+          />
+        </div>
+        <div class="w-56 sm:w-64 md:w-auto">
+          <MaterialTile
+            material="aluminium"
+            photo="roos"
+            label={WALL_ART_TILES[1].label}
+            from={WALL_ART_TILES[1].from}
+          />
+        </div>
+        <div class="w-56 sm:w-64 md:w-auto">
+          <MaterialTile
+            material="acrylic"
+            photo="wolke"
+            label={WALL_ART_TILES[2].label}
+            from={WALL_ART_TILES[2].from}
+          />
+        </div>
       </div>
     </div>
 
-    <div class="mt-16 grid grid-cols-3 gap-5 md:mt-20 md:gap-8">
-      <MaterialTile material="print" label={WALL_ART_TILES[0].label} from={WALL_ART_TILES[0].from} />
-      <MaterialTile
-        material="aluminium"
-        label={WALL_ART_TILES[1].label}
-        from={WALL_ART_TILES[1].from}
-      />
-      <MaterialTile
-        material="acrylic"
-        label={WALL_ART_TILES[2].label}
-        from={WALL_ART_TILES[2].from}
-      />
-    </div>
-
-    <p class="mt-10 font-body text-sm text-muted" data-reveal="rise">
+    <p class="mt-8 font-body text-sm text-muted md:mt-10" data-reveal="rise">
       Signature and Collection packages include a wall art credit of €50 or €100.
     </p>
+
+    <div
+      class="mt-8 flex flex-col items-stretch gap-5 sm:flex-row sm:items-center sm:gap-6"
+      data-reveal="rise"
+    >
+      <a
+        href={CTA.wallArt.href}
+        class="btn btn-outline inline-flex items-center justify-center rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest"
+      >
+        {CTA.wallArt.label}
+      </a>
+      <BookButton block />
+    </div>
   </Section>
 
   <!-- ======================================================== 2.8 Reviews -->
-  {
-    HAS_REVIEWS ? (
-      <Section space="normal">
-        <h2 class="text-section text-ink">What owners say.</h2>
-
-        <div class="mt-14 grid gap-6 md:mt-16 md:grid-cols-3">
-          {REVIEWS.map((review) => (
-            <blockquote class="rounded-2xl border border-line p-9">
-              <p class="font-display text-xl leading-[1.45] text-ink">“{review.quote}”</p>
-              <footer class="mt-7 font-body text-sm text-muted">{review.author}</footer>
-            </blockquote>
-          ))}
-        </div>
-
-        {GOOGLE_REVIEWS && (
-          <a
-            href={GOOGLE_REVIEWS.url}
-            class="group mt-10 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
-          >
-            {GOOGLE_REVIEWS.rating} stars · Read all {GOOGLE_REVIEWS.count} reviews on Google
-            <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </a>
-        )}
-      </Section>
-    ) : (
-      /*
-        Fallback while no real client quotes exist. Invented quotes would
-        break rule 4 of the voice guide and the trust they are meant to build.
-        Set HAS_REVIEWS to true in src/data/site.ts once three quotes are in.
-      */
-      <Section space="normal">
-        <Portrait
-          tone="olive"
-          animal="dog"
-          ratio="banner"
-          crop="tight"
-          alt="Studio portrait of a dog on an olive backdrop"
-        />
-      </Section>
-    )
-  }
+  <Section space="normal">
+    <Reviews />
+  </Section>
 
   <!-- ====================================================== 2.9 Short FAQ -->
   <Section space="normal">
-    <div class="grid gap-12 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
       <div>
         <h2 class="text-section text-ink" data-reveal="line">Good to know.</h2>
         <a
           href={CTA.process.href}
-          class="group mt-8 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+          class="group mt-6 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline lg:mt-8"
           data-reveal="rise"
         >
           All questions answered
@@ -390,7 +438,8 @@ const layout = [
   <!-- =================================================== 2.10 Closing CTA -->
   <ClosingCta
     headline="Your animal. On your wall."
-    body="Choose a package, pick a date — the rest happens calmly, in the studio."
-    tone="terracotta"
+    body="Pick a date in the calendar — the rest happens calmly, in the studio or at your home."
+    tone="charcoal"
+    photo="joep"
   />
 </Layout>

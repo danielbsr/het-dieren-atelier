@@ -6,7 +6,7 @@
  * judging layout. Replaced the moment a real `src` reaches <Portrait />.
  */
 interface Props {
-  animal?: 'dog' | 'cat' | 'rabbit';
+  animal?: 'dog' | 'cat' | 'rabbit' | 'bird' | 'guineapig';
   class?: string;
 }
 
@@ -19,6 +19,13 @@ const paths = {
   cat: 'M100 262 C62 262 45 237 47 205 C49 177 61 158 73 148 C59 138 53 122 53 106 L45 58 L79 82 C92 76 108 76 121 82 L155 58 L147 106 C147 122 141 138 127 148 C139 158 151 177 153 205 C155 237 138 262 100 262 Z',
   rabbit:
     'M100 262 C66 262 50 238 52 208 C54 180 66 162 78 152 C66 144 60 130 60 114 C60 98 68 86 78 80 C70 62 66 40 68 24 C69 14 78 12 84 22 C92 36 96 58 96 74 C98 73 102 73 104 74 C104 58 108 36 116 22 C122 12 131 14 132 24 C134 40 130 62 122 80 C132 86 140 98 140 114 C140 130 134 144 122 152 C134 162 146 180 148 208 C150 238 134 262 100 262 Z',
+  // Small head high in the frame, a beak to one side, the body widening
+  // into a tail — the two details that read "bird" and not "owl-shaped blob".
+  bird:
+    'M100 40 C118 40 132 55 132 73 C132 80 130 87 126 92 L154 99 L125 106 C140 122 151 150 152 182 C153 216 137 246 112 262 L88 262 C63 246 47 216 48 182 C49 150 60 122 75 106 C71 100 68 87 68 73 C68 55 82 40 100 40 Z',
+  // A low, wide loaf with barely any neck: the giveaway proportion.
+  guineapig:
+    'M100 262 C50 262 26 236 28 200 C30 170 46 148 68 136 C60 128 56 116 58 104 C61 90 74 84 85 90 C89 84 94 82 100 82 C106 82 111 84 115 90 C126 84 139 90 142 104 C144 116 140 128 132 136 C154 148 170 170 172 200 C174 236 150 262 100 262 Z',
 };
 
 // Gradient ids must stay unique across the many portraits on a page.

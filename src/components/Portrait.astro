@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import AnimalSilhouette from './AnimalSilhouette.astro';
 import { BACKDROPS, type BackdropKey } from '../data/site';
 
@@ -12,13 +14,34 @@ import { BACKDROPS, type BackdropKey } from '../data/site';
 interface Props {
   tone: BackdropKey;
   name?: string;
-  src?: string;
+  /**
+   * An import from src/assets (usually via `photo()`), which the build
+   * resizes and re-encodes as WebP. A plain string is passed through to
+   * <img> untouched, for anything already sitting in public/.
+   */
+  src?: ImageMetadata | string;
   alt?: string;
-  animal?: 'dog' | 'cat' | 'rabbit';
+  animal?: 'dog' | 'cat' | 'rabbit' | 'bird' | 'guineapig';
   ratio?: 'tall' | 'portrait' | 'square' | 'wide' | 'banner';
+  /**
+   * Ratio below `md`. Phones are one column wide: a 3/4.4 portrait that
+   * reads as confident on a desktop column eats a whole phone screen, so
+   * the tall crops shorten rather than scroll.
+   */
+  mobileRatio?: 'tall' | 'portrait' | 'square' | 'wide' | 'banner';
   /** 'tight' zooms the subject in, as a close face crop would. */
   crop?: 'tight' | 'full';
   caption?: boolean;
+  /** Slow zoom under the cursor. For grids; never for the hero. */
+  hover?: boolean;
+  /**
+   * How wide this slot renders, so the browser can pick the smallest
+   * file that still looks sharp. The default suits the two- and
+   * three-column grids; the hero and the wide blocks override it.
+   */
+  sizes?: string;
+  /** Above the fold: load it immediately instead of lazily. */
+  priority?: boolean;
   class?: string;
   /** Extra attributes (e.g. data-species) land on the <figure>. */
   [key: string]: unknown;
@@ -31,11 +54,22 @@ const {
   alt,
   animal = 'dog',
   ratio = 'portrait',
+  mobileRatio,
   crop = 'full',
   caption = false,
+  hover = false,
+  sizes = '(min-width: 1024px) 480px, (min-width: 768px) 45vw, 50vw',
+  priority = false,
   class: className = '',
   ...rest
 } = Astro.props;
+
+/**
+ * Candidate widths. Nothing on this site renders a photograph wider than
+ * ~640 CSS px, so 1440 is the 2× ceiling for the largest slot; Astro
+ * drops any candidate larger than the source file.
+ */
+const WIDTHS = [320, 480, 640, 960, 1280, 1440];
 
 const backdrop = BACKDROPS[tone];
 
@@ -46,6 +80,17 @@ const ratios = {
   wide: 'aspect-[16/9]',
   banner: 'aspect-[21/8]',
 };
+
+const mdRatios = {
+  tall: 'md:aspect-[3/4.4]',
+  portrait: 'md:aspect-[4/5]',
+  square: 'md:aspect-square',
+  wide: 'md:aspect-[16/9]',
+  banner: 'md:aspect-[21/8]',
+};
+
+// Without a mobile override the single ratio applies at every width.
+const ratioClass = mobileRatio ? `${ratios[mobileRatio]} ${mdRatios[ratio]}` : ratios[ratio];
 
 const toneName = backdrop.name.toLowerCase();
 const article = /^[aeiou]/.test(toneName) ? 'an' : 'a';
@@ -59,25 +104,42 @@ const altText =
 
 <figure class={className} data-reveal="image" {...rest}>
   <div
-    class={`relative overflow-hidden ${ratios[ratio]}`}
+    class={`relative overflow-hidden ${ratioClass} ${hover ? 'zoom-frame' : ''}`}
     style={`background-color:${backdrop.hex}`}
   >
     {
-      src ? (
-        <img src={src} alt={altText} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+      typeof src === 'string' ? (
+        <img
+          src={src}
+          alt={altText}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+          class="zoom-target h-full w-full object-cover"
+        />
+      ) : src ? (
+        <Image
+          src={src}
+          alt={altText}
+          widths={WIDTHS}
+          sizes={sizes}
+          format="webp"
+          quality={78}
+          loading={priority ? 'eager' : 'lazy'}
+          fetchpriority={priority ? 'high' : 'auto'}
+          decoding="async"
+          class="zoom-target h-full w-full object-cover"
+        />
       ) : (
-        <>
+        <div class="zoom-target absolute inset-0">
           {/* Studio key light falling on the backdrop. */}
           <div
             class="absolute inset-0"
             style="background:radial-gradient(ellipse 70% 55% at 50% 32%, rgba(255,255,255,0.22), transparent 68%)"
-          >
-          </div>
+          />
           <div
             class="absolute inset-0"
             style="background:radial-gradient(ellipse 90% 80% at 50% 45%, transparent 45%, rgba(0,0,0,0.28))"
-          >
-          </div>
+          />
           <AnimalSilhouette
             animal={animal}
             class={`absolute left-1/2 w-auto max-w-none -translate-x-1/2 ${
@@ -85,14 +147,14 @@ const altText =
             }`}
           />
           <span class="sr-only">{altText} — placeholder, awaiting photography</span>
-        </>
+        </div>
       )
     }
   </div>
 
   {
     caption && name && (
-      <figcaption class="mt-3 font-body text-sm text-muted">
+      <figcaption class="mt-2.5 font-body text-[0.8rem] text-muted md:mt-3 md:text-sm">
         {name} — {backdrop.name.toLowerCase()}
       </figcaption>
     )

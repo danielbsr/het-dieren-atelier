@@ -214,6 +214,42 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Hover — pointer devices only                                        */
+/*                                                                     */
+/* Two gestures, both borrowed from the buttons: media breathes        */
+/* outward, cards lift. Gated on (hover: hover) so a phone never fires */
+/* them on tap — a card that lifts under a thumb and stays lifted is   */
+/* the cheapest way to make a site feel broken.                        */
+/* ------------------------------------------------------------------ */
+
+@media (hover: hover) and (pointer: fine) {
+  .zoom-target {
+    /* Slower than a button: this is a photograph, not an action. */
+    transition: transform 760ms var(--ease-reveal);
+    will-change: transform;
+  }
+
+  .zoom-frame:hover .zoom-target,
+  a:hover .zoom-frame .zoom-target,
+  a:focus-visible .zoom-frame .zoom-target {
+    transform: scale(1.045);
+  }
+
+  /* Cards: the same 2px-ish lift as a button, over a longer beat. */
+  .card-hover {
+    transition:
+      transform 420ms var(--ease-reveal),
+      box-shadow 420ms var(--ease-reveal),
+      border-color 420ms var(--ease-reveal);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 44px -28px rgb(20 42 32 / 0.5);
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Motion                                                              */
 /*                                                                     */
 /* Reveals are gated twice: on `html.js`, so nothing is ever hidden    */
@@ -324,5 +360,12 @@
   .btn:active {
     transform: none;
     box-shadow: none;
+  }
+
+  /* Same reasoning for the hover gestures: colour may change, nothing moves. */
+  .zoom-frame:hover .zoom-target,
+  a:hover .zoom-frame .zoom-target,
+  .card-hover:hover {
+    transform: none;
   }
 }

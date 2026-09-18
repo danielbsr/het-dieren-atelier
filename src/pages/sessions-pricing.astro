@@ -6,7 +6,9 @@ import PackageCards from '../components/PackageCards.astro';
 import Portrait from '../components/Portrait.astro';
 import Faq from '../components/Faq.astro';
 import ClosingCta from '../components/ClosingCta.astro';
-import { ADD_ONS, COMPARISON, FAQ_BOOKING, PACKAGES, PACKAGE_NOTE } from '../data/site';
+import BookButton from '../components/BookButton.astro';
+import { photo } from '../data/photos';
+import { ADD_ONS, COMPARISON, FAQ_BOOKING, ON_LOCATION, PACKAGES, PACKAGE_NOTE } from '../data/site';
 ---
 
 <Layout
@@ -16,22 +18,31 @@ import { ADD_ONS, COMPARISON, FAQ_BOOKING, PACKAGES, PACKAGE_NOTE } from '../dat
   <PageHeader
     eyebrow="Sessions & pricing"
     title="Sessions & pricing."
-    intro="Three packages, one difference: time and variety. Every session includes the same care, the same studio and the same editing quality."
+    intro="Three studio packages, one difference between them: time and variety. And a fourth option, where the studio comes to your home instead."
   />
 
   <!-- Packages -->
   <Section space="normal">
-    <PackageCards />
-    <p class="mx-auto mt-14 max-w-[46rem] text-center font-body text-[1.05rem] leading-relaxed text-muted" data-reveal="rise">
+    <PackageCards cta={false} />
+    <p
+      class="mx-auto mt-12 max-w-[46rem] text-center font-body text-[1rem] leading-relaxed text-muted md:mt-14 md:text-[1.05rem]"
+      data-reveal="rise"
+    >
       {PACKAGE_NOTE}
     </p>
+    <div class="mt-9 text-center md:mt-10" data-reveal="rise">
+      <BookButton block class="mx-auto max-w-sm" />
+    </div>
   </Section>
 
   <!-- Full comparison -->
   <Section space="normal">
     <h2 class="text-section text-ink" data-reveal="line">Compared, line by line.</h2>
+    <p class="mt-4 font-body text-sm text-muted md:hidden" data-reveal="rise">
+      Swipe the table sideways to see all three.
+    </p>
 
-    <div class="-mx-6 mt-12 overflow-x-auto px-6 md:mx-0 md:mt-16 md:px-0" data-reveal="rise">
+    <div class="-mx-6 mt-8 overflow-x-auto px-6 md:mx-0 md:mt-16 md:px-0" data-reveal="rise">
       <table class="w-full min-w-[42rem] border-collapse text-left">
         <caption class="sr-only">Comparison of the Essential, Signature and Collection packages</caption>
         <thead>
@@ -75,17 +86,44 @@ import { ADD_ONS, COMPARISON, FAQ_BOOKING, PACKAGES, PACKAGE_NOTE } from '../dat
         </tbody>
       </table>
     </div>
+
+    <p class="mt-8 max-w-[46rem] font-body text-[0.95rem] leading-relaxed text-muted" data-reveal="rise">
+      The on-location session sits outside this table: approx. 90 minutes at your home, 10 edited
+      photos, and your own interior — or a portable backdrop — as the setting.
+    </p>
   </Section>
 
   <!-- What "more backdrops" actually buys -->
   <Section space="tight">
-    <div class="grid grid-cols-3 gap-4 md:gap-6">
-      <Portrait tone="sage" animal="dog" ratio="square" crop="tight" />
-      <Portrait tone="terracotta" animal="dog" ratio="square" crop="tight" />
-      <Portrait tone="cobalt" animal="dog" ratio="square" crop="tight" />
+    <div class="grid grid-cols-3 gap-3 md:gap-6">
+      <Portrait
+        tone="sage"
+        src={photo('noor')}
+        sizes="(min-width: 768px) 355px, 33vw"
+        ratio="square"
+        crop="tight"
+        hover
+      />
+      <Portrait
+        tone="caramel"
+        src={photo('knabbel')}
+        sizes="(min-width: 768px) 355px, 33vw"
+        ratio="square"
+        crop="tight"
+        hover
+      />
+      <Portrait
+        tone="midnight"
+        src={photo('storm')}
+        sizes="(min-width: 768px) 355px, 33vw"
+        ratio="square"
+        crop="tight"
+        hover
+      />
     </div>
     <p class="mt-5 font-body text-sm text-muted" data-reveal="rise">
-      One session, three backdrops — the same animal, three different portraits.
+      The backdrop is chosen for the animal — coat, eyes, character. Larger packages give you
+      two or three of them in one session.
     </p>
   </Section>
 
@@ -121,7 +159,18 @@ import { ADD_ONS, COMPARISON, FAQ_BOOKING, PACKAGES, PACKAGE_NOTE } from '../dat
           </div>
         ))
       }
+
+      <div class="grid gap-3 border-t border-line pt-8 md:grid-cols-[10rem_1fr] md:gap-10" data-reveal="rise">
+        <dt class="font-display text-xl text-forest">{ON_LOCATION.name}</dt>
+        <dd class="max-w-[44rem] font-body text-[1.05rem] leading-relaxed text-muted">
+          {ON_LOCATION.guidance}
+        </dd>
+      </div>
     </dl>
+
+    <div class="mt-12 text-center md:mt-14" data-reveal="rise">
+      <BookButton block class="mx-auto max-w-sm" />
+    </div>
   </Section>
 
   <!-- Booking questions -->
@@ -134,7 +183,8 @@ import { ADD_ONS, COMPARISON, FAQ_BOOKING, PACKAGES, PACKAGE_NOTE } from '../dat
 
   <ClosingCta
     headline="Pick your package."
-    body="Choose a package, pick a date — the rest happens calmly, in the studio."
-    tone="olive"
+    body="Pick a date in the calendar — the rest happens calmly, in the studio or at your home."
+    tone="taupe"
+    photo="daan"
   />
 </Layout>

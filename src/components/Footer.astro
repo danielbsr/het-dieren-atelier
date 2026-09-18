@@ -1,25 +1,39 @@
 ---
 import Logo from './Logo.astro';
 import MapEmbed from './MapEmbed.astro';
-import { NAV, CTA, STUDIO, withBase } from '../data/site';
+import BookButton from './BookButton.astro';
+import { NAV, STUDIO, withBase } from '../data/site';
 
-const allPages = [...NAV, { label: 'Contact & Booking', href: withBase('/contact') }];
+/**
+ * The footer's own CTA band is off by default: every page but Contact
+ * ends in a <ClosingCta />, and two identical booking buttons a hundred
+ * pixels apart stop reading as an invitation and start reading as
+ * nagging. Pages without a closing block turn it back on.
+ */
+interface Props {
+  cta?: boolean;
+}
+
+const { cta = false } = Astro.props;
+
+const allPages = NAV;
 ---
 
 <footer class="border-t border-line">
-  <!-- Footer CTA, above the columns on every page -->
-  <div class="mx-auto max-w-[75rem] px-6 py-20 text-center md:px-10 md:py-28">
-    <h2 class="text-close text-ink" data-reveal="line">Ready when you are.</h2>
-    <a
-      href={CTA.book.href}
-      class="mt-8 inline-flex rounded-full bg-forest px-9 py-4 font-body font-medium text-cream btn btn-solid"
-      data-reveal="rise"
-    >
-      {CTA.book.label}
-    </a>
-  </div>
+  {
+    cta && (
+      <div class="mx-auto max-w-[75rem] px-6 py-16 text-center md:px-10 md:py-28">
+        <h2 class="text-close text-ink" data-reveal="line">
+          Ready when you are.
+        </h2>
+        <div class="mt-8 flex justify-center" data-reveal="rise">
+          <BookButton block class="max-w-sm" />
+        </div>
+      </div>
+    )
+  }
 
-  <div class="border-t border-line">
+  <div class={cta ? 'border-t border-line' : ''}>
     <div
       class="mx-auto grid max-w-[75rem] gap-12 px-6 py-16 md:grid-cols-2 md:px-10 lg:grid-cols-4"
     >
@@ -61,7 +75,17 @@ const allPages = [...NAV, { label: 'Contact & Booking', href: withBase('/contact
       <div>
         <h3 class="font-body text-xs font-medium uppercase tracking-[0.16em] text-ink">Contact</h3>
         <address class="mt-5 space-y-3 font-body text-sm not-italic text-muted">
-          <p>{STUDIO.address}</p>
+          <a
+            href={STUDIO.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block transition-colors hover:text-forest"
+          >
+            <span class="block">{STUDIO.name}</span>
+            <span class="block">{STUDIO.street}</span>
+            <span class="block">{STUDIO.postcode} {STUDIO.city}</span>
+            <span class="block">{STUDIO.country}</span>
+          </a>
           <p>
             <a href={`mailto:${STUDIO.email}`} class="transition-colors hover:text-forest">
               {STUDIO.email}
@@ -95,7 +119,7 @@ const allPages = [...NAV, { label: 'Contact & Booking', href: withBase('/contact
 
       <div>
         <h3 class="font-body text-xs font-medium uppercase tracking-[0.16em] text-ink">The studio</h3>
-        <MapEmbed class="mt-5 h-40 rounded-lg" />
+        <MapEmbed class="mt-5 h-40 rounded-lg" link />
       </div>
     </div>
 

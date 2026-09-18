@@ -1,0 +1,106 @@
+---
+import BookButton from './BookButton.astro';
+import { GOOGLE_REVIEWS, REVIEWS, REVIEW_BRIEFS } from '../data/site';
+
+/**
+ * Three quotes, five stars, no widget.
+ *
+ * A review plugin would drop someone else's typography, cards and blue
+ * into the middle of the page — the one place where the site is asking
+ * to be believed. So the quotes are content, styled like everything else.
+ *
+ * While REVIEWS is empty the same three cards render with the brief for
+ * each quote in place of the words: the design is reviewable, and no
+ * invented testimonial can ship by accident.
+ */
+interface Props {
+  /** The booking button belongs under the proof on Home, not everywhere. */
+  cta?: boolean;
+}
+
+const { cta = true } = Astro.props;
+
+const live = REVIEWS.length > 0;
+const cards = live
+  ? REVIEWS.map((review) => ({
+      rating: review.rating,
+      body: review.quote,
+      author: review.author,
+      meta: review.pet,
+    }))
+  : REVIEW_BRIEFS.map((brief) => ({
+      rating: 5,
+      body: brief.brief,
+      author: brief.author,
+      meta: '',
+    }));
+---
+
+<div class="mx-auto max-w-[44rem] text-center">
+  <p class="eyebrow" data-reveal="rise">Reviews</p>
+  <h2 class="mt-5 text-section leading-[1.08] text-ink" data-reveal="line">What owners say.</h2>
+</div>
+
+<div class="mt-12 grid gap-5 md:mt-16 md:grid-cols-3 md:gap-6">
+  {
+    cards.map((card) => (
+      <blockquote
+        data-reveal="rise"
+        class={`card-hover flex flex-col rounded-2xl border bg-cream p-7 md:p-9 ${
+          live ? 'border-line hover:border-forest/30' : 'border-dashed border-line'
+        }`}
+      >
+        <div class="flex gap-1 text-forest" aria-hidden="true">
+          {Array.from({ length: card.rating }).map(() => (
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 .9l2.1 4.5 4.9.6-3.6 3.4.95 4.9L8 11.9 3.65 14.3l.95-4.9L1 6l4.9-.6z" />
+            </svg>
+          ))}
+        </div>
+        <span class="sr-only">{card.rating} out of 5 stars</span>
+
+        {live ? (
+          <p class="mt-6 flex-1 font-display text-[1.3rem] leading-[1.45] text-ink md:text-xl">
+            “{card.body}”
+          </p>
+        ) : (
+          <p class="mt-6 flex-1 font-body text-[0.95rem] leading-relaxed text-ink/45">
+            <span class="mb-1.5 block text-[0.65rem] uppercase tracking-[0.18em] text-ink/35">
+              Real quote — to be supplied
+            </span>
+            {card.body}
+          </p>
+        )}
+
+        <footer class="mt-7 font-body text-sm text-muted">
+          {card.author}
+          {card.meta && <span class="text-muted/70"> · {card.meta}</span>}
+        </footer>
+      </blockquote>
+    ))
+  }
+</div>
+
+{
+  GOOGLE_REVIEWS && (
+    <p class="mt-10 text-center" data-reveal="rise">
+      <a
+        href={GOOGLE_REVIEWS.url}
+        class="group inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+      >
+        {GOOGLE_REVIEWS.rating} stars · Read all {GOOGLE_REVIEWS.count} reviews on Google
+        <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">
+          →
+        </span>
+      </a>
+    </p>
+  )
+}
+
+{
+  cta && (
+    <div class="mt-12 text-center md:mt-14" data-reveal="rise">
+      <BookButton block />
+    </div>
+  )
+}

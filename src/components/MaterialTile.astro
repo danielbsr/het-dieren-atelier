@@ -1,16 +1,24 @@
 ---
+import { Image } from 'astro:assets';
+import { photo } from '../data/photos';
+
 /**
  * Object-like material sample: paper grain, brushed metal, acrylic edge.
- * Rendered with CSS until photographed samples exist — swap the inner
- * block for a raking-light close-up shot.
+ * The surface itself is CSS — paper, brushed metal and acrylic are about
+ * the way light rakes across them, which a flat photo of a flat print
+ * does not show. What sits *on* the surface is a real portrait, so the
+ * sample reads as a finished product rather than a swatch.
  */
 interface Props {
   material: 'print' | 'aluminium' | 'acrylic';
   label: string;
   from: string;
+  /** Slot name in src/assets/portraits. */
+  photo?: string;
 }
 
-const { material, label, from } = Astro.props;
+const { material, label, from, photo: photoSlot } = Astro.props;
+const image = photo(photoSlot);
 
 const surfaces = {
   print:
@@ -22,16 +30,34 @@ const surfaces = {
 };
 ---
 
-<div class="group" data-reveal="image">
-  <div class="relative aspect-[5/4] overflow-hidden rounded-lg" style={surfaces[material]}>
+<div data-reveal="image">
+  <div
+    class="zoom-frame relative aspect-[5/4] overflow-hidden rounded-xl"
+    style={surfaces[material]}
+  >
     <!--
       A cropped piece of a portrait, so the sample reads as a finished
       product: paper keeps a visible border, the frameless finishes do not.
     -->
     <div
-      class={material === 'print' ? 'absolute inset-[13%] rounded-[2px]' : 'absolute inset-0'}
+      class={`zoom-target overflow-hidden ${
+        material === 'print' ? 'absolute inset-[13%] rounded-[2px]' : 'absolute inset-0'
+      }`}
       style="background:radial-gradient(ellipse 70% 60% at 50% 34%, #a4b39c, #6f7f68 62%, #46503f 100%)"
     >
+      {image && (
+        <Image
+          src={image}
+          alt=""
+          widths={[240, 360, 480, 720]}
+          sizes="(min-width: 768px) 355px, 240px"
+          format="webp"
+          quality={78}
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover"
+        />
+      )}
     </div>
 
     {/* Surface character: a matte metal wash, or a hard acrylic sheen. */}
@@ -39,7 +65,7 @@ const surfaces = {
       material === 'aluminium' && (
         <div
           class="absolute inset-0"
-          style="background:repeating-linear-gradient(102deg,rgba(255,255,255,0.10) 0 2px,rgba(0,0,0,0.05) 2px 4px)"
+          style="background:repeating-linear-gradient(102deg,rgba(255,255,255,0.055) 0 2px,rgba(0,0,0,0.03) 2px 5px)"
         />
       )
     }
@@ -60,6 +86,6 @@ const surfaces = {
       )
     }
   </div>
-  <p class="mt-4 font-body text-sm text-ink">{label}</p>
-  <p class="font-body text-sm text-muted">{from}</p>
+  <p class="mt-4 font-body text-[0.8rem] text-ink md:text-sm">{label}</p>
+  <p class="font-body text-[0.8rem] text-muted md:text-sm">{from}</p>
 </div>

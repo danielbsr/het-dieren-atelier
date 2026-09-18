@@ -1,5 +1,6 @@
 ---
 import Portrait from './Portrait.astro';
+import { photo } from '../data/photos';
 import { type BackdropKey } from '../data/site';
 
 /**
@@ -11,26 +12,32 @@ import { type BackdropKey } from '../data/site';
  */
 interface Props {
   tone?: BackdropKey;
-  animal?: 'dog' | 'cat' | 'rabbit';
+  animal?: 'dog' | 'cat' | 'rabbit' | 'bird' | 'guineapig';
   room?: string;
   furniture?: 'sofa' | 'console' | 'bed' | 'none';
+  /** Slot name in src/assets/portraits — the piece actually hanging there. */
+  photo?: string;
   class?: string;
 }
 
 const {
-  tone = 'sage',
+  tone = 'pearl',
   animal = 'dog',
   room,
   furniture = 'sofa',
+  photo: photoSlot,
   class: className = '',
 } = Astro.props;
 ---
 
 <div
-  class={`relative aspect-[4/3] overflow-hidden rounded-xl ${className}`}
+  class={`zoom-frame relative aspect-[4/3] overflow-hidden rounded-xl ${className}`}
   style="background:linear-gradient(168deg,#efe9dd 0%,#e5dece 58%,#d8d0be 100%)"
   data-reveal="image"
 >
+  <!-- Everything inside the room moves together under the cursor; the
+       room label below does not, so it stays readable. -->
+  <div class="zoom-target absolute inset-0">
   <!-- Daylight falling from the left. -->
   <div
     class="absolute inset-0"
@@ -45,7 +52,14 @@ const {
   >
     <div style="background:#c2ac86;padding:5%">
       <div style="background:#f7f4ec;padding:7%">
-        <Portrait tone={tone} animal={animal} ratio="portrait" crop="tight" />
+        <Portrait
+          tone={tone}
+          animal={animal}
+          src={photo(photoSlot)}
+          sizes="(min-width: 768px) 240px, 35vw"
+          ratio="portrait"
+          crop="tight"
+        />
       </div>
     </div>
   </div>
@@ -86,6 +100,7 @@ const {
     class="absolute inset-x-0 bottom-0 h-[34%]"
     style="background:linear-gradient(to top,rgba(90,74,50,0.22),transparent)"
   >
+  </div>
   </div>
 
   {

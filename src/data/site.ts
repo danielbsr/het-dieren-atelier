@@ -23,18 +23,45 @@ export const withBase = (href: string) =>
 export const stripBase = (path: string) =>
   (BASE && path.startsWith(BASE) ? path.slice(BASE.length) : path).replace(/\/$/, '') || '/';
 
+/**
+ * True once a placeholder has been replaced with the real thing.
+ *
+ * Contact details are rendered as live links only when they are real —
+ * a `tel:` pointing at "[phone — TO BE SUPPLIED]" is worse than no
+ * link at all, because it looks finished and does nothing.
+ */
+export const supplied = (value: string) => !value.includes('TO BE SUPPLIED');
+
 export const STUDIO = {
   name: 'Het Dieren Atelier',
-  tagline: 'Studio portraits of dogs, cats and other pets.',
-  city: '[City]',
-  country: 'the Netherlands',
-  address: '[Street, postcode, city — TO BE SUPPLIED]',
+  tagline: 'Studio portraits of dogs, cats, birds, rabbits and other pets.',
+  street: 'Gildenweg 3H',
+  postcode: '1695 GD',
+  city: 'Blokker',
+  country: 'The Netherlands',
+  /** One-line form, for inline use next to running text. */
+  address: 'Gildenweg 3H, 1695 GD Blokker',
+  /** Opens the studio in Google Maps. Search-by-query, so no place ID is needed. */
+  mapsUrl:
+    'https://www.google.com/maps/search/?api=1&query=Gildenweg+3H%2C+1695+GD+Blokker%2C+Netherlands',
+  /** Keyless Google Maps embed for the iframe in <MapEmbed />. */
+  mapsEmbedUrl:
+    'https://www.google.com/maps?q=Gildenweg+3H,+1695+GD+Blokker,+Netherlands&hl=en&z=14&output=embed',
   email: '[email — TO BE SUPPLIED]',
   phone: '[phone — TO BE SUPPLIED]',
+  /** International format, e.g. '+31 6 12 34 56 78' — wa.me strips it to digits. */
+  whatsapp: '[WhatsApp number — TO BE SUPPLIED]',
   instagram: '[@handle — TO BE SUPPLIED]',
   instagramUrl: '#',
   parking: '[Parking and accessibility — TO BE SUPPLIED]',
 } as const;
+
+/**
+ * The one booking destination. Every "Book your session" on the site
+ * points here — see <BookButton />, which is the only thing that should
+ * ever link to it.
+ */
+export const BOOKING_URL = 'https://calendly.com/hetoogatelier/huisdier-portretsessie';
 
 export const NAV = [
   { label: 'Portfolio', href: withBase('/portfolio') },
@@ -42,6 +69,7 @@ export const NAV = [
   { label: 'How It Works', href: withBase('/how-it-works') },
   { label: 'Wall Art', href: withBase('/wall-art') },
   { label: 'About', href: withBase('/about') },
+  { label: 'Contact', href: withBase('/contact') },
 ] as const;
 
 /**
@@ -49,11 +77,13 @@ export const NAV = [
  * builds certainty, synonyms build doubt. Never write these labels by hand.
  */
 export const CTA = {
-  book: { label: 'Book your session', href: withBase('/contact') },
+  /** External: Calendly. Rendered through <BookButton />, never by hand. */
+  book: { label: 'Book your session', href: BOOKING_URL },
   packages: { label: 'View packages', href: withBase('/sessions-pricing') },
   portfolio: { label: 'See the portfolio', href: withBase('/portfolio') },
   process: { label: 'See how it works', href: withBase('/how-it-works') },
   wallArt: { label: 'Explore wall art', href: withBase('/wall-art') },
+  contact: { label: 'Contact the studio', href: withBase('/contact') },
 } as const;
 
 /* ------------------------------------------------------------------ */
@@ -63,34 +93,40 @@ export const CTA = {
 export type BackdropKey = keyof typeof BACKDROPS;
 
 /**
- * The studio's backdrop inventory. Brand-adjacent tones (sage, olive,
- * cream, terracotta, soft blue) are used on trust-critical sections;
- * the saturated set is staged once in "Choose your colour" and on the
- * Portfolio page. Exact inventory TO BE SUPPLIED.
+ * The studio's backdrop inventory.
+ *
+ * These are not invented brand colours — each hex was sampled from the
+ * backdrop of an actual session photograph, so a caption reading
+ * "Miep — pearl" describes the paper the cat was really sitting on, and
+ * the swatch chart on Home shows stock that exists.
+ *
+ * Ordered quiet to deep, which is also the order the chart runs in.
  */
 export const BACKDROPS = {
-  sage: { name: 'Sage', hex: '#93a38c' },
-  olive: { name: 'Olive', hex: '#767a41' },
-  cream: { name: 'Cream', hex: '#e2d9c4' },
-  terracotta: { name: 'Terracotta', hex: '#b96c4a' },
-  softblue: { name: 'Soft blue', hex: '#8ca3b8' },
-  ochre: { name: 'Ochre', hex: '#cb992c' },
-  red: { name: 'Deep red', hex: '#8e2b24' },
-  cobalt: { name: 'Cobalt', hex: '#2c4b8f' },
-  plum: { name: 'Plum', hex: '#5b3a6e' },
-  orange: { name: 'Orange', hex: '#cf6428' },
-  forest: { name: 'Forest', hex: '#2f5741' },
+  pearl: { name: 'Pearl', hex: '#b0a59e' },
+  caramel: { name: 'Caramel', hex: '#b9957d' },
+  sage: { name: 'Sage', hex: '#808881' },
+  softblue: { name: 'Soft blue', hex: '#99b1c0' },
+  taupe: { name: 'Taupe', hex: '#6c5e5a' },
+  forest: { name: 'Forest', hex: '#4e594c' },
+  midnight: { name: 'Midnight', hex: '#232c42' },
+  charcoal: { name: 'Charcoal', hex: '#2e2d35' },
 } as const;
 
-/** The swatch chart, in a deliberate quiet → loud order. */
-export const COLOUR_STRIP: BackdropKey[] = [
-  'sage',
-  'olive',
-  'terracotta',
-  'ochre',
-  'red',
-  'cobalt',
-  'plum',
+/**
+ * The swatch chart: one backdrop, one photograph, same crop and scale
+ * across all seven. The uniformity is what turns a colour range into a
+ * curated set — and the subjects rotate through five species, so even
+ * the colour section says the studio photographs more than dogs.
+ */
+export const COLOUR_STRIP: { tone: BackdropKey; photo: string }[] = [
+  { tone: 'pearl', photo: 'fien' },
+  { tone: 'caramel', photo: 'knabbel' },
+  { tone: 'sage', photo: 'noor' },
+  { tone: 'softblue', photo: 'pip' },
+  { tone: 'forest', photo: 'pim' },
+  { tone: 'midnight', photo: 'storm' },
+  { tone: 'charcoal', photo: 'guus' },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -148,7 +184,33 @@ export const PACKAGES = [
 ] as const;
 
 export const PACKAGE_NOTE =
-  'Every package: online gallery, high-resolution files, social crops — and you can join your pet in the photo.';
+  'Every package: online gallery, high-resolution files and social crops. Dogs, cats, birds, rabbits — every animal is welcome.';
+
+/**
+ * The fourth option: the session travels instead of the animal.
+ *
+ * Deliberately not a fourth column in PACKAGES — it is priced and
+ * structured differently, and the studio trio is a settled decision.
+ * It renders as one wide card in the same visual language, directly
+ * under the three.
+ */
+export const ON_LOCATION = {
+  id: 'at-home',
+  eyebrow: 'On location',
+  name: 'At your home',
+  price: 'Price on request',
+  priceNote: '[On-location price, travel radius and travel costs — TO BE SUPPLIED]',
+  blurb:
+    'The same portrait session, in the place your animal already knows. We bring the studio to you.',
+  highlights: [
+    'Approx. 90 min at your home or in your garden',
+    '10 edited photos',
+    'Portable backdrop, or your own interior as the setting',
+    'Online gallery, high resolution',
+  ],
+  guidance:
+    'For animals that are calmest on their own ground — older dogs, indoor cats, and rabbits or birds that travel badly.',
+} as const;
 
 /** Rows of the full comparison table on Sessions & Pricing. */
 export const COMPARISON: { label: string; values: [string, string, string] }[] = [
@@ -205,7 +267,7 @@ export const STEPS = [
     number: '03',
     title: 'The session.',
     short:
-      'We work in short rounds with breaks. Toys, sounds and patience do the directing. You can be in the photos too, if you like.',
+      'We work in short rounds with breaks. Toys, sounds and patience do the directing — no animal has to sit on command.',
     long: 'We photograph in short rounds — a few minutes of work, then a break, water, treats. Sounds and toys direct the attention; nobody has to "sit" on command. If you’d like to be in the photos, we plan those shots for the moment your pet is most settled.',
   },
   {
@@ -231,8 +293,8 @@ export const FAQ_SHORT = [
     a: 'Cats get extra time to explore the studio first. We keep the space quiet, work at their pace, and many cats settle faster than their owners expect.',
   },
   {
-    q: 'Can I be in the photo?',
-    a: 'Yes — in every package, at no extra cost. Many owners choose one or two shots together.',
+    q: 'Do you photograph more than dogs and cats?',
+    a: 'Yes. Rabbits, birds, guinea pigs, ferrets — if it has a face and a character, it has a portrait. Smaller animals get a smaller set and shorter rounds.',
   },
   {
     q: "What if it really doesn't work out?",
@@ -256,6 +318,10 @@ export const FAQ_FULL = [
   {
     q: 'Can I be in the photo with my pet?',
     a: 'Yes, in every package, included. Wear something plain and dark or neutral — the portrait stays about your animal, with you as the warm second layer.',
+  },
+  {
+    q: 'Can you come to our home instead?',
+    a: 'Yes — an on-location session is the fourth option. We bring a portable backdrop, or use your own interior, and photograph where your animal already feels safe. [Price, travel radius and travel costs TO BE SUPPLIED.]',
   },
   {
     q: 'How long does a session take?',
@@ -291,17 +357,33 @@ export const FAQ_BOOKING = [
 /* ------------------------------------------------------------------ */
 
 /**
- * Deliberately false until three real client quotes exist. The concept
- * forbids launching with invented quotes: while this is false, Home
- * renders the fallback (one wide portrait) and pulls the FAQ up.
+ * Real client quotes only. While REVIEWS is empty the section still
+ * renders — same three cards, same stars — with the brief for each quote
+ * in place of the words, so the design is reviewable and nothing
+ * invented ships by accident.
  *
- * To switch on: fill REVIEWS with real quotes and set this to true.
+ * To go live: fill REVIEWS with three real quotes. The briefs disappear
+ * on their own.
  */
-export const HAS_REVIEWS = false;
+export const REVIEWS: { quote: string; author: string; pet: string; rating: number }[] = [
+  // { quote: '…', author: 'Anne de Vries', pet: 'with Loup', rating: 5 },
+];
 
-export const REVIEWS: { quote: string; author: string; tone: BackdropKey }[] = [
-  // Pick quotes that each carry one theme: a nervous or restless animal,
-  // the calm of the session, and the final print on the wall.
+/** One theme each: the difficult animal, the session, the print. */
+export const REVIEW_BRIEFS = [
+  {
+    brief:
+      'A nervous, restless or impossible animal — and the owner who was sure it would never work.',
+    author: 'Owner & pet — to be supplied',
+  },
+  {
+    brief: 'The calm of the session itself: the time taken, the breaks, the patience.',
+    author: 'Owner & pet — to be supplied',
+  },
+  {
+    brief: 'The finished portrait on the wall, and what it still means months later.',
+    author: 'Owner & pet — to be supplied',
+  },
 ];
 
 /** e.g. { rating: '4.9', count: 37, url: 'https://…' } */
@@ -330,7 +412,7 @@ export const WALL_ART_PRODUCTS = [
       'Ideal for: framed walls, gallery arrangements',
     ],
     room: 'Living room',
-    tone: 'sage' as BackdropKey,
+    tone: 'pearl' as BackdropKey,
   },
   {
     id: 'framed',
@@ -344,7 +426,7 @@ export const WALL_ART_PRODUCTS = [
       'Ideal for: living rooms, hallways, gifts',
     ],
     room: 'Hallway',
-    tone: 'cream' as BackdropKey,
+    tone: 'caramel' as BackdropKey,
   },
   {
     id: 'aluminium',
@@ -358,7 +440,7 @@ export const WALL_ART_PRODUCTS = [
       'Ideal for: modern interiors, kitchens, offices',
     ],
     room: 'Kitchen',
-    tone: 'olive' as BackdropKey,
+    tone: 'forest' as BackdropKey,
   },
   {
     id: 'acrylic',
@@ -372,7 +454,7 @@ export const WALL_ART_PRODUCTS = [
       'Ideal for: the one big statement piece',
     ],
     room: 'Bedroom',
-    tone: 'terracotta' as BackdropKey,
+    tone: 'midnight' as BackdropKey,
   },
 ];
 
@@ -383,52 +465,64 @@ export const WALL_ART_PRODUCTS = [
 export type PortfolioItem = {
   name: string;
   tone: BackdropKey;
-  species: 'dogs' | 'cats' | 'other' | 'owner';
-  animal: 'dog' | 'cat' | 'rabbit';
-  /** Real photograph. When absent, the tinted placeholder renders. */
+  species: 'dogs' | 'cats' | 'birds' | 'rabbits' | 'other';
+  animal: 'dog' | 'cat' | 'rabbit' | 'bird' | 'guineapig';
+  /** Slot name in src/assets/portraits. Absent: the placeholder renders. */
+  photo?: string;
+  /** Escape hatch for a file served straight out of public/. */
   src?: string;
 };
 
-/** Home: curated to brand-adjacent tones only. Two large, four smaller. */
+/**
+ * Home: the six portraits that decide what a visitor thinks the studio
+ * photographs. Two dogs, two cats, a bird and a rabbit — never six dogs.
+ */
 export const HOME_SELECTION: PortfolioItem[] = [
-  { name: 'Nova', tone: 'olive', species: 'dogs', animal: 'dog' },
-  { name: 'Miep', tone: 'sage', species: 'cats', animal: 'cat' },
-  { name: 'Bono', tone: 'cream', species: 'dogs', animal: 'dog' },
-  { name: 'Saar', tone: 'terracotta', species: 'cats', animal: 'cat' },
-  { name: 'Loup', tone: 'softblue', species: 'owner', animal: 'dog' },
-  { name: 'Fien', tone: 'sage', species: 'dogs', animal: 'dog' },
+  { name: 'Nova', photo: 'nova', tone: 'charcoal', species: 'dogs', animal: 'dog' },
+  { name: 'Miep', photo: 'miep', tone: 'pearl', species: 'cats', animal: 'cat' },
+  { name: 'Pip', photo: 'pip', tone: 'softblue', species: 'birds', animal: 'bird' },
+  { name: 'Bono', photo: 'bono', tone: 'pearl', species: 'dogs', animal: 'dog' },
+  { name: 'Pim', photo: 'pim', tone: 'forest', species: 'rabbits', animal: 'rabbit' },
+  { name: 'Wolke', photo: 'wolke', tone: 'midnight', species: 'cats', animal: 'cat' },
 ];
 
 /**
- * Portfolio page: the full colour range, including the loud backdrops.
- * Ordered so no two saturated tones sit adjacent — sage/cream/olive
- * portraits buffer the reds, purples and oranges.
+ * Portfolio page: the full range, ordered on two axes at once — no two
+ * portraits of the same species adjacent, and no two on the same
+ * backdrop adjacent. The grid has to read as a studio that photographs
+ * animals, not as a dog photographer with a few exceptions.
  */
 export const PORTFOLIO: PortfolioItem[] = [
-  { name: 'Nova', tone: 'olive', species: 'dogs', animal: 'dog' },
-  { name: 'Otis', tone: 'red', species: 'dogs', animal: 'dog' },
-  { name: 'Miep', tone: 'sage', species: 'cats', animal: 'cat' },
-  { name: 'Juno', tone: 'plum', species: 'cats', animal: 'cat' },
-  { name: 'Bono', tone: 'cream', species: 'dogs', animal: 'dog' },
-  { name: 'Storm', tone: 'cobalt', species: 'dogs', animal: 'dog' },
-  { name: 'Saar', tone: 'terracotta', species: 'cats', animal: 'cat' },
-  { name: 'Pim', tone: 'olive', species: 'other', animal: 'rabbit' },
-  { name: 'Loup & Anne', tone: 'softblue', species: 'owner', animal: 'dog' },
-  { name: 'Wolke', tone: 'orange', species: 'cats', animal: 'cat' },
-  { name: 'Fien', tone: 'sage', species: 'dogs', animal: 'dog' },
-  { name: 'Bram', tone: 'ochre', species: 'dogs', animal: 'dog' },
-  { name: 'Tijn', tone: 'cream', species: 'other', animal: 'rabbit' },
-  { name: 'Reza', tone: 'forest', species: 'cats', animal: 'cat' },
-  { name: 'Mees & Sanne', tone: 'terracotta', species: 'owner', animal: 'dog' },
-  { name: 'Guus', tone: 'red', species: 'dogs', animal: 'dog' },
-  { name: 'Noor', tone: 'sage', species: 'cats', animal: 'cat' },
-  { name: 'Roos', tone: 'cobalt', species: 'dogs', animal: 'dog' },
+  { name: 'Nova', photo: 'nova', tone: 'charcoal', species: 'dogs', animal: 'dog' },
+  { name: 'Miep', photo: 'miep', tone: 'pearl', species: 'cats', animal: 'cat' },
+  { name: 'Pip', photo: 'pip', tone: 'softblue', species: 'birds', animal: 'bird' },
+  { name: 'Bono', photo: 'bono', tone: 'pearl', species: 'dogs', animal: 'dog' },
+  { name: 'Juno', photo: 'juno', tone: 'charcoal', species: 'cats', animal: 'cat' },
+  { name: 'Pim', photo: 'pim', tone: 'forest', species: 'rabbits', animal: 'rabbit' },
+  { name: 'Storm', photo: 'storm', tone: 'midnight', species: 'dogs', animal: 'dog' },
+  { name: 'Saar', photo: 'saar', tone: 'caramel', species: 'cats', animal: 'cat' },
+  { name: 'Flip', photo: 'flip', tone: 'charcoal', species: 'birds', animal: 'bird' },
+  { name: 'Fien', photo: 'fien', tone: 'pearl', species: 'dogs', animal: 'dog' },
+  { name: 'Knabbel', photo: 'knabbel', tone: 'caramel', species: 'other', animal: 'guineapig' },
+  { name: 'Noor', photo: 'noor', tone: 'sage', species: 'cats', animal: 'cat' },
+  { name: 'Bram', photo: 'bram', tone: 'pearl', species: 'dogs', animal: 'dog' },
+  { name: 'Wolke', photo: 'wolke', tone: 'midnight', species: 'cats', animal: 'cat' },
+  { name: 'Sam', photo: 'sam', tone: 'sage', species: 'birds', animal: 'bird' },
+  { name: 'Guus', photo: 'guus', tone: 'charcoal', species: 'dogs', animal: 'dog' },
+  { name: 'Reza', photo: 'reza', tone: 'pearl', species: 'cats', animal: 'cat' },
+  { name: 'Roos', photo: 'roos', tone: 'midnight', species: 'dogs', animal: 'dog' },
 ];
 
+/**
+ * Species, not occasions. "With owner" was a filter here once; owner
+ * portraits are still possible in every package, but they are a variation
+ * on a session, not a category of the work.
+ */
 export const PORTFOLIO_FILTERS = [
   { id: 'all', label: 'All' },
   { id: 'dogs', label: 'Dogs' },
   { id: 'cats', label: 'Cats' },
-  { id: 'other', label: 'Other' },
-  { id: 'owner', label: 'With owner' },
+  { id: 'birds', label: 'Birds' },
+  { id: 'rabbits', label: 'Rabbits' },
+  { id: 'other', label: 'Other pets' },
 ] as const;

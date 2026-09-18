@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Scene from '../components/Scene.astro';
 import ClosingCta from '../components/ClosingCta.astro';
+import BookButton from '../components/BookButton.astro';
 
 /**
  * The story is still TO BE SUPPLIED. Rather than invent a biography,
@@ -35,7 +36,7 @@ const paragraphs = [
           The person your pet will meet.
         </h1>
 
-        <div class="mt-10 space-y-4" data-reveal="rise">
+        <div class="mt-9 space-y-4 md:mt-10" data-reveal="rise">
           {
             paragraphs.map((brief, i) => (
               <p class="rounded-lg border border-dashed border-line bg-cream-deep/50 p-5 font-body text-[0.95rem] leading-relaxed text-ink/45">
@@ -46,6 +47,10 @@ const paragraphs = [
               </p>
             ))
           }
+        </div>
+
+        <div class="mt-9" data-reveal="rise">
+          <BookButton block />
         </div>
       </div>
     </div>
@@ -102,7 +107,8 @@ const paragraphs = [
 
   <ClosingCta
     headline="Come meet us in person."
-    body="Choose a package, pick a date — the rest happens calmly, in the studio."
-    tone="olive"
+    body="Pick a date in the calendar — the rest happens calmly, in the studio or at your home."
+    tone="charcoal"
+    photo="juno"
   />
 </Layout>

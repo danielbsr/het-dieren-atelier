@@ -1,6 +1,7 @@
 ---
 import Logo from './Logo.astro';
-import { NAV, CTA, withBase, stripBase } from '../data/site';
+import BookButton from './BookButton.astro';
+import { CTA, NAV, withBase, stripBase } from '../data/site';
 
 // Compare both sides base-free, so the active link survives a subfolder deploy.
 const path = stripBase(Astro.url.pathname);
@@ -19,7 +20,7 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
       <Logo class="text-[1.05rem] md:text-[1.15rem]" />
     </a>
 
-    <nav class="hidden items-center gap-8 lg:flex" aria-label="Main">
+    <nav class="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Main">
       {
         nav.map((item) => (
           <a
@@ -37,12 +38,11 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
     </nav>
 
     <div class="flex items-center gap-3">
-      <a
-        href={CTA.book.href}
-        class="hidden rounded-full bg-forest px-6 py-2.5 font-body text-[0.9rem] font-medium text-cream btn btn-solid sm:inline-flex"
-      >
-        {CTA.book.label}
-      </a>
+      <!-- Wrapped rather than given `hidden`: BookButton already sets its own
+           display, and two display utilities on one element is a coin toss. -->
+      <span class="hidden sm:block">
+        <BookButton size="md" class="!px-6 !py-2.5 !text-[0.9rem]" />
+      </span>
 
       <button
         type="button"
@@ -76,7 +76,12 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
           </a>
         ))
       }
-      <a href={CTA.book.href} class="py-4 font-display text-2xl text-forest">
+      <a
+        href={CTA.book.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-solid mt-6 flex items-center justify-center rounded-full bg-forest px-6 py-3.5 font-body font-medium text-cream"
+      >
         {CTA.book.label}
       </a>
     </nav>
@@ -101,10 +106,21 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
+  const setMenu = (open: boolean) => {
+    if (!menu || !toggle) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    menu.hidden = !open;
+  };
+
   toggle?.addEventListener('click', () => {
-    if (!menu) return;
-    const open = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', String(!open));
-    menu.hidden = open;
+    setMenu(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  // Escape closes it — a full-width menu with no visible way out is a trap.
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu && !menu.hidden) {
+      setMenu(false);
+      toggle?.focus();
+    }
   });
 </script>
