@@ -34,8 +34,14 @@ const shapes = ['tall', 'portrait', 'portrait', 'portrait', 'tall', 'square'] as
   <!-- Filters -->
   <div class="pb-8 pt-8 md:pb-14 md:pt-14">
     <div class="mx-auto max-w-[75rem] md:px-10">
+      <!--
+        The padding and the negative margins that cancel it: a scroller
+        clips on both axes, and a focused pill wears a 2px outline 3px
+        clear of its edge. Without the room that outline is shaved off
+        against the row. The margins keep the spacing unchanged.
+      -->
       <div
-        class="flex gap-2 overflow-x-auto px-6 pb-1 md:flex-wrap md:overflow-visible md:px-0 md:pb-0"
+        class="-mb-4 -mt-2 flex gap-2 overflow-x-auto px-6 pb-4 pt-2 md:mb-0 md:mt-0 md:flex-wrap md:overflow-visible md:px-0 md:pb-0 md:pt-0"
         role="group"
         aria-label="Filter portraits by animal"
         data-reveal="rise"

@@ -155,12 +155,35 @@
   transition: transform 420ms var(--ease-reveal);
 }
 
-.btn:hover::before,
+/*
+  Gated on a real pointer, like the photo and card gestures further down.
+
+  A tap applies :hover on iOS and Android and leaves it applied until
+  something else is tapped, so on a phone this was never a hover: it was
+  a button that lifted 2px and stayed lifted. In the portfolio's filter
+  row that was visible as damage — the row scrolls horizontally, an
+  overflow-x of auto computes overflow-y to auto as well, and the pill
+  that had just been tapped was clipped along its top edge.
+
+  :focus-visible stays outside the query. A keyboard is a keyboard
+  whatever the pointer is, and its outline needs the same lift to sit
+  clear of the button.
+*/
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover::before {
+    transform: scaleY(1);
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px -14px rgb(20 42 32 / 0.65);
+  }
+}
+
 .btn:focus-visible::before {
   transform: scaleY(1);
 }
 
-.btn:hover,
 .btn:focus-visible {
   transform: translateY(-2px);
   box-shadow: 0 12px 26px -14px rgb(20 42 32 / 0.65);
@@ -183,7 +206,13 @@
   --btn-fill: var(--color-forest);
 }
 
-.btn-outline:hover,
+@media (hover: hover) and (pointer: fine) {
+  .btn-outline:hover {
+    color: var(--color-cream);
+    border-color: var(--color-forest);
+  }
+}
+
 .btn-outline:focus-visible {
   color: var(--color-cream);
   border-color: var(--color-forest);
