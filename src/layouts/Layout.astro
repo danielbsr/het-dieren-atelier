@@ -2,14 +2,11 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import BookButton from '../components/BookButton.astro';
 import { withBase } from '../data/site';
 
 interface Props {
   title: string;
   description?: string;
-  /** The booking page already is the CTA — no need to float it there. */
-  showMobileCta?: boolean;
   /** For pages that do not end in a <ClosingCta />. */
   showFooterCta?: boolean;
 }
@@ -17,7 +14,6 @@ interface Props {
 const {
   title,
   description = '',
-  showMobileCta = true,
   showFooterCta = false,
 } = Astro.props;
 ---
@@ -60,13 +56,7 @@ const {
       rel="stylesheet"
     />
   </head>
-  <body
-    class={
-      showMobileCta
-        ? 'pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0'
-        : ''
-    }
-  >
+  <body>
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-forest focus:px-5 focus:py-3 focus:text-cream"
@@ -81,17 +71,6 @@ const {
     </main>
 
     <Footer cta={showFooterCta} />
-
-    {
-      showMobileCta && (
-        <div
-          class="fixed inset-x-0 bottom-0 z-50 border-t border-forest-deep/15 bg-cream/95 px-4 pt-3 backdrop-blur-md md:hidden"
-          style="padding-bottom:calc(0.75rem + env(safe-area-inset-bottom))"
-        >
-          <BookButton block size="md" class="!py-3.5" />
-        </div>
-      )
-    }
 
     <script>
       /*
