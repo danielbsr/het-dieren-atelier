@@ -1,123 +1,208 @@
 /**
- * Single source of truth for navigation, CTAs, packages, backdrops and FAQ.
+ * Eén bron van waarheid voor navigatie, CTA's, pakketten, achtergronden,
+ * reviews en FAQ.
  *
- * Items marked TO BE SUPPLIED are open questions from the concept
- * (section 7) and are rendered as visible placeholders on purpose, so
- * nothing invented ships by accident.
+ * De site is volledig Nederlandstalig: alles wat een bezoeker leest staat
+ * hier of in de pagina's, nooit half in het Engels. Componenten mogen
+ * geen losse knoplabels of prijzen bevatten — die horen hier.
  */
 
 /**
- * Deploy-path helpers.
+ * Deploy-pad-helpers.
  *
- * GitHub Pages serves a project repo from a subfolder, so every internal
- * link carries that prefix. On a root deploy — a custom domain, or
- * `npm run dev` — BASE_URL is '/' and both helpers are no-ops.
+ * GitHub Pages serveert een project-repo vanuit een submap, dus elke
+ * interne link draagt dat voorvoegsel. Op een root-deploy — eigen domein
+ * of `npm run dev` — is BASE_URL '/' en doen beide helpers niets.
  */
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-/** Prefixes an internal path. External links and anchors pass through. */
+/** Zet het voorvoegsel voor een intern pad. Externe links en ankers gaan door. */
 export const withBase = (href: string) =>
   href.startsWith('/') ? `${BASE}${href}` || '/' : href;
 
-/** Strips the prefix again, for comparing a link against Astro.url.pathname. */
+/** Haalt het voorvoegsel er weer af, om te vergelijken met Astro.url.pathname. */
 export const stripBase = (path: string) =>
   (BASE && path.startsWith(BASE) ? path.slice(BASE.length) : path).replace(/\/$/, '') || '/';
 
-/**
- * True once a placeholder has been replaced with the real thing.
- *
- * Contact details are rendered as live links only when they are real —
- * a `tel:` pointing at "[phone — TO BE SUPPLIED]" is worse than no
- * link at all, because it looks finished and does nothing.
- */
-export const supplied = (value: string) => !value.includes('TO BE SUPPLIED');
+/* ------------------------------------------------------------------ */
+/* Studio                                                              */
+/* ------------------------------------------------------------------ */
 
 export const STUDIO = {
   name: 'Het Dieren Atelier',
-  tagline: 'Studio portraits of dogs, cats, birds, rabbits and other pets.',
+  tagline: 'Dierenfotostudio voor honden, katten en andere huisdieren.',
   street: 'Gildenweg 3H',
   postcode: '1695 GD',
   city: 'Blokker',
-  country: 'The Netherlands',
-  /** One-line form, for inline use next to running text. */
+  region: 'Noord-Holland',
+  country: 'Nederland',
+  /** Eén regel, voor gebruik in lopende tekst. */
   address: 'Gildenweg 3H, 1695 GD Blokker',
-  /** Opens the studio in Google Maps. Search-by-query, so no place ID is needed. */
+  /** Opent de studio in Google Maps. Zoek-op-adres, dus geen place ID nodig. */
   mapsUrl:
-    'https://www.google.com/maps/search/?api=1&query=Gildenweg+3H%2C+1695+GD+Blokker%2C+Netherlands',
-  /** Keyless Google Maps embed for the iframe in <MapEmbed />. */
+    'https://www.google.com/maps/search/?api=1&query=Gildenweg+3H%2C+1695+GD+Blokker%2C+Nederland',
+  /** Sleutelloze Google Maps-embed voor de iframe in <MapEmbed />. */
   mapsEmbedUrl:
-    'https://www.google.com/maps?q=Gildenweg+3H,+1695+GD+Blokker,+Netherlands&hl=en&z=14&output=embed',
-  email: '[email — TO BE SUPPLIED]',
-  phone: '[phone — TO BE SUPPLIED]',
-  /** International format, e.g. '+31 6 12 34 56 78' — wa.me strips it to digits. */
-  whatsapp: '[WhatsApp number — TO BE SUPPLIED]',
-  instagram: '[@handle — TO BE SUPPLIED]',
-  instagramUrl: '#',
-  parking: '[Parking and accessibility — TO BE SUPPLIED]',
+    'https://www.google.com/maps?q=Gildenweg+3H,+1695+GD+Blokker,+Nederland&hl=nl&z=14&output=embed',
+  email: 'info@hetdierenatelier.com',
+  /** Weergavevorm. `tel:` en `wa.me` strippen alles behalve de cijfers. */
+  phone: '+31 6 23 99 97 51',
+  whatsapp: '+31 6 23 99 97 51',
+  instagram: '@het.dierenatelier',
+  instagramUrl: 'https://www.instagram.com/het.dierenatelier/',
+  kvk: '88276090',
+  vat: 'NL004574195B88',
+  parking: 'Gratis parkeren bij de studio',
+  byAppointment: 'Uitsluitend op afspraak',
 } as const;
 
+/** Alleen de cijfers — voor `tel:` en `wa.me`. */
+export const digitsOnly = (value: string) => value.replace(/\D/g, '');
+
 /**
- * The one booking destination. Every "Book your session" on the site
- * points here — see <BookButton />, which is the only thing that should
- * ever link to it.
+ * De WhatsApp-knop opent direct een gesprek met deze vraag er al in,
+ * zodat iemand alleen nog op verzenden hoeft te drukken.
  */
-export const BOOKING_URL = 'https://calendly.com/hetoogatelier/huisdier-portretsessie';
+export const WHATSAPP_MESSAGE =
+  'Hi! Ik heb een vraag over een fotoshoot bij Het Dieren Atelier.';
+
+export const WHATSAPP_URL = `https://wa.me/${digitsOnly(STUDIO.whatsapp)}?text=${encodeURIComponent(
+  WHATSAPP_MESSAGE
+)}`;
+
+export const PHONE_URL = `tel:${digitsOnly(STUDIO.phone)}`;
+export const EMAIL_URL = `mailto:${STUDIO.email}`;
+
+/**
+ * Canoniek domein, voor canonical-links en social sharing.
+ * Wijzigt alleen mee met het echte domein — zie <Layout />.
+ */
+export const SITE_URL = 'https://www.hetdierenatelier.com';
+
+/**
+ * Zolang de site op de preview-URL van GitHub Pages staat, wil je niet
+ * dat Google die versie indexeert. Zet dit op `true` op de dag dat de
+ * site op het echte domein live gaat.
+ */
+export const INDEXABLE = false;
+
+/**
+ * De enige boekingsbestemming. Elke "Boek jouw fotoshoot" op de site
+ * wijst hierheen — via <BookButton />, het enige component dat eraan mag
+ * linken.
+ */
+export const BOOKING_URL = 'https://calendly.com/ymlproductions-info/het-dieren-atelier';
+
+/* ------------------------------------------------------------------ */
+/* Navigatie & CTA's                                                   */
+/* ------------------------------------------------------------------ */
 
 export const NAV = [
   { label: 'Portfolio', href: withBase('/portfolio') },
-  { label: 'Sessions & Pricing', href: withBase('/sessions-pricing') },
-  { label: 'How It Works', href: withBase('/how-it-works') },
-  { label: 'Wall Art', href: withBase('/wall-art') },
-  { label: 'About', href: withBase('/about') },
+  { label: 'Fotoshoot & tarieven', href: withBase('/fotoshoot-tarieven') },
+  { label: 'Werkwijze', href: withBase('/werkwijze') },
+  { label: 'Wanddecoratie', href: withBase('/wanddecoratie') },
+  { label: 'Over ons', href: withBase('/over-ons') },
+  { label: 'Contact', href: withBase('/contact') },
+] as const;
+
+/** Juridische links onderaan de footer. */
+export const LEGAL_NAV = [
+  { label: 'Privacybeleid', href: withBase('/privacybeleid') },
+  { label: 'Cookiebeleid', href: withBase('/cookiebeleid') },
+  { label: 'Algemene voorwaarden', href: withBase('/algemene-voorwaarden') },
   { label: 'Contact', href: withBase('/contact') },
 ] as const;
 
 /**
- * Fixed CTA vocabulary. One primary verb pair everywhere — repetition
- * builds certainty, synonyms build doubt. Never write these labels by hand.
+ * De datum die onder aan de juridische pagina's staat. Eén constante,
+ * zodat privacy- en cookiebeleid niet uit elkaar kunnen lopen; de
+ * aangeleverde teksten dragen allebei "september 2026".
+ */
+export const LEGAL_UPDATED = 'september 2026';
+
+/**
+ * Vaste CTA-woordenschat. Eén werkwoordpaar overal — herhaling bouwt
+ * vertrouwen, synoniemen bouwen twijfel. Nooit met de hand overtypen.
  */
 export const CTA = {
-  /** External: Calendly. Rendered through <BookButton />, never by hand. */
-  book: { label: 'Book your session', href: BOOKING_URL },
-  packages: { label: 'View packages', href: withBase('/sessions-pricing') },
-  portfolio: { label: 'See the portfolio', href: withBase('/portfolio') },
-  process: { label: 'See how it works', href: withBase('/how-it-works') },
-  wallArt: { label: 'Explore wall art', href: withBase('/wall-art') },
-  contact: { label: 'Contact the studio', href: withBase('/contact') },
+  /** Extern: Calendly. Altijd via <BookButton />, nooit handmatig. */
+  book: { label: 'Boek jouw fotoshoot', href: BOOKING_URL },
+  /** Korte variant, voor de sticky balk op mobiel. */
+  bookShort: 'Boek fotoshoot',
+  packages: { label: 'Bekijk fotoshoots & tarieven', href: withBase('/fotoshoot-tarieven') },
+  portfolio: { label: 'Bekijk portfolio', href: withBase('/portfolio') },
+  process: { label: 'Bekijk de werkwijze', href: withBase('/werkwijze') },
+  wallArt: { label: 'Bekijk wanddecoratie', href: withBase('/wanddecoratie') },
+  contact: { label: 'Neem contact op', href: withBase('/contact') },
 } as const;
 
 /* ------------------------------------------------------------------ */
-/* Backdrops                                                           */
+/* USP's                                                               */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Vier beloftes, direct onder de hero. Bewust kort: dit blok moet in
+ * één oogopslag te lezen zijn, ook op een telefoon.
+ */
+export const USPS = [
+  {
+    icon: 'studio' as const,
+    title: 'Rustige privé-studio',
+    body: 'Geen inloop, geen andere klanten. Jouw dier heeft de studio helemaal voor zich.',
+  },
+  {
+    icon: 'clock' as const,
+    title: 'Maximaal 45 minuten',
+    body: 'Kort genoeg om leuk te blijven, lang genoeg om rustig te wennen.',
+  },
+  {
+    icon: 'portrait' as const,
+    title: 'Professioneel bewerkte portretten',
+    body: 'Geen map vol kiekjes, maar één tot drie afgewerkte portretten.',
+  },
+  {
+    icon: 'frame' as const,
+    title: 'Hoogwaardige wanddecoratie',
+    body: 'Fine Art, aluminium of plexiglas — persoonlijk advies in de studio.',
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/* Achtergronden                                                       */
 /* ------------------------------------------------------------------ */
 
 export type BackdropKey = keyof typeof BACKDROPS;
 
 /**
- * The studio's backdrop inventory.
+ * De achtergrondvoorraad van de studio.
  *
- * These are not invented brand colours — each hex was sampled from the
- * backdrop of an actual session photograph, so a caption reading
- * "Miep — pearl" describes the paper the cat was really sitting on, and
- * the swatch chart on Home shows stock that exists.
+ * Geen verzonnen merkkleuren: elke hex is geprikt uit de achtergrond van
+ * een echte sessiefoto, zodat een bijschrift als "Miep — parel" het
+ * papier beschrijft waar de kat werkelijk op zat.
  *
- * Ordered quiet to deep, which is also the order the chart runs in.
+ * `name` is het bijschrift, `adjective` de verbogen vorm voor in een
+ * zin: "op een antracietkleurige achtergrond" leest als Nederlands,
+ * "op een antraciet achtergrond" niet. Alt-teksten gebruiken de tweede.
+ *
+ * Gesorteerd van rustig naar diep — de volgorde van de kleurenstrip.
  */
 export const BACKDROPS = {
-  pearl: { name: 'Pearl', hex: '#b0a59e' },
-  caramel: { name: 'Caramel', hex: '#b9957d' },
-  sage: { name: 'Sage', hex: '#808881' },
-  softblue: { name: 'Soft blue', hex: '#99b1c0' },
-  taupe: { name: 'Taupe', hex: '#6c5e5a' },
-  forest: { name: 'Forest', hex: '#4e594c' },
-  midnight: { name: 'Midnight', hex: '#232c42' },
-  charcoal: { name: 'Charcoal', hex: '#2e2d35' },
+  pearl: { name: 'Parel', adjective: 'parelkleurige', hex: '#b0a59e' },
+  caramel: { name: 'Karamel', adjective: 'karamelkleurige', hex: '#b9957d' },
+  sage: { name: 'Salie', adjective: 'saliegroene', hex: '#808881' },
+  softblue: { name: 'Zachtblauw', adjective: 'zachtblauwe', hex: '#99b1c0' },
+  taupe: { name: 'Taupe', adjective: 'taupekleurige', hex: '#6c5e5a' },
+  forest: { name: 'Bosgroen', adjective: 'bosgroene', hex: '#4e594c' },
+  midnight: { name: 'Middernacht', adjective: 'middernachtblauwe', hex: '#232c42' },
+  charcoal: { name: 'Antraciet', adjective: 'antracietkleurige', hex: '#2e2d35' },
 } as const;
 
 /**
- * The swatch chart: one backdrop, one photograph, same crop and scale
- * across all seven. The uniformity is what turns a colour range into a
- * curated set — and the subjects rotate through five species, so even
- * the colour section says the studio photographs more than dogs.
+ * De kleurenstrip: één achtergrond, één foto, dezelfde uitsnede en
+ * schaal over alle zeven. Die gelijkmatigheid maakt van een kleurenreeks
+ * een gecureerde set — en de onderwerpen rouleren langs vijf diersoorten,
+ * zodat zelfs de kleursectie vertelt dat we meer dan honden fotograferen.
  */
 export const COLOUR_STRIP: { tone: BackdropKey; photo: string }[] = [
   { tone: 'pearl', photo: 'fien' },
@@ -130,152 +215,183 @@ export const COLOUR_STRIP: { tone: BackdropKey; photo: string }[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Packages                                                            */
+/* Pakketten                                                           */
 /* ------------------------------------------------------------------ */
 
 export type Package = (typeof PACKAGES)[number];
 
+/**
+ * Drie studiopakketten. Het verschil is niet tijd — elke studiofotoshoot
+ * duurt maximaal 45 minuten — maar het aantal afgewerkte portretten en
+ * het aantal achtergronden.
+ */
 export const PACKAGES = [
   {
     id: 'essential',
     name: 'Essential',
     price: '€249',
-    blurb: 'A focused session for one strong series.',
+    blurb: 'Eén afgewerkt portret van jouw dier, op één achtergrond.',
     highlights: [
-      'Approx. 45 min session',
-      '5 edited photos',
-      '1 backdrop',
-      'Online gallery, high resolution',
+      'Max. 45 minuten fotoshoot',
+      '1 professioneel bewerkt portret',
+      '1 achtergrond',
+      'Digitaal bestand in hoge resolutie',
+      'Online selectiegalerij',
     ],
     guidance:
-      'You want one strong series of your animal, on one backdrop. Focused and complete.',
+      'Je wilt één sterk portret van jouw dier, mooi afgewerkt en klaar voor de muur.',
     featured: false,
   },
   {
     id: 'signature',
     name: 'Signature',
     price: '€379',
-    blurb: 'More time, more variety — our recommended session.',
+    blurb: 'Twee portretten en meer keuze in achtergronden.',
     highlights: [
-      'Approx. 60 min session',
-      '10 edited photos',
-      'Up to 2 backdrops',
-      '€50 wall art credit',
+      'Max. 45 minuten fotoshoot',
+      '2 professioneel bewerkte portretten',
+      'Keuze uit meerdere achtergronden',
+      'Digitale bestanden in hoge resolutie',
+      'Online selectiegalerij',
+      '€50 tegoed voor wanddecoratie',
     ],
     guidance:
-      'The package most owners choose: enough time for two backdrops, ten photos, and a €50 start on your wall art.',
+      'Het pakket dat de meeste baasjes kiezen: twee afgewerkte portretten, meerdere achtergronden en €50 tegoed voor aan de muur.',
     featured: true,
   },
   {
     id: 'collection',
     name: 'Collection',
     price: '€549',
-    blurb: 'The full session for a complete series.',
+    blurb: 'Het volledige pakket: drie portretten en het hoogste tegoed.',
     highlights: [
-      'Approx. 75–90 min session',
-      '15 edited photos',
-      'Up to 3 backdrops',
-      '€100 wall art credit',
+      'Max. 45 minuten fotoshoot',
+      '3 professioneel bewerkte portretten',
+      'Keuze uit meerdere achtergronden',
+      'Digitale bestanden in hoge resolutie',
+      'Online selectiegalerij',
+      '€100 tegoed voor wanddecoratie',
     ],
     guidance:
-      'For a full series: three backdrops, solo and together, fifteen photos, €100 towards the piece on your wall.',
+      'Voor wie meerdere beelden wil laten afwerken — of meerdere dieren, samen én apart — met €100 tegoed voor wanddecoratie.',
     featured: false,
   },
 ] as const;
 
+/** Het label op het meest gekozen pakket. */
+export const FEATURED_LABEL = 'Meest gekozen';
+
 export const PACKAGE_NOTE =
-  'Every package: online gallery, high-resolution files and social crops. Dogs, cats, birds, rabbits — every animal is welcome.';
+  'Elk studiopakket duurt maximaal 45 minuten en bevat professioneel bewerkte portretten in hoge resolutie. Honden, katten en andere huisdieren zijn allemaal welkom.';
+
+/** Losse meerprijs, los van de pakketten. */
+export const EXTRA_PORTRAIT = {
+  label: 'Extra professioneel bewerkt portret',
+  price: '€50',
+  body: 'Zie je in de selectiegalerij nog een beeld dat je niet kunt laten liggen? Dat laat je los bijbestellen.',
+};
 
 /**
- * The fourth option: the session travels instead of the animal.
+ * De vierde optie: de studio reist, in plaats van het dier.
  *
- * Deliberately not a fourth column in PACKAGES — it is priced and
- * structured differently, and the studio trio is a settled decision.
- * It renders as one wide card in the same visual language, directly
- * under the three.
+ * Bewust geen vierde kolom naast de studiopakketten — het is anders
+ * geprijsd, duurt langer en staat als één brede kaart in dezelfde
+ * vormtaal direct onder de drie.
  */
 export const ON_LOCATION = {
-  id: 'at-home',
-  eyebrow: 'On location',
-  name: 'At your home',
-  price: 'Price on request',
-  priceNote: '[On-location price, travel radius and travel costs — TO BE SUPPLIED]',
-  blurb:
-    'The same portrait session, in the place your animal already knows. We bring the studio to you.',
+  id: 'locatieportret',
+  eyebrow: 'Op locatie',
+  name: 'Locatieportret',
+  price: '€695',
+  blurb: 'De mobiele studio komt naar jou toe.',
+  intro:
+    'Voor dieren die zich thuis het prettigst voelen, bouwen we onze mobiele studio bij jou op locatie op.',
   highlights: [
-    'Approx. 90 min at your home or in your garden',
-    '10 edited photos',
-    'Portable backdrop, or your own interior as the setting',
-    'Online gallery, high resolution',
+    'Tot 1 uur fotografie op locatie',
+    '2 professioneel bewerkte portretten',
+    'Maximaal 2 huisdieren voor dezelfde prijs',
+    'Samen met de fotograaf de mooiste beelden selecteren',
+    'Digitale bestanden in hoge resolutie',
+    'Extra professioneel bewerkt portret: €50',
   ],
+  priceNote: 'Reiskosten zijn afhankelijk van de afstand en bespreken we vooraf met je.',
   guidance:
-    'For animals that are calmest on their own ground — older dogs, indoor cats, and rabbits or birds that travel badly.',
+    'Voor dieren die het meest ontspannen zijn in hun eigen omgeving — oudere honden, binnenkatten en dieren die slecht reizen.',
 } as const;
 
-/** Rows of the full comparison table on Sessions & Pricing. */
+/** Rijen van de vergelijkingstabel op Fotoshoot & tarieven. */
 export const COMPARISON: { label: string; values: [string, string, string] }[] = [
-  { label: 'Price', values: ['€249', '€379', '€549'] },
+  { label: 'Prijs', values: ['€249', '€379', '€549'] },
   {
-    label: 'Session length',
-    values: ['approx. 45 min', 'approx. 60 min', 'approx. 75–90 min'],
-  },
-  { label: 'Edited photos', values: ['5', '10', '15'] },
-  { label: 'Backdrops', values: ['1', 'max. 2', 'max. 3'] },
-  { label: 'Online gallery', values: ['Yes', 'Yes', 'Yes'] },
-  { label: 'High resolution', values: ['Yes', 'Yes', 'Yes'] },
-  { label: 'Social crops', values: ['Yes', 'Yes', 'Yes'] },
-  {
-    label: 'Owner in the photo',
-    values: ['Possible', 'Possible', 'Possible'],
-  },
-  { label: 'Wall art credit', values: ['—', '€50', '€100'] },
-];
-
-export const ADD_ONS = [
-  {
-    title: 'Extra edited photo',
-    price: '€39 each',
-    body: 'Fell in love with more images in your gallery? Add them individually.',
+    label: 'Duur fotoshoot',
+    values: ['max. 45 minuten', 'max. 45 minuten', 'max. 45 minuten'],
   },
   {
-    title: 'Extra pet',
-    price: '+€49',
-    body: 'Bring a second animal; we plan extra settling-in time.',
+    label: 'Professioneel bewerkte portretten',
+    values: ['1', '2', '3'],
+  },
+  { label: 'Achtergronden', values: ['1', 'meerdere', 'meerdere'] },
+  { label: 'Online selectiegalerij', values: ['Ja', 'Ja', 'Ja'] },
+  { label: 'Digitale bestanden in hoge resolutie', values: ['Ja', 'Ja', 'Ja'] },
+  { label: 'Meerdere huisdieren mogelijk', values: ['Ja', 'Ja', 'Ja'] },
+  { label: 'Baasje mee op de foto', values: ['Mogelijk', 'Mogelijk', 'Mogelijk'] },
+  { label: 'Tegoed voor wanddecoratie', values: ['—', '€50', '€100'] },
+  {
+    label: 'Extra professioneel bewerkt portret',
+    values: ['€50 per portret', '€50 per portret', '€50 per portret'],
   },
 ];
 
 /* ------------------------------------------------------------------ */
-/* Process                                                             */
+/* Werkwijze                                                           */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Vijf stappen, van boeken tot het kunstwerk aan de muur.
+ * `photo` verwijst naar een bestandsnaam in src/assets — zie photos.ts.
+ */
 export const STEPS = [
   {
     number: '01',
-    title: 'Book your date.',
-    short:
-      "Choose a package and pick a date in the calendar. You'll receive a short preparation guide — what to bring, and what not to worry about.",
-    long: 'Choose your package and a date in the calendar. After booking you receive a confirmation and a short preparation guide: feed a little less beforehand, bring the favourite treat, and a toy that always works. That’s all the preparation there is.',
+    title: 'Boek jouw fotoshoot',
+    short: 'Kies online een datum en tijd die jou uitkomt.',
+    long: 'Kies in de agenda een beschikbare datum en tijd. Je ontvangt een bevestiging en een korte voorbereiding: neem de favoriete snacks en eventueel een speeltje mee. Veel meer voorbereiding is er niet.',
+    photo: undefined as string | undefined,
+    alt: '',
+    panelNote: 'Online, in een paar klikken',
   },
   {
     number: '02',
-    title: 'Arrive and settle in.',
-    short:
-      'The first minutes belong to your animal: sniffing, exploring, treats. We start photographing when your pet is ready — not before.',
-    long: 'Plan to arrive without rush. The studio is quiet, there are no strangers walking through, and the first minutes are for exploring. Dogs sniff the room; cats get time and hiding spots. We begin when your animal’s body language says it’s fine.',
+    title: 'Welkom in de studio',
+    short: 'Jouw dier krijgt rustig de tijd om te wennen.',
+    long: 'Kom zonder haast binnen. De studio is rustig, er loopt niemand anders rond en de eerste minuten zijn om te snuffelen en rond te kijken. We beginnen pas als jouw dier laat zien dat het zich op zijn gemak voelt.',
+    photo: 'stap-welkom',
+    alt: 'Fotograaf zit op de studiovloer tegenover een bruine spaniël voor een zandkleurige achtergrond',
   },
   {
     number: '03',
-    title: 'The session.',
-    short:
-      'We work in short rounds with breaks. Toys, sounds and patience do the directing — no animal has to sit on command.',
-    long: 'We photograph in short rounds — a few minutes of work, then a break, water, treats. Sounds and toys direct the attention; nobody has to "sit" on command. If you’d like to be in the photos, we plan those shots for the moment your pet is most settled.',
+    title: 'De fotoshoot',
+    short: 'We fotograferen jouw dier en maken verschillende portretten.',
+    long: 'We werken in korte rondes met pauzes ertussen. Geluidjes, speeltjes en snacks sturen de aandacht — stilzitten op commando hoeft niet. In maximaal 45 minuten maken we verschillende composities en achtergronden.',
+    photo: 'stap-fotoshoot',
+    alt: 'Camerascherm met daarop een labradoodle, die op de achtergrond voor de studioachtergrond zit',
   },
   {
     number: '04',
-    title: 'Choose and hang.',
-    short:
-      'Within days you view your gallery and select your favourites. Afterwards we help you choose the right print or frame — in person, without obligation.',
-    long: 'Within a few days [exact delivery time TO BE SUPPLIED] your online gallery is ready. You select your favourites; we edit them in high resolution, with social crops included. Afterwards — in the studio, without obligation — we look at print options together, with real material samples in hand.',
+    title: 'Kies jouw favorieten',
+    short: 'Samen of via de online galerij kies je de mooiste beelden.',
+    long: 'Na de fotoshoot krijg je een selectie van de beste beelden te zien in een online selectiegalerij. Daaruit kies je jouw favoriete portret of portretten. Alleen die beelden worden volledig professioneel nabewerkt.',
+    photo: undefined as string | undefined,
+    alt: '',
+    panelNote: 'In jouw persoonlijke selectiegalerij',
+  },
+  {
+    number: '05',
+    title: 'Van foto naar kunstwerk',
+    short: 'De gekozen portretten worden bewerkt en kunnen als wanddecoratie.',
+    long: 'De gekozen portretten worden professioneel nabewerkt en digitaal in hoge resolutie geleverd. Wil je er een kunstwerk van maken? Dan kiezen we samen het materiaal en formaat: Fine Art, aluminium of plexiglas.',
+    photo: 'stap-kunstwerk',
+    alt: 'Fotograaf bewerkt een portret van een zwarte poedel op een groot scherm, met een ingelijst portret aan de muur',
   },
 ] as const;
 
@@ -283,180 +399,361 @@ export const STEPS = [
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-export const FAQ_SHORT = [
+export type FaqItem = { q: string; a: string };
+export type FaqGroup = { title: string; items: FaqItem[] };
+
+/** De korte selectie op de homepage. */
+export const FAQ_SHORT: FaqItem[] = [
   {
-    q: "My dog doesn't listen — will this work?",
-    a: "Yes. We don't need obedience, we need moments. Short rounds, breaks and treats do more than commands ever could. Restless dogs are normal here.",
+    q: 'Mijn hond kan niet stilzitten. Is dat een probleem?',
+    a: 'Nee. Een hond hoeft niet lang stil te kunnen zitten voor een mooi portret. We werken rustig en gebruiken waar nodig snacks, speeltjes of geluidjes om op het juiste moment de aandacht te krijgen.',
   },
   {
-    q: 'My cat panics in new places.',
-    a: 'Cats get extra time to explore the studio first. We keep the space quiet, work at their pace, and many cats settle faster than their owners expect.',
+    q: 'Mijn huisdier is onzeker of snel bang. Kan dat?',
+    a: 'Ja. Ieder dier reageert anders op een nieuwe omgeving. We geven jouw huisdier rustig de tijd om te wennen aan de studio, fotograaf en apparatuur. We forceren niets en passen de fotoshoot zoveel mogelijk aan het tempo van jouw dier aan.',
   },
   {
-    q: 'Do you photograph more than dogs and cats?',
-    a: 'Yes. Rabbits, birds, guinea pigs, ferrets — if it has a face and a character, it has a portrait. Smaller animals get a smaller set and shorter rounds.',
+    q: 'Hoe lang duurt een dierenfotoshoot?',
+    a: 'Een fotoshoot in onze studio duurt maximaal 45 minuten. Zo hebben we voldoende tijd om jouw huisdier rustig te laten wennen en verschillende beelden te maken.',
   },
   {
-    q: "What if it really doesn't work out?",
-    a: "Then we pause, take a break, or in rare cases reschedule the remaining time. We don't deliver stressed photos of a stressed animal — that helps no one.",
+    q: 'Krijg ik alle gemaakte foto’s?',
+    a: 'Nee. Bij Het Dieren Atelier draait het om kwaliteit in plaats van grote aantallen. Afhankelijk van het gekozen pakket ontvang je 1, 2 of maximaal 3 professioneel bewerkte portretten.',
   },
 ];
 
-export const FAQ_FULL = [
+/** De volledige FAQ, in de rubrieken van de studio. */
+export const FAQ_GROUPS: FaqGroup[] = [
   {
-    q: "My dog doesn't listen / won't sit still.",
-    a: 'We don’t work with commands, we work with attention: sounds, toys, treats, timing. Short rounds mean your dog never has to hold anything for long. Restless dogs make some of the most alive portraits.',
+    title: 'Voor de fotoshoot',
+    items: [
+      {
+        q: 'Welke dieren fotograferen jullie?',
+        a: 'Bij Het Dieren Atelier fotograferen we honden, katten en andere huisdieren. Heb je een bijzonder huisdier en twijfel je of een fotoshoot mogelijk is? Neem dan vooraf even contact met ons op.',
+      },
+      {
+        q: 'Mijn hond kan niet stilzitten. Is dat een probleem?',
+        a: 'Nee. Een hond hoeft niet lang stil te kunnen zitten voor een mooi portret. We werken rustig en gebruiken waar nodig snacks, speeltjes of geluidjes om op het juiste moment de aandacht te krijgen.',
+      },
+      {
+        q: 'Mijn huisdier is onzeker of snel bang. Kan dat?',
+        a: 'Ja. Ieder dier reageert anders op een nieuwe omgeving. We geven jouw huisdier rustig de tijd om te wennen aan de studio, fotograaf en apparatuur. We forceren niets en passen de fotoshoot zoveel mogelijk aan het tempo van jouw dier aan.',
+      },
+      {
+        q: 'Mijn hond kan niet los. Kan hij toch op de foto?',
+        a: 'Ja. Veiligheid staat altijd voorop. Als jouw hond niet los kan, zoeken we tijdens de fotoshoot naar de beste oplossing. Waar mogelijk kan een lijn tijdens de nabewerking uit het uiteindelijke portret worden verwijderd.',
+      },
+      {
+        q: 'Moet mijn hond goed getraind zijn?',
+        a: 'Nee. Commando’s zoals ‘zit’ kunnen handig zijn, maar zijn zeker geen vereiste. We zijn gewend om te fotograferen met verschillende karakters en energieniveaus.',
+      },
+      {
+        q: 'Fotograferen jullie ook katten?',
+        a: 'Zeker. Ook katten zijn welkom in onze fotostudio in Blokker. We geven katten voldoende tijd om rustig aan de nieuwe omgeving te wennen voordat we beginnen.',
+      },
+      {
+        q: 'Fotograferen jullie ook puppy’s en kittens?',
+        a: 'Ja. Ook jonge dieren kunnen worden gefotografeerd. We houden rekening met hun kortere concentratieboog en nemen waar nodig extra rustmomenten.',
+      },
+      {
+        q: 'Wat moet ik meenemen naar de fotoshoot?',
+        a: 'Neem de favoriete snacks en eventueel een favoriet speeltje van jouw huisdier mee. Een halsband en lijn zijn ook handig. Heeft jouw dier speciale behoeften of is er iets waar we rekening mee moeten houden? Laat het vooraf even weten.',
+      },
+      {
+        q: 'Moet ik mijn huisdier voorbereiden op de fotoshoot?',
+        a: 'Een uitgebreide voorbereiding is niet nodig. Zorg er vooral voor dat de vacht er naar wens uitziet. Bij een energieke hond kan een korte wandeling vooraf prettig zijn om alvast wat energie kwijt te raken.',
+      },
+    ],
   },
   {
-    q: 'My cat is anxious in unfamiliar places.',
-    a: 'Cats always get an extended settling-in period, and the studio stays quiet — no other clients, no foot traffic. Many cats need fifteen minutes; a few need thirty. The session time is planned so this never feels rushed.',
+    title: 'Tijdens de fotoshoot',
+    items: [
+      {
+        q: 'Hoe lang duurt een dierenfotoshoot?',
+        a: 'Een fotoshoot in onze studio duurt maximaal 45 minuten. Zo hebben we voldoende tijd om jouw huisdier rustig te laten wennen en verschillende beelden te maken.',
+      },
+      {
+        q: 'Kunnen meerdere huisdieren samen op de foto?',
+        a: 'Ja. Meerdere huisdieren kunnen samen worden gefotografeerd. Wil je met meer dan twee huisdieren komen? Neem dan vooraf even contact met ons op, zodat we kunnen kijken wat het beste werkt.',
+      },
+      {
+        q: 'Kunnen mijn huisdieren samen én apart worden gefotografeerd?',
+        a: 'Ja. Als de tijd en het gedrag van de dieren dit toelaten, kunnen we zowel gezamenlijke als individuele portretten maken.',
+      },
+      {
+        q: 'Kan ik zelf een achtergrondkleur kiezen?',
+        a: 'Ja. In de studio hebben we verschillende achtergrondkleuren beschikbaar. Samen kijken we welke achtergrond het mooiste past bij de vacht, kleuren en uitstraling van jouw huisdier.',
+      },
+      {
+        q: 'Hoeveel foto’s worden er tijdens de fotoshoot gemaakt?',
+        a: 'Tijdens de shoot maken we meerdere foto’s en verschillende composities. Daarna worden de beste beelden geselecteerd, waaruit jij jouw favoriete portret of portretten kiest.',
+      },
+      {
+        q: 'Krijg ik alle gemaakte foto’s?',
+        a: 'Nee. Bij Het Dieren Atelier draait het om kwaliteit in plaats van grote aantallen foto’s. Afhankelijk van het gekozen pakket ontvang je 1, 2 of maximaal 3 professioneel bewerkte portretten. De overige onbewerkte bestanden worden niet geleverd.',
+      },
+      {
+        q: 'Kan ik extra portretten bestellen?',
+        a: 'Ja. Wil je na het zien van de selectie meer foto’s laten bewerken? Een extra professioneel bewerkt portret kost €50 per foto.',
+      },
+      {
+        q: 'Wat gebeurt er als mijn huisdier niet meewerkt?',
+        a: 'Geen probleem. We proberen verschillende manieren om jouw huisdier op zijn gemak te stellen en de aandacht te krijgen. We nemen waar nodig een korte pauze en forceren niets.',
+      },
+      {
+        q: 'Wat gebeurt er als de fotoshoot echt niet lukt?',
+        a: 'We doen er alles aan om geschikte beelden te maken, maar het welzijn van jouw huisdier staat altijd voorop. Mocht het ondanks onze inspanningen echt niet lukken om geschikte beelden te maken, dan blijft 50% van het gekozen pakket verschuldigd. De studio en tijd zijn namelijk speciaal voor jouw afspraak gereserveerd.',
+      },
+    ],
   },
   {
-    q: 'Can I bring more than one pet?',
-    a: 'Yes — each extra pet is +€49, and we add settling-in time. Group shots and individual portraits are both possible; the Collection package suits multiple animals best.',
+    title: 'Na de fotoshoot',
+    items: [
+      {
+        q: 'Hoe kies ik mijn favoriete portretten?',
+        a: 'Na de fotoshoot krijg je een selectie van de beste beelden te zien. Hieruit kies je jouw favoriete portret of portretten. Alleen de gekozen beelden worden vervolgens volledig professioneel nabewerkt.',
+      },
+      {
+        q: 'Krijg ik de onbewerkte foto’s?',
+        a: 'Nee. Onbewerkte bestanden worden niet geleverd. Je ontvangt alleen de door jou gekozen en professioneel afgewerkte portretten in hoge resolutie.',
+      },
+      {
+        q: 'Wanneer ontvang ik mijn foto’s?',
+        a: 'De gemiddelde levertijd voor digitaal bewerkte portretten is 5 tot 10 werkdagen nadat de definitieve selectie is gemaakt. Heb je jouw foto’s voor een bepaalde datum nodig? Neem dan contact met ons op. Bij spoed kijken we graag samen wat mogelijk is.',
+      },
+      {
+        q: 'Hoe ontvang ik mijn foto’s?',
+        a: 'De gekozen portretten worden professioneel nabewerkt en digitaal in hoge resolutie aangeleverd.',
+      },
+      {
+        q: 'Kan ik later nog extra portretten bestellen?',
+        a: 'Extra portretten kunnen worden besteld zolang de betreffende bestanden nog beschikbaar zijn. Wil je achteraf een extra beeld laten bewerken? Neem dan zo snel mogelijk contact met ons op.',
+      },
+    ],
   },
   {
-    q: 'Can I be in the photo with my pet?',
-    a: 'Yes, in every package, included. Wear something plain and dark or neutral — the portrait stays about your animal, with you as the warm second layer.',
+    title: 'Wanddecoratie',
+    items: [
+      {
+        q: 'Kan ik mijn dierenportret ook als wanddecoratie bestellen?',
+        a: 'Ja. Jouw favoriete portret kan worden uitgevoerd als hoogwaardige wanddecoratie. Zo kun je van jouw dierenfoto een persoonlijk kunstwerk voor aan de muur maken.',
+      },
+      {
+        q: 'Welke materialen zijn beschikbaar?',
+        a: 'Je kunt kiezen uit Fine Art, aluminium en plexiglas. Fine Art heeft een zachte, matte en tijdloze uitstraling en is ook ingelijst verkrijgbaar. Aluminium geeft een strakke en moderne afwerking met een rustige uitstraling. Plexiglas is een luxe afwerking met veel diepte, heldere kleuren en scherpe details.',
+      },
+      {
+        q: 'Welke formaten zijn mogelijk?',
+        a: 'Vrijwel ieder gewenst formaat is mogelijk. Het ideale formaat is afhankelijk van het portret, het gekozen materiaal en de plek waar het kunstwerk komt te hangen. Daarom geven we hierover graag persoonlijk advies. In de studio kunnen we samen de verschillende mogelijkheden bekijken en het juiste formaat bepalen.',
+      },
+      {
+        q: 'Kan ik de materialen eerst in het echt bekijken?',
+        a: 'Ja. In onze studio kun je Fine Art, aluminium en plexiglas bekijken en vergelijken voordat je een keuze maakt.',
+      },
+      {
+        q: 'Kunnen jullie helpen met het kiezen van het juiste materiaal?',
+        a: 'Zeker. We helpen je graag bij het kiezen van een materiaal en formaat dat mooi aansluit bij het portret én jouw interieur.',
+      },
+      {
+        q: 'Hoe lang duurt de levering van wanddecoratie?',
+        a: 'De levertijd is afhankelijk van het gekozen materiaal en formaat. Bij het bestellen laten we weten wat de verwachte levertijd is. Heb je het kunstwerk met spoed nodig? Laat het ons weten, dan kijken we samen wat mogelijk is.',
+      },
+    ],
   },
   {
-    q: 'Can you come to our home instead?',
-    a: 'Yes — an on-location session is the fourth option. We bring a portable backdrop, or use your own interior, and photograph where your animal already feels safe. [Price, travel radius and travel costs TO BE SUPPLIED.]',
+    title: 'Fotoshoot op locatie',
+    items: [
+      {
+        q: 'Komen jullie ook bij mij thuis fotograferen?',
+        a: 'Ja. Met ons Locatieportret komen we met een mobiele fotostudio naar jou toe. Dit kan prettig zijn voor dieren die zich in hun eigen omgeving het meest op hun gemak voelen.',
+      },
+      {
+        q: 'Wat is inbegrepen bij een Locatieportret?',
+        a: 'Bij het Locatieportret reserveren we maximaal 1 uur en zijn 2 professioneel bewerkte portretten inbegrepen. De prijs geldt voor maximaal 2 huisdieren.',
+      },
+      {
+        q: 'Wat kost een dierenfotoshoot op locatie?',
+        a: 'Een Locatieportret kost €695. Eventuele reiskosten zijn afhankelijk van de locatie en worden vooraf met je besproken.',
+      },
+      {
+        q: 'Kan ik bij een Locatieportret extra foto’s bestellen?',
+        a: 'Ja. Ook bij een fotoshoot op locatie kun je extra professioneel bewerkte portretten bestellen voor €50 per foto.',
+      },
+    ],
   },
   {
-    q: 'How long does a session take?',
-    a: 'Essential approx. 45 minutes, Signature approx. 60, Collection approx. 75–90. Settling-in time is inside these numbers — we’d rather use ten minutes for arrival than force a start.',
+    title: 'Studio & bereikbaarheid',
+    items: [
+      {
+        q: 'Waar is Het Dieren Atelier gevestigd?',
+        a: 'Onze dierenfotostudio is gevestigd aan de Gildenweg 3H, 1695 GD Blokker. De studio ligt direct naast Hoorn in Noord-Holland.',
+      },
+      {
+        q: 'Kan ik gratis parkeren?',
+        a: 'Ja. Je kunt gratis parkeren bij de studio.',
+      },
+      {
+        q: 'Werken jullie alleen op afspraak?',
+        a: 'Ja. Het Dieren Atelier werkt uitsluitend op afspraak. Zo kunnen we voor iedere dierenfotoshoot voldoende tijd en aandacht reserveren.',
+      },
+    ],
   },
   {
-    q: 'How are the best images chosen?',
-    a: 'You receive an online gallery with a generous pre-selection. You choose your favourites — 5, 10 or 15 depending on the package — and can add extra images at €39 each. We’re happy to advise, but the choice is yours.',
+    title: 'Boeken & betalen',
+    items: [
+      {
+        q: 'Hoe kan ik een fotoshoot boeken?',
+        a: 'Via de knop ‘Boek jouw fotoshoot’ op de website kun je direct een beschikbare datum en tijd kiezen.',
+      },
+      {
+        q: 'Kan ik eerst een vraag stellen voordat ik boek?',
+        a: 'Natuurlijk. Via de WhatsApp-knop op onze website kun je gemakkelijk contact opnemen als je vooraf iets wilt bespreken.',
+      },
+      {
+        q: 'Wat kost een dierenfotoshoot?',
+        a: 'Onze dierenfotoshoots in de studio beginnen vanaf €249. Afhankelijk van het gekozen pakket ontvang je 1, 2 of 3 professioneel bewerkte portretten. Een Locatieportret bij jou thuis kost €695.',
+      },
+      {
+        q: 'Hoe kan ik betalen?',
+        a: 'De fotoshoot wordt in onze studio betaald. Je kunt betalen per pin of contant.',
+      },
+      {
+        q: 'Kan ik mijn afspraak annuleren of verplaatsen?',
+        a: 'Ja. Laat het ons zo snel mogelijk weten als je afspraak niet door kan gaan. Bij annulering of verplaatsing binnen 24 uur voor de afspraak brengen we €75 annuleringskosten in rekening.',
+      },
+      {
+        q: 'Wat gebeurt er als ik niet op mijn afspraak verschijn?',
+        a: 'Neem altijd zo snel mogelijk contact met ons op als je onverwacht niet kunt komen. Bij het niet verschijnen op een afspraak behouden we ons het recht voor om kosten voor de gereserveerde tijd in rekening te brengen.',
+      },
+    ],
   },
   {
-    q: "What if it just doesn't work out?",
-    a: 'It almost always does — but if an animal is genuinely too stressed, we stop. We’d rather reschedule the remaining time than deliver photos of an unhappy animal. [Exact goodwill/reschedule policy TO BE SUPPLIED]',
+    title: 'Cadeaubonnen',
+    items: [
+      {
+        q: 'Kan ik een dierenfotoshoot cadeau geven?',
+        a: 'Ja! Bij Het Dieren Atelier zijn cadeaubonnen voor een dierenfotoshoot verkrijgbaar. Een persoonlijk cadeau voor iemand die gek is op zijn of haar hond, kat of ander huisdier.',
+      },
+      {
+        q: 'Hoe bestel ik een cadeaubon?',
+        a: 'Neem eenvoudig contact met ons op via WhatsApp of via de e-mail. We helpen je vervolgens met het kiezen van een passend bedrag of fotoshoot.',
+      },
+      {
+        q: 'Kan de ontvanger zelf een datum kiezen?',
+        a: 'Ja. De ontvanger kan zelf een beschikbare datum voor de fotoshoot kiezen.',
+      },
+    ],
   },
 ];
 
-export const FAQ_BOOKING = [
-  {
-    q: 'How does payment work?',
-    a: '[Payment and deposit policy TO BE SUPPLIED.] The booking flow currently assumes no online payment: you send a request and we confirm your date personally.',
-  },
-  {
-    q: 'Can I reschedule?',
-    a: '[Rescheduling window and conditions TO BE SUPPLIED.] In practice: let us know as early as you can and we find a new date together.',
-  },
-  {
-    q: 'Can I bring several pets to one session?',
-    a: 'Yes. Each extra pet is +€49 and adds settling-in time to the session. For two or more animals, the Collection package gives the most room.',
-  },
-];
+/** De rubrieken die op Fotoshoot & tarieven staan, direct onder de pakketten. */
+export const FAQ_BOOKING: FaqItem[] =
+  FAQ_GROUPS.find((group) => group.title === 'Boeken & betalen')?.items ?? [];
 
 /* ------------------------------------------------------------------ */
 /* Reviews                                                             */
 /* ------------------------------------------------------------------ */
 
+/** Echte klantreacties. */
+export const REVIEWS: {
+  quote: string;
+  author: string;
+  date: string;
+  rating: number;
+}[] = [
+  {
+    quote:
+      'Super fijne ervaring! Moos is normaal best druk en ik vroeg me vooraf af of het zou lukken om hem goed op de foto te krijgen. Er werd echt rustig de tijd genomen en dat zie je terug in het resultaat. Uiteindelijk was kiezen nog het moeilijkste. Heel blij met de foto’s!',
+    author: 'Sanne & Moos',
+    date: '12 september 2026',
+    rating: 5,
+  },
+  {
+    quote:
+      'Vanaf het moment dat we binnenkwamen voelde het heel ontspannen. Bobby moest eerst even wennen aan de studio, maar daar werd totaal geen druk op gelegd. De foto’s zijn echt prachtig geworden en vooral heel erg ‘Bobby’. Zeker een aanrader als je iets bijzonders van je huisdier wilt laten maken.',
+    author: 'Lisa & Bobby',
+    date: '6 september 2026',
+    rating: 5,
+  },
+  {
+    quote:
+      'Ontzettend blij met het eindresultaat. Nala werkt normaal niet bepaald mee zodra er een camera tevoorschijn komt, maar tijdens de shoot ging het verrassend goed. De begeleiding was rustig en professioneel en de foto’s zijn echt super scherp en mooi afgewerkt. We hebben er uiteindelijk ook één groot voor aan de muur besteld.',
+    author: 'Mark & Nala',
+    date: '29 augustus 2026',
+    rating: 5,
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/* Wanddecoratie                                                       */
+/* ------------------------------------------------------------------ */
+
 /**
- * Real client quotes only. While REVIEWS is empty the section still
- * renders — same three cards, same stars — with the brief for each quote
- * in place of the words, so the design is reviewable and nothing
- * invented ships by accident.
- *
- * To go live: fill REVIEWS with three real quotes. The briefs disappear
- * on their own.
+ * Drie materialen, in de volgorde van toegankelijk naar luxe.
+ * `photo`-waarden zijn bestandsnamen in src/assets/rooms.
  */
-export const REVIEWS: { quote: string; author: string; pet: string; rating: number }[] = [
-  // { quote: '…', author: 'Anne de Vries', pet: 'with Loup', rating: 5 },
-];
-
-/** One theme each: the difficult animal, the session, the print. */
-export const REVIEW_BRIEFS = [
-  {
-    brief:
-      'A nervous, restless or impossible animal — and the owner who was sure it would never work.',
-    author: 'Owner & pet — to be supplied',
-  },
-  {
-    brief: 'The calm of the session itself: the time taken, the breaks, the patience.',
-    author: 'Owner & pet — to be supplied',
-  },
-  {
-    brief: 'The finished portrait on the wall, and what it still means months later.',
-    author: 'Owner & pet — to be supplied',
-  },
-];
-
-/** e.g. { rating: '4.9', count: 37, url: 'https://…' } */
-export const GOOGLE_REVIEWS: { rating: string; count: number; url: string } | null = null;
-
-/* ------------------------------------------------------------------ */
-/* Wall art                                                            */
-/* ------------------------------------------------------------------ */
-
-export const WALL_ART_TILES = [
-  { label: 'Fine art print', from: 'from €99' },
-  { label: 'Aluminium', from: 'from €199' },
-  { label: 'Acrylic glass', from: 'from €249' },
-];
-
 export const WALL_ART_PRODUCTS = [
   {
     id: 'fine-art',
-    name: 'Fine art print',
-    price: 'from €99',
+    name: 'Fine Art',
+    tagline: 'Zacht, mat en tijdloos.',
     blurb:
-      'Museum-grade matte paper with deep blacks and soft, true colour. The classic choice for framing.',
+      'Een zachte, matte en tijdloze uitstraling op museumwaardig papier. Onze meest toegankelijke optie voor wanddecoratie, en ook ingelijst verkrijgbaar.',
     points: [
-      'Archival paper, made to last decades',
-      'Available formats: [TO BE SUPPLIED]',
-      'Ideal for: framed walls, gallery arrangements',
+      'Zachte, matte afdruk met diepe zwarten',
+      'Los of ingelijst met passe-partout',
+      'Vrijwel ieder formaat mogelijk',
     ],
-    room: 'Living room',
-    tone: 'pearl' as BackdropKey,
-  },
-  {
-    id: 'framed',
-    name: 'Framed fine art',
-    price: 'from €149',
-    blurb:
-      'The same print, finished in a wooden frame with glass — ready to hang the day you pick it up.',
-    points: [
-      'Frame finishes: [TO BE SUPPLIED]',
-      'Delivered ready to hang',
-      'Ideal for: living rooms, hallways, gifts',
-    ],
-    room: 'Hallway',
-    tone: 'caramel' as BackdropKey,
+    recommended: false,
+    photo: 'fineart',
+    alt: 'Fine Art-print van een zwarte dog, leunend tegen een muur naast een keramieken vaas',
+    detail: 'fineart-ingelijst',
+    detailAlt:
+      'Ingelijste Fine Art-print van een zwarte dog met passe-partout boven een eiken dressoir',
+    detailLabel: 'Fine Art, ingelijst',
   },
   {
     id: 'aluminium',
     name: 'Aluminium',
-    price: 'from €199',
+    tagline: 'Modern, strak en mat.',
     blurb:
-      'The image bonded to brushed aluminium: frameless, matte, extremely durable.',
+      'Een strakke en moderne afwerking met een rustige uitstraling. Zonder glas en zonder lijst: het portret lijkt los van de muur te zweven.',
     points: [
-      'No glass, no glare',
-      'Slim, modern profile that floats off the wall',
-      'Ideal for: modern interiors, kitchens, offices',
+      'Geen glas, dus geen spiegeling',
+      'Slank profiel dat vrij van de muur hangt',
+      'Onderhoudsvriendelijk en zeer duurzaam',
     ],
-    room: 'Kitchen',
-    tone: 'forest' as BackdropKey,
+    recommended: false,
+    photo: 'aluminium',
+    alt: 'Groot aluminium portret van een border collie op een blauwe achtergrond in een lichte woonkamer',
+    detail: 'aluminium-portret',
+    detailAlt:
+      'Aluminium portret van een zwarte dog boven een houten bank in een woonkamer met hoge ramen',
+    detailLabel: 'Aluminium in een woonkamer',
   },
   {
-    id: 'acrylic',
-    name: 'Acrylic glass',
-    price: 'from €249',
+    id: 'plexiglas',
+    name: 'Plexiglas',
+    tagline: 'Diepe kleuren, scherpe details en een luxe afwerking.',
     blurb:
-      'The print behind polished acrylic: maximum depth, colour and detail. The premium finish.',
+      'Het portret achter gepolijst acrylaat: maximale diepte, glans en kleurkracht. Het materiaal waar studioportretten het meest tot leven komen — en daarom onze aanrader.',
     points: [
-      'Colours with real depth and shine',
-      'The finish that makes studio backdrops glow',
-      'Ideal for: the one big statement piece',
+      'Hoogglans afwerking die het beeld laat oplichten',
+      'De afwerking die studioachtergronden laat stralen',
+      'Ideaal voor dat ene grote statement aan de muur',
     ],
-    room: 'Bedroom',
-    tone: 'midnight' as BackdropKey,
+    recommended: true,
+    photo: 'plexiglas',
+    alt: 'Plexiglas portret van een ragdollkat boven een eiken dressoir in een lichte woonkamer',
+    detail: 'plexiglas-staand',
+    detailAlt:
+      'Groot plexiglas portret van een zwarte kat aan een woonkamermuur naast een raam',
+    detailLabel: 'Plexiglas op groot formaat',
   },
 ];
+
+/** Het label op het aanbevolen materiaal. */
+export const RECOMMENDED_LABEL = 'Meest aanbevolen';
 
 /* ------------------------------------------------------------------ */
 /* Portfolio                                                           */
@@ -465,64 +762,74 @@ export const WALL_ART_PRODUCTS = [
 export type PortfolioItem = {
   name: string;
   tone: BackdropKey;
-  species: 'dogs' | 'cats' | 'birds' | 'rabbits' | 'other';
+  species: 'honden' | 'katten' | 'vogels' | 'konijnen' | 'overig';
+  /** Voor de alt-tekst en de silhouet-placeholder. */
   animal: 'dog' | 'cat' | 'rabbit' | 'bird' | 'guineapig';
-  /** Slot name in src/assets/portraits. Absent: the placeholder renders. */
+  /** Bestandsnaam in src/assets/portraits. Ontbreekt: de placeholder rendert. */
   photo?: string;
-  /** Escape hatch for a file served straight out of public/. */
-  src?: string;
+  /** Korte Nederlandse omschrijving van het dier, voor de alt-tekst. */
+  subject?: string;
+};
+
+/** Nederlandse soortnaam, voor alt-teksten. */
+export const ANIMAL_NOUN: Record<NonNullable<PortfolioItem['animal']>, string> = {
+  dog: 'hond',
+  cat: 'kat',
+  rabbit: 'konijn',
+  bird: 'vogel',
+  guineapig: 'cavia',
 };
 
 /**
- * Home: the six portraits that decide what a visitor thinks the studio
- * photographs. Two dogs, two cats, a bird and a rabbit — never six dogs.
+ * Home: de zes portretten die bepalen wat een bezoeker denkt dat de
+ * studio fotografeert. Twee honden, twee katten, een vogel en een
+ * konijn — nooit zes honden.
  */
 export const HOME_SELECTION: PortfolioItem[] = [
-  { name: 'Nova', photo: 'nova', tone: 'charcoal', species: 'dogs', animal: 'dog' },
-  { name: 'Miep', photo: 'miep', tone: 'pearl', species: 'cats', animal: 'cat' },
-  { name: 'Pip', photo: 'pip', tone: 'softblue', species: 'birds', animal: 'bird' },
-  { name: 'Bono', photo: 'bono', tone: 'pearl', species: 'dogs', animal: 'dog' },
-  { name: 'Pim', photo: 'pim', tone: 'forest', species: 'rabbits', animal: 'rabbit' },
-  { name: 'Wolke', photo: 'wolke', tone: 'midnight', species: 'cats', animal: 'cat' },
+  { name: 'Nova', photo: 'nova', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'Australische herder' },
+  { name: 'Miep', photo: 'miep', tone: 'pearl', species: 'katten', animal: 'cat', subject: 'Brits korthaar' },
+  { name: 'Pip', photo: 'pip', tone: 'softblue', species: 'vogels', animal: 'bird', subject: 'valkparkiet' },
+  { name: 'Bono', photo: 'bono', tone: 'pearl', species: 'honden', animal: 'dog', subject: 'teckel' },
+  { name: 'Pim', photo: 'pim', tone: 'forest', species: 'konijnen', animal: 'rabbit', subject: 'konijn' },
+  { name: 'Wolke', photo: 'wolke', tone: 'midnight', species: 'katten', animal: 'cat', subject: 'rode kat' },
 ];
 
 /**
- * Portfolio page: the full range, ordered on two axes at once — no two
- * portraits of the same species adjacent, and no two on the same
- * backdrop adjacent. The grid has to read as a studio that photographs
- * animals, not as a dog photographer with a few exceptions.
+ * Portfoliopagina: het volledige bereik, geordend op twee assen
+ * tegelijk — geen twee portretten van dezelfde soort naast elkaar, en
+ * geen twee op dezelfde achtergrond naast elkaar.
  */
 export const PORTFOLIO: PortfolioItem[] = [
-  { name: 'Nova', photo: 'nova', tone: 'charcoal', species: 'dogs', animal: 'dog' },
-  { name: 'Miep', photo: 'miep', tone: 'pearl', species: 'cats', animal: 'cat' },
-  { name: 'Pip', photo: 'pip', tone: 'softblue', species: 'birds', animal: 'bird' },
-  { name: 'Bono', photo: 'bono', tone: 'pearl', species: 'dogs', animal: 'dog' },
-  { name: 'Juno', photo: 'juno', tone: 'charcoal', species: 'cats', animal: 'cat' },
-  { name: 'Pim', photo: 'pim', tone: 'forest', species: 'rabbits', animal: 'rabbit' },
-  { name: 'Storm', photo: 'storm', tone: 'midnight', species: 'dogs', animal: 'dog' },
-  { name: 'Saar', photo: 'saar', tone: 'caramel', species: 'cats', animal: 'cat' },
-  { name: 'Flip', photo: 'flip', tone: 'charcoal', species: 'birds', animal: 'bird' },
-  { name: 'Fien', photo: 'fien', tone: 'pearl', species: 'dogs', animal: 'dog' },
-  { name: 'Knabbel', photo: 'knabbel', tone: 'caramel', species: 'other', animal: 'guineapig' },
-  { name: 'Noor', photo: 'noor', tone: 'sage', species: 'cats', animal: 'cat' },
-  { name: 'Bram', photo: 'bram', tone: 'pearl', species: 'dogs', animal: 'dog' },
-  { name: 'Wolke', photo: 'wolke', tone: 'midnight', species: 'cats', animal: 'cat' },
-  { name: 'Sam', photo: 'sam', tone: 'sage', species: 'birds', animal: 'bird' },
-  { name: 'Guus', photo: 'guus', tone: 'charcoal', species: 'dogs', animal: 'dog' },
-  { name: 'Reza', photo: 'reza', tone: 'pearl', species: 'cats', animal: 'cat' },
-  { name: 'Roos', photo: 'roos', tone: 'midnight', species: 'dogs', animal: 'dog' },
+  { name: 'Nova', photo: 'nova', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'Australische herder' },
+  { name: 'Miep', photo: 'miep', tone: 'pearl', species: 'katten', animal: 'cat', subject: 'Brits korthaar' },
+  { name: 'Pip', photo: 'pip', tone: 'softblue', species: 'vogels', animal: 'bird', subject: 'valkparkiet' },
+  { name: 'Bono', photo: 'bono', tone: 'pearl', species: 'honden', animal: 'dog', subject: 'teckel' },
+  { name: 'Juno', photo: 'juno', tone: 'charcoal', species: 'katten', animal: 'cat', subject: 'Maine Coon' },
+  { name: 'Pim', photo: 'pim', tone: 'forest', species: 'konijnen', animal: 'rabbit', subject: 'konijn' },
+  { name: 'Storm', photo: 'storm', tone: 'midnight', species: 'honden', animal: 'dog', subject: 'border collie' },
+  { name: 'Saar', photo: 'saar', tone: 'caramel', species: 'katten', animal: 'cat', subject: 'ragdoll' },
+  { name: 'Flip', photo: 'flip', tone: 'charcoal', species: 'vogels', animal: 'bird', subject: 'grijze roodstaart' },
+  { name: 'Fien', photo: 'fien', tone: 'pearl', species: 'honden', animal: 'dog', subject: 'whippet' },
+  { name: 'Knabbel', photo: 'knabbel', tone: 'caramel', species: 'overig', animal: 'guineapig', subject: 'cavia' },
+  { name: 'Noor', photo: 'noor', tone: 'sage', species: 'katten', animal: 'cat', subject: 'bengaal' },
+  { name: 'Bram', photo: 'bram', tone: 'pearl', species: 'honden', animal: 'dog', subject: 'Franse bulldog' },
+  { name: 'Wolke', photo: 'wolke', tone: 'midnight', species: 'katten', animal: 'cat', subject: 'rode kat' },
+  { name: 'Sam', photo: 'sam', tone: 'sage', species: 'vogels', animal: 'bird', subject: 'agapornis' },
+  { name: 'Guus', photo: 'guus', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'zwarte dog' },
+  { name: 'Reza', photo: 'reza', tone: 'pearl', species: 'katten', animal: 'cat', subject: 'zwarte kat' },
+  { name: 'Roos', photo: 'roos', tone: 'midnight', species: 'honden', animal: 'dog', subject: 'poedel' },
+  { name: 'Daan', photo: 'daan', tone: 'taupe', species: 'honden', animal: 'dog', subject: 'labrador' },
+  { name: 'Joep', photo: 'joep', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'herdershond' },
+  { name: 'Mila', photo: 'mila', tone: 'pearl', species: 'katten', animal: 'cat', subject: 'kitten' },
+  { name: 'Bo & Nina', photo: 'duo-cats', tone: 'taupe', species: 'katten', animal: 'cat', subject: 'twee katten samen' },
+  { name: 'Sep & Tijs', photo: 'duo-dogs', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'golden retriever en teckel samen' },
 ];
 
-/**
- * Species, not occasions. "With owner" was a filter here once; owner
- * portraits are still possible in every package, but they are a variation
- * on a session, not a category of the work.
- */
 export const PORTFOLIO_FILTERS = [
-  { id: 'all', label: 'All' },
-  { id: 'dogs', label: 'Dogs' },
-  { id: 'cats', label: 'Cats' },
-  { id: 'birds', label: 'Birds' },
-  { id: 'rabbits', label: 'Rabbits' },
-  { id: 'other', label: 'Other pets' },
+  { id: 'all', label: 'Alles' },
+  { id: 'honden', label: 'Honden' },
+  { id: 'katten', label: 'Katten' },
+  { id: 'vogels', label: 'Vogels' },
+  { id: 'konijnen', label: 'Konijnen' },
+  { id: 'overig', label: 'Overige huisdieren' },
 ] as const;

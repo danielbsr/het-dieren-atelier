@@ -4,46 +4,44 @@ import PageHeader from '../components/PageHeader.astro';
 import Portrait from '../components/Portrait.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import BookButton from '../components/BookButton.astro';
-import { PORTFOLIO, PORTFOLIO_FILTERS } from '../data/site';
+import { ANIMAL_NOUN, BACKDROPS, CTA, PORTFOLIO, PORTFOLIO_FILTERS } from '../data/site';
 import { photo } from '../data/photos';
 
-/** An inline CTA band interrupts the grid every nine portraits. */
-const CHUNK = 9;
+/** Een CTA-band onderbreekt het grid halverwege. */
+const CHUNK = 12;
 const chunks = Array.from({ length: Math.ceil(PORTFOLIO.length / CHUNK) }, (_, i) =>
   PORTFOLIO.slice(i * CHUNK, i * CHUNK + CHUNK)
 );
 
-/**
- * Varied crops so the grid reads as a wall, not a contact sheet — at
- * md and up. Two phone-width columns of different heights just look
- * misaligned, so below md every tile is the same 4:5.
- */
-const shapes = ['tall', 'portrait', 'portrait', 'portrait', 'tall', 'square'] as const;
+const alt = (item: (typeof PORTFOLIO)[number]) =>
+  `Studioportret van ${item.name}, een ${item.subject ?? ANIMAL_NOUN[item.animal]}, op een ${
+    BACKDROPS[item.tone].adjective
+  } achtergrond`;
 ---
 
 <Layout
-  title="Portfolio — dog, cat, bird & rabbit portraits"
-  description="Recent studio portraits: dogs, cats, birds, rabbits and other pets on hand-picked backdrops. See the work before you book."
+  title="Portfolio — dierenportretten uit de studio"
+  description="Recente dierenportretten uit onze studio in Blokker: honden, katten, vogels en konijnen op met de hand gekozen achtergronden. Bekijk het werk voordat je boekt."
 >
   <PageHeader
     eyebrow="Portfolio"
-    title="The portfolio."
-    intro="A selection of recent sessions — dogs and cats, but just as often a rabbit, a bird or something that surprises us. Every portrait was made with time and patience."
+    title="Het portfolio."
+    intro="Een selectie uit recente fotoshoots — honden en katten, maar net zo vaak een konijn, een vogel of iets dat ons verrast. Tik op een portret om het groot te bekijken."
   />
 
   <!-- Filters -->
   <div class="pb-8 pt-8 md:pb-14 md:pt-14">
     <div class="mx-auto max-w-[75rem] md:px-10">
       <!--
-        The padding and the negative margins that cancel it: a scroller
-        clips on both axes, and a focused pill wears a 2px outline 3px
-        clear of its edge. Without the room that outline is shaved off
-        against the row. The margins keep the spacing unchanged.
+        De padding en de negatieve marges die hem opheffen: een scroller
+        knipt op beide assen, en een pil met focus draagt een outline van
+        2px op 3px afstand. Zonder die ruimte wordt de outline langs de
+        rij afgeschoren. De marges houden de spacing gelijk.
       -->
       <div
         class="-mb-4 -mt-2 flex gap-2 overflow-x-auto px-6 pb-4 pt-2 md:mb-0 md:mt-0 md:flex-wrap md:overflow-visible md:px-0 md:pb-0 md:pt-0"
         role="group"
-        aria-label="Filter portraits by animal"
+        aria-label="Filter portretten op diersoort"
         data-reveal="rise"
       >
         {
@@ -62,25 +60,34 @@ const shapes = ['tall', 'portrait', 'portrait', 'portrait', 'tall', 'square'] as
     </div>
   </div>
 
+  <!--
+    Eén kolom op een telefoon. Twee kolommen gaven op 375px portretten
+    van ~165px breed — precies de piepkleine thumbnails waar de feedback
+    om vroeg ze weg te halen. Dit is de belangrijkste overtuigingspagina
+    van de site, dus hier gaat beeldgrootte vóór scrollafstand.
+  -->
   {
     chunks.map((chunk, chunkIndex) => (
       <>
         <div class="mx-auto max-w-[75rem] px-6 md:px-10">
-          <div class="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-7">
-            {chunk.map((item, i) => (
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-7">
+            {chunk.map((item) => (
               <Portrait
                 data-species={item.species}
+                role="button"
+                tabindex="0"
+                aria-label={`${alt(item)} — groot bekijken`}
+                class="portfolio-item cursor-zoom-in"
                 tone={item.tone}
                 name={item.name}
                 animal={item.animal}
-                src={item.src ?? photo(item.photo)}
-                sizes="(min-width: 1200px) 360px, (min-width: 768px) 32vw, 50vw"
-                ratio={shapes[(chunkIndex * CHUNK + i) % shapes.length]}
-                mobileRatio="portrait"
-                crop={i % 4 === 0 ? 'tight' : 'full'}
+                subject={item.subject}
+                src={photo(item.photo)}
+                sizes="(min-width: 1200px) 360px, (min-width: 1024px) 32vw, (min-width: 640px) 48vw, 100vw"
+                ratio="portrait"
                 caption
                 hover
-                class="portfolio-item"
+                alt={alt(item)}
               />
             ))}
           </div>
@@ -93,7 +100,7 @@ const shapes = ['tall', 'portrait', 'portrait', 'portrait', 'tall', 'square'] as
               data-reveal="rise"
             >
               <p class="font-display text-2xl text-ink md:text-3xl">
-                Imagining your own animal here?
+                Zie je jouw dier hier al hangen?
               </p>
               <div class="shrink-0">
                 <BookButton block size="md" />
@@ -105,29 +112,93 @@ const shapes = ['tall', 'portrait', 'portrait', 'portrait', 'tall', 'square'] as
     ))
   }
 
-  <!-- Nothing matched the active filter. -->
+  <!-- Niets voldeed aan het actieve filter. -->
   <div class="mx-auto max-w-[75rem] px-6 md:px-10">
     <p id="portfolio-empty" hidden class="py-14 text-center font-body text-muted">
-      No portraits in this category yet.
+      Nog geen portretten in deze categorie.
     </p>
   </div>
 
-  <!-- Repeat the booking button under the full grid, before the closing block. -->
-  <div class="mx-auto max-w-[75rem] px-6 py-14 text-center md:px-10 md:py-24" data-reveal="rise">
-    <BookButton block class="mx-auto max-w-sm" />
+  <div
+    class="mx-auto flex max-w-[75rem] flex-col items-stretch gap-4 px-6 py-14 sm:flex-row sm:items-center sm:justify-center sm:gap-6 md:px-10 md:py-24"
+    data-reveal="rise"
+  >
+    <BookButton block />
+    <a
+      href={CTA.packages.href}
+      class="btn btn-outline inline-flex items-center justify-center rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest"
+    >
+      {CTA.packages.label}
+    </a>
   </div>
 
   <ClosingCta
-    headline="Your animal. On your wall."
-    body="Pick a date in the calendar — the rest happens calmly, in the studio or at your home."
+    headline="Jouw dier. Aan jouw muur."
+    body="Kies een datum in de agenda — de rest gebeurt rustig, in de studio of bij jou op locatie."
     tone="pearl"
     photo="mila"
+    animal="cat"
+    subject="kitten"
   />
+
+  <!--
+    Lightbox. Eén <dialog> voor alle portretten: het beeld wordt bij het
+    openen uit de aangeklikte tegel gekopieerd, dus er staat geen tweede
+    set van 23 foto's in de HTML.
+  -->
+  <dialog
+    id="lightbox"
+    class="max-h-none max-w-none bg-transparent p-0 backdrop:bg-ink/85 backdrop:backdrop-blur-sm"
+  >
+    <div class="relative flex h-[100dvh] w-screen items-center justify-center p-4 md:p-10">
+      <figure class="flex max-h-full flex-col items-center gap-4">
+        <img
+          id="lightbox-image"
+          alt=""
+          class="max-h-[78dvh] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+        />
+        <figcaption id="lightbox-caption" class="font-body text-sm text-cream/80"></figcaption>
+      </figure>
+
+      <button
+        type="button"
+        id="lightbox-close"
+        class="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-cream/15 text-cream backdrop-blur-sm transition-colors hover:bg-cream/25 md:right-8 md:top-8"
+      >
+        <span class="sr-only">Sluiten</span>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M1 1l16 16M17 1L1 17" stroke="currentColor" stroke-width="1.6"></path>
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        id="lightbox-prev"
+        class="absolute left-2 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-cream/15 text-cream backdrop-blur-sm transition-colors hover:bg-cream/25 md:left-6"
+      >
+        <span class="sr-only">Vorige portret</span>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M11.5 1L3.5 9l8 8" stroke="currentColor" stroke-width="1.6"></path>
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        id="lightbox-next"
+        class="absolute right-2 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-cream/15 text-cream backdrop-blur-sm transition-colors hover:bg-cream/25 md:right-6"
+      >
+        <span class="sr-only">Volgende portret</span>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M6.5 1l8 8-8 8" stroke="currentColor" stroke-width="1.6"></path>
+        </svg>
+      </button>
+    </div>
+  </dialog>
 </Layout>
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
-  const items = document.querySelectorAll<HTMLElement>('.portfolio-item');
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.portfolio-item'));
   const empty = document.getElementById('portfolio-empty');
 
   for (const button of buttons) {
@@ -147,5 +218,92 @@ const shapes = ['tall', 'portrait', 'portrait', 'portrait', 'tall', 'square'] as
 
       if (empty) empty.hidden = shown > 0;
     });
+  }
+
+  /*
+    Lightbox.
+
+    Werkt op de zichtbare tegels, dus pijltjes volgen het actieve filter
+    in plaats van door verborgen portretten te bladeren. Het <img> wordt
+    gekloond uit de tegel: dezelfde srcset, dus meestal staat het beeld
+    al in de cache en verschijnt het zonder laadmoment.
+  */
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement | null;
+  const image = document.getElementById('lightbox-image') as HTMLImageElement | null;
+  const caption = document.getElementById('lightbox-caption');
+  const closeButton = document.getElementById('lightbox-close');
+  const prevButton = document.getElementById('lightbox-prev');
+  const nextButton = document.getElementById('lightbox-next');
+
+  if (dialog && image && caption) {
+    let current = 0;
+
+    const visible = () => items.filter((item) => !item.hidden);
+
+    const show = (item: HTMLElement) => {
+      const source = item.querySelector('img');
+      if (!source) return;
+      image.src = source.currentSrc || source.src;
+      image.srcset = source.srcset;
+      image.sizes = '90vw';
+      image.alt = source.alt;
+      caption.textContent = item.querySelector('figcaption')?.textContent?.trim() ?? '';
+      current = visible().indexOf(item);
+    };
+
+    const step = (delta: number) => {
+      const list = visible();
+      if (!list.length) return;
+      show(list[(current + delta + list.length) % list.length]);
+    };
+
+    const open = (item: HTMLElement) => {
+      show(item);
+      dialog.showModal();
+    };
+
+    for (const item of items) {
+      item.addEventListener('click', () => open(item));
+      // De tegel is een <figure role="button">, dus Enter en spatie
+      // moeten hier met de hand worden afgehandeld.
+      item.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          open(item);
+        }
+      });
+    }
+
+    closeButton?.addEventListener('click', () => dialog.close());
+    prevButton?.addEventListener('click', () => step(-1));
+    nextButton?.addEventListener('click', () => step(1));
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') step(-1);
+      if (event.key === 'ArrowRight') step(1);
+    });
+
+    // Klik naast de foto sluit hem — de <figure> houdt de klik tegen.
+    dialog.addEventListener('click', (event) => {
+      if (!(event.target as HTMLElement).closest('figure, button')) dialog.close();
+    });
+
+    // Vegen op een telefoon, waar pijlknoppen het laatste zijn wat je zoekt.
+    let startX = 0;
+    dialog.addEventListener(
+      'touchstart',
+      (event) => {
+        startX = event.changedTouches[0].clientX;
+      },
+      { passive: true }
+    );
+    dialog.addEventListener(
+      'touchend',
+      (event) => {
+        const delta = event.changedTouches[0].clientX - startX;
+        if (Math.abs(delta) > 60) step(delta < 0 ? 1 : -1);
+      },
+      { passive: true }
+    );
   }
 </script>

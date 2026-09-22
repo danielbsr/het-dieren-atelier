@@ -2,24 +2,78 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { withBase } from '../data/site';
+import StickyActions from '../components/StickyActions.astro';
+import { INDEXABLE, SITE_URL, STUDIO, withBase } from '../data/site';
 
 interface Props {
+  /** Verschijnt in het tabblad en in Google. Zonder de studionaam — die plakken we erachter. */
   title: string;
-  description?: string;
-  /** For pages that do not end in a <ClosingCta />. */
+  description: string;
+  /** Voor pagina's die niet op een <ClosingCta /> eindigen. */
   showFooterCta?: boolean;
+  /** Bestandsnaam in public/ voor de deelafbeelding. */
+  ogImage?: string;
+  /** Uit op juridische pagina's, die Google niet hoeft te tonen. */
+  noindex?: boolean;
 }
 
 const {
   title,
-  description = '',
+  description,
   showFooterCta = false,
+  ogImage = '/og-image.jpg',
+  noindex = false,
 } = Astro.props;
+
+const fullTitle = title.includes(STUDIO.name) ? title : `${title} | ${STUDIO.name}`;
+
+/**
+ * Canonieke URL op het echte domein, ongeacht waar deze build staat.
+ * De preview op GitHub Pages draait in een submap; die submap hoort
+ * niet in een canonical.
+ */
+const canonical = new URL(
+  Astro.url.pathname.replace(import.meta.env.BASE_URL, '/').replace(/\/+/g, '/'),
+  SITE_URL
+).href;
+
+const ogImageUrl = new URL(ogImage, SITE_URL).href;
+
+/**
+ * Structured data voor lokale vindbaarheid: adres, telefoon, openings-
+ * vorm en prijsklasse. Google gebruikt dit voor de bedrijfskaart naast
+ * de zoekresultaten.
+ */
+const localBusiness = {
+  '@context': 'https://schema.org',
+  '@type': 'PhotographyBusiness',
+  name: STUDIO.name,
+  description:
+    'Dierenfotostudio in Blokker bij Hoorn. Professionele studioportretten van honden, katten en andere huisdieren, afgewerkt als wanddecoratie.',
+  url: SITE_URL,
+  image: ogImageUrl,
+  email: STUDIO.email,
+  telephone: STUDIO.phone,
+  priceRange: '€249 - €695',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: STUDIO.street,
+    postalCode: STUDIO.postcode,
+    addressLocality: STUDIO.city,
+    addressRegion: STUDIO.region,
+    addressCountry: 'NL',
+  },
+  areaServed: ['Blokker', 'Hoorn', 'Noord-Holland'],
+  sameAs: [STUDIO.instagramUrl],
+  vatID: STUDIO.vat,
+  identifier: { '@type': 'PropertyValue', name: 'KVK', value: STUDIO.kvk },
+  publicAccess: false,
+  availableLanguage: 'nl',
+};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,26 +82,44 @@ const {
     <meta name="generator" content={Astro.generator} />
 
     <!--
-      REMOVE BEFORE LAUNCH. This deploy exists to show people the work in
-      progress, not to be found — the studio has no address, phone or
-      opening date yet. Delete this line the day the real site goes live.
+      Zolang INDEXABLE uitstaat draait de site op een preview-URL en mag
+      Google die niet oppikken. Zet INDEXABLE in src/data/site.ts op true
+      op de dag dat het echte domein live gaat — dan verdwijnt deze regel.
     -->
-    <meta name="robots" content="noindex, nofollow" />
+    {(!INDEXABLE || noindex) && <meta name="robots" content="noindex, nofollow" />}
 
     <!--
-      Marks the document as script-capable before first paint. Reveal
-      styles hang off html.js, so if this never runs the page renders
-      fully visible instead of blank.
+      Markeert het document als script-capable vóór de eerste paint.
+      Reveal-stijlen hangen aan html.js, dus als dit nooit draait rendert
+      de pagina volledig zichtbaar in plaats van leeg.
     -->
     <script is:inline>
       document.documentElement.classList.add('js');
     </script>
 
-    <title>{title}</title>
-    {description && <meta name="description" content={description} />}
-    <meta property="og:title" content={title} />
-    {description && <meta property="og:description" content={description} />}
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:site_name" content={STUDIO.name} />
+    <meta property="og:locale" content="nl_NL" />
     <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Studioportret van een golden retriever bij Het Dieren Atelier"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <meta name="theme-color" content="#f6f4ec" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -55,13 +127,19 @@ const {
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(localBusiness)}
+      is:inline
+    />
   </head>
   <body>
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-forest focus:px-5 focus:py-3 focus:text-cream"
     >
-      Skip to content
+      Naar de inhoud
     </a>
 
     <Header />
@@ -72,15 +150,17 @@ const {
 
     <Footer cta={showFooterCta} />
 
+    <StickyActions />
+
     <script>
       /*
         Scroll reveals.
 
-        Elements opt in with data-reveal="rise|line|image". Anything that
-        crosses the viewport in the same batch is staggered automatically,
-        so grids cascade without any per-element delay in the markup.
-        The stagger is capped: an element deep in a long grid should not
-        wait a second after it is already on screen.
+        Elementen melden zich aan met data-reveal="rise|line|image". Alles
+        wat in dezelfde batch de viewport kruist wordt automatisch
+        getrapt, zodat grids cascaderen zonder per-element vertraging in
+        de markup. De trap is begrensd: een element diep in een lang grid
+        hoort niet een seconde te wachten terwijl het al in beeld staat.
       */
       const STEP = 90;
       const MAX_STEPS = 6;

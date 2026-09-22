@@ -1,45 +1,44 @@
 ---
 import BookButton from './BookButton.astro';
-import { ON_LOCATION, PACKAGES } from '../data/site';
+import { EXTRA_PORTRAIT, FEATURED_LABEL, ON_LOCATION, PACKAGES } from '../data/site';
 
 /**
- * The three studio packages, and — underneath, in the same language —
- * the one option where the studio travels instead of the animal.
+ * De drie studiopakketten, en — eronder, in dezelfde taal — de optie
+ * waarbij de studio reist in plaats van het dier.
  *
- * The on-location session is deliberately not a fourth column: it is
- * priced differently, lasts differently, and a four-across row would
- * squeeze the three that are already working. One wide card reads as
- * "and also this", which is exactly what it is.
+ * Het Locatieportret is bewust geen vierde kolom: het is anders geprijsd,
+ * duurt langer, en een rij van vier zou de drie die het al doen
+ * platdrukken. Eén brede kaart leest als "en dit kan ook", en dat is
+ * precies wat het is.
  */
 interface Props {
-  /** Off on pages that list it separately. */
+  /** Uit op pagina's die het apart behandelen. */
   onLocation?: boolean;
-  /** The booking button directly under the options. */
+  /** De boekknop direct onder de opties. */
   cta?: boolean;
   class?: string;
 }
 
 const { onLocation = true, cta = true, class: className = '' } = Astro.props;
 
-const check =
-  'M1 7.5 5 11.5 13 2.5';
+const check = 'M1 7.5 5 11.5 13 2.5';
 ---
 
 <div class={className}>
-  <div class="grid items-center gap-8 md:grid-cols-3 md:gap-5">
+  <div class="grid items-start gap-8 md:grid-cols-3 md:gap-5">
     {
       PACKAGES.map((pkg) => (
         <article
           data-reveal="rise"
           class={
             pkg.featured
-              ? 'card-hover relative rounded-2xl border-2 border-forest bg-cream p-7 md:-my-4 md:p-9'
-              : 'card-hover relative rounded-2xl border border-line bg-cream p-7 hover:border-forest/30 md:p-8'
+              ? 'card-hover relative flex h-full flex-col rounded-2xl border-2 border-forest bg-cream p-7 md:-mt-4 md:p-9'
+              : 'card-hover relative flex h-full flex-col rounded-2xl border border-line bg-cream p-7 hover:border-forest/30 md:p-8'
           }
         >
           {pkg.featured && (
             <span class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-lime px-4 py-1 font-body text-[0.7rem] font-medium uppercase tracking-[0.14em] text-forest-deep">
-              Most chosen
+              {FEATURED_LABEL}
             </span>
           )}
 
@@ -77,11 +76,18 @@ const check =
     }
   </div>
 
+  <p
+    class="mt-8 text-center font-body text-[0.95rem] text-muted md:mt-10"
+    data-reveal="rise"
+  >
+    {EXTRA_PORTRAIT.label}: <span class="text-ink">{EXTRA_PORTRAIT.price}</span>
+  </p>
+
   {
     onLocation && (
       <article
         data-reveal="rise"
-        class="card-hover relative mt-8 rounded-2xl border border-line bg-cream p-7 hover:border-forest/30 md:mt-14 md:p-10"
+        class="card-hover relative mt-10 rounded-2xl border border-line bg-cream p-7 hover:border-forest/30 md:mt-14 md:p-10"
       >
         <span class="absolute -top-3 left-7 whitespace-nowrap rounded-full bg-forest px-4 py-1 font-body text-[0.7rem] font-medium uppercase tracking-[0.14em] text-cream md:left-10">
           {ON_LOCATION.eyebrow}
@@ -90,14 +96,14 @@ const check =
         <div class="grid gap-7 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-14">
           <div>
             <h3 class="font-display text-2xl text-ink md:text-[1.9rem]">{ON_LOCATION.name}</h3>
-            <p class="mt-2 font-display text-[1.6rem] leading-none text-forest md:text-[1.9rem]">
+            <p class="mt-2 font-display text-[1.9rem] leading-none text-forest md:text-[2.25rem]">
               {ON_LOCATION.price}
             </p>
-            <p class="mt-4 max-w-[30rem] font-body text-sm leading-relaxed text-muted">
+            <p class="mt-4 max-w-[30rem] font-body text-[1.05rem] leading-relaxed text-ink">
               {ON_LOCATION.blurb}
             </p>
-            <p class="mt-4 max-w-[30rem] font-body text-[0.95rem] leading-relaxed text-ink/70">
-              {ON_LOCATION.guidance}
+            <p class="mt-3 max-w-[30rem] font-body text-[0.95rem] leading-relaxed text-muted">
+              {ON_LOCATION.intro}
             </p>
           </div>
 
@@ -123,7 +129,23 @@ const check =
                 {line}
               </li>
             ))}
-            <li class="pt-2 font-body text-[0.8rem] leading-relaxed text-ink/40">
+            <li class="flex gap-3 pt-2 font-body text-[0.85rem] leading-relaxed text-muted">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                class="mt-0.5 shrink-0 text-muted"
+                aria-hidden="true"
+              >
+                <circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.4" />
+                <path
+                  d="M8 7.2v4M8 4.9v.1"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
               {ON_LOCATION.priceNote}
             </li>
           </ul>

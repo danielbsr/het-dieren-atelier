@@ -5,75 +5,83 @@ import MapEmbed from '../components/MapEmbed.astro';
 import Portrait from '../components/Portrait.astro';
 import BookButton from '../components/BookButton.astro';
 import ContactCards from '../components/ContactCards.astro';
+import WhatsAppIcon from '../components/WhatsAppIcon.astro';
 import { photo } from '../data/photos';
-import { BOOKING_URL, CTA, STUDIO } from '../data/site';
+import { BOOKING_URL, CTA, STUDIO, WHATSAPP_URL } from '../data/site';
 
 /**
- * Booking is Calendly's job now.
+ * Boeken doet Calendly.
  *
- * This page used to carry a hand-built availability calendar filled with
- * invented free days and a form that posted nowhere. Both are gone: a
- * calendar that cannot be trusted is worse than no calendar, and two
- * booking routes — one real, one decorative — is the fastest way to lose
- * a booking. What is left is the real calendar, and the ways to reach a
- * person before using it.
+ * Deze pagina had ooit een zelfgebouwde beschikbaarheidskalender vol
+ * verzonnen vrije dagen en een formulier dat nergens heen postte. Beide
+ * zijn weg: een kalender die je niet kunt vertrouwen is erger dan geen
+ * kalender, en twee boekingsroutes — één echt, één decoratief — is de
+ * snelste manier om een boeking te verliezen.
  *
- * Branded to the site palette through Calendly's embed parameters, so
- * the widget does not arrive in somebody else's blue.
+ * Gestyled naar het palet van de site via Calendly's embed-parameters,
+ * zodat de widget niet in andermans blauw aankomt.
  */
 const calendlyEmbed = `${BOOKING_URL}?hide_gdpr_banner=1&background_color=f6f4ec&text_color=1f1c17&primary_color=1d3b2e`;
 ---
 
 <Layout
-  title="Book your session — Het Dieren Atelier"
-  description="Pick your date in the calendar and book your pet's studio session in Blokker — or ask a question first. Studio and on-location sessions."
+  title="Contact & boeken — Het Dieren Atelier in Blokker"
+  description="Boek je dierenfotoshoot in onze studio aan de Gildenweg 3H in Blokker, of stel eerst je vraag via WhatsApp, telefoon of e-mail. Gratis parkeren, uitsluitend op afspraak."
   showFooterCta
 >
   <Section space="tight">
     <div class="grid items-center gap-8 md:grid-cols-[1fr_auto] md:gap-16">
       <div>
-        <p class="eyebrow" data-reveal="rise">Contact &amp; booking</p>
+        <p class="eyebrow" data-reveal="rise">Contact &amp; boeken</p>
         <h1 class="mt-5 max-w-[16ch] text-page leading-[1.03] text-ink" data-reveal="line">
-          Book your session.
+          Boek jouw fotoshoot.
         </h1>
         <p
           class="mt-6 max-w-[38rem] font-body text-[1.0625rem] leading-relaxed text-muted md:mt-7 md:text-lg"
           data-reveal="rise"
         >
-          Pick a date and time in the calendar below — you'll receive a confirmation and a short
-          preparation guide. Not sure which package yet? Choose the date first; we settle the rest
-          together before the session.
+          Kies hieronder een datum en tijd in de agenda — je ontvangt daarna direct een
+          bevestiging. Nog niet zeker welk pakket het wordt? Kies eerst de datum; de rest
+          bespreken we samen voor de fotoshoot.
         </p>
 
-        <a
-          href={CTA.packages.href}
-          class="group mt-7 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
-          data-reveal="rise"
-        >
-          {CTA.packages.label}
-          <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
-        </a>
+        <div class="mt-7 flex flex-wrap items-center gap-x-8 gap-y-4" data-reveal="rise">
+          <a
+            href={CTA.packages.href}
+            class="group inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+          >
+            {CTA.packages.label}
+            <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+          </a>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+          >
+            <WhatsAppIcon size={16} />
+            Eerst een vraag stellen
+          </a>
+        </div>
       </div>
 
-      <!-- Hidden on a phone: the calendar is what this page is for, and a
-           decorative square only pushes it further down the screen. -->
+      <!-- Verborgen op een telefoon: de agenda is waar deze pagina voor
+           is, en een decoratief vierkant duwt die alleen verder omlaag. -->
       <Portrait
         tone="pearl"
         src={photo('mila')}
+        animal="cat"
+        subject="kitten"
         sizes="192px"
         ratio="square"
-        crop="tight"
         class="hidden w-48 md:block"
       />
     </div>
   </Section>
 
-  <!-- ================================================== The real calendar -->
+  <!-- ==================================================== De echte agenda -->
   <Section space="tight">
-    <div
-      class="overflow-hidden rounded-2xl border border-line bg-cream"
-      data-reveal="rise"
-    >
+    <div id="booking" class="overflow-hidden rounded-2xl border border-line bg-cream" data-reveal="rise">
       <div
         class="calendly-inline-widget h-[1150px] w-full sm:h-[1050px] md:h-[760px]"
         data-url={calendlyEmbed}
@@ -81,71 +89,114 @@ const calendlyEmbed = `${BOOKING_URL}?hide_gdpr_banner=1&background_color=f6f4ec
       </div>
     </div>
 
-    <p class="mt-5 font-body text-sm text-muted">
-      Calendar not loading?
+    <!--
+      Bevestiging (punt 27). Calendly stuurt een bericht zodra een
+      afspraak is ingepland; dan vervangt dit blok de agenda, zodat
+      niemand na het boeken op een leeg scherm achterblijft en iedereen
+      weet wat de volgende stap is.
+    -->
+    <div
+      id="booking-confirmation"
+      hidden
+      tabindex="-1"
+      class="rounded-2xl border-2 border-forest bg-cream px-6 py-12 text-center md:px-12 md:py-16"
+    >
+      <span
+        class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-forest text-cream"
+        aria-hidden="true"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path
+            d="m5 12.5 4.5 4.5L19 7.5"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </span>
+
+      <h2 class="mt-7 text-section leading-[1.1] text-ink">Bedankt! Je afspraak staat.</h2>
+      <p class="mx-auto mt-5 max-w-[38rem] font-body text-[1.05rem] leading-relaxed text-muted">
+        We hebben je aanvraag ontvangen. Je krijgt binnen een paar minuten een bevestiging per
+        e-mail, met de datum, het adres van de studio en een korte voorbereiding.
+      </p>
+
+      <ol class="mx-auto mt-10 grid max-w-[46rem] gap-8 text-left md:grid-cols-3">
+        <li>
+          <span class="block font-display text-[2rem] leading-none text-forest/25">01</span>
+          <p class="mt-3 font-body text-[0.95rem] leading-relaxed text-muted">
+            Check je mail voor de bevestiging. Niets ontvangen? Kijk even in je spam of stuur ons
+            een bericht.
+          </p>
+        </li>
+        <li>
+          <span class="block font-display text-[2rem] leading-none text-forest/25">02</span>
+          <p class="mt-3 font-body text-[0.95rem] leading-relaxed text-muted">
+            We bespreken vooraf het pakket en de achtergronden. Niets hoeft nu al vast te staan.
+          </p>
+        </li>
+        <li>
+          <span class="block font-display text-[2rem] leading-none text-forest/25">03</span>
+          <p class="mt-3 font-body text-[0.95rem] leading-relaxed text-muted">
+            Neem de favoriete snacks en eventueel een speeltje mee. De eerste minuten zijn voor
+            jouw dier.
+          </p>
+        </li>
+      </ol>
+
+      <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-outline inline-flex items-center gap-2.5 rounded-full border border-forest/25 px-7 py-3.5 font-body font-medium text-forest"
+        >
+          <WhatsAppIcon size={17} />
+          Nog een vraag? App ons
+        </a>
+        <a
+          href={CTA.wallArt.href}
+          class="group inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+        >
+          {CTA.wallArt.label}
+          <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+    </div>
+
+    <p id="booking-fallback" class="mt-5 font-body text-sm text-muted">
+      Agenda laadt niet?
       <a
         href={BOOKING_URL}
         target="_blank"
         rel="noopener noreferrer"
-        class="text-forest underline underline-offset-4"
-      >Open the booking page directly</a>.
+        class="text-forest underline underline-offset-4">Open de boekingspagina rechtstreeks</a
+      >.
     </p>
   </Section>
 
-  <!-- ==================================================== What happens next -->
-  <Section space="normal">
-    <div class="rounded-2xl border border-line px-6 py-10 md:px-12 md:py-14">
-      <h2 class="font-display text-sub text-ink" data-reveal="line">After you book.</h2>
-      <ol class="mt-8 grid gap-8 md:mt-10 md:grid-cols-3 md:gap-10">
-        <li data-reveal="rise">
-          <span class="block font-display text-[2rem] leading-none text-forest/25">01</span>
-          <p class="mt-4 font-body text-[0.95rem] leading-relaxed text-muted">
-            You receive a confirmation and a short preparation guide — what to bring, and what not
-            to worry about.
-          </p>
-        </li>
-        <li data-reveal="rise">
-          <span class="block font-display text-[2rem] leading-none text-forest/25">02</span>
-          <p class="mt-4 font-body text-[0.95rem] leading-relaxed text-muted">
-            We agree the package and the backdrops beforehand, by mail or phone. Nothing has to be
-            decided at the moment of booking.
-          </p>
-        </li>
-        <li data-reveal="rise">
-          <span class="block font-display text-[2rem] leading-none text-forest/25">03</span>
-          <p class="mt-4 font-body text-[0.95rem] leading-relaxed text-muted">
-            You arrive without rush. The first minutes belong to your animal.
-          </p>
-        </li>
-      </ol>
-      <p class="mt-8 font-body text-sm text-ink/45">
-        [Payment, deposit and rescheduling policy TO BE SUPPLIED — the copy above assumes no online
-        payment.]
-      </p>
-    </div>
-  </Section>
-
-  <!-- ====================================================== Questions first -->
+  <!-- ====================================================== Eerst een vraag -->
   <Section space="normal">
     <div class="mx-auto max-w-[44rem] text-center">
-      <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">Questions first?</h2>
+      <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">Liever eerst overleg?</h2>
       <p
         class="mt-6 font-body text-[1.0625rem] leading-relaxed text-muted md:text-lg"
         data-reveal="rise"
       >
-        A nervous animal, an unusual pet, a session at your home, a present for someone else —
-        reach us however suits you. We answer personally, usually the same day.
+        Een onzeker dier, een bijzonder huisdier, een fotoshoot bij jou thuis of een cadeau voor
+        iemand anders — bereik ons zoals jou het beste uitkomt. We antwoorden persoonlijk, meestal
+        dezelfde dag.
       </p>
     </div>
 
     <ContactCards class="mt-12 md:mt-16" />
   </Section>
 
-  <!-- ======================================================= The studio -->
+  <!-- ========================================================== De studio -->
   <Section space="normal">
     <div class="grid gap-10 border-t border-line pt-14 md:grid-cols-2 md:gap-16 md:pt-16">
       <div>
-        <h2 class="text-section text-ink" data-reveal="line">The studio.</h2>
+        <h2 class="text-section text-ink" data-reveal="line">De studio.</h2>
 
         <address class="mt-8 space-y-6 font-body not-italic" data-reveal="rise">
           <a
@@ -162,19 +213,48 @@ const calendlyEmbed = `${BOOKING_URL}?hide_gdpr_banner=1&background_color=f6f4ec
               class="mt-2 inline-flex items-center gap-2 font-body text-sm text-forest underline-offset-4 group-hover:underline"
             >
               Open in Google Maps
-              <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+              <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span
+              >
             </span>
           </a>
 
-          <p class="text-muted">
-            <span class="block text-sm text-ink">Parking and accessibility</span>
-            {STUDIO.parking}
-          </p>
+          <ul class="space-y-2 text-muted">
+            <li class="flex items-center gap-3">
+              <span class="h-1 w-1 shrink-0 rounded-full bg-lime" aria-hidden="true"></span>
+              {STUDIO.parking}
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="h-1 w-1 shrink-0 rounded-full bg-lime" aria-hidden="true"></span>
+              {STUDIO.byAppointment}
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="h-1 w-1 shrink-0 rounded-full bg-lime" aria-hidden="true"></span>
+              Direct naast Hoorn in {STUDIO.region}
+            </li>
+          </ul>
 
-          <!-- Phone and mail are three cards up; repeating them here would
-               only make the page look like it has six ways in, not three. -->
+          <!-- Telefoon, WhatsApp en mail staan drie kaarten hoger; ze hier
+               herhalen laat de pagina zes ingangen lijken hebben in plaats
+               van drie. Instagram staat er nog niet bij, dus die wel. -->
           <p>
-            <a href={STUDIO.instagramUrl} class="text-forest underline-offset-4 hover:underline">
+            <a
+              href={STUDIO.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-forest underline-offset-4 hover:underline"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect
+                  x="2.5"
+                  y="2.5"
+                  width="19"
+                  height="19"
+                  rx="5.5"
+                  stroke="currentColor"
+                  stroke-width="1.6"></rect>
+                <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"></circle>
+                <circle cx="17.6" cy="6.4" r="1.2" fill="currentColor"></circle>
+              </svg>
               Instagram {STUDIO.instagram}
             </a>
           </p>
@@ -190,5 +270,30 @@ const calendlyEmbed = `${BOOKING_URL}?hide_gdpr_banner=1&background_color=f6f4ec
   </Section>
 </Layout>
 
-<!-- Calendly's own widget script. Deferred, and the page still works without it. -->
+<script>
+  /*
+    Calendly meldt een geplande afspraak met een postMessage. Zodra die
+    binnenkomt verdwijnt de agenda en komt de bevestiging ervoor in de
+    plaats — geen verwarrend leeg scherm na het boeken.
+  */
+  const widget = document.getElementById('booking');
+  const confirmation = document.getElementById('booking-confirmation');
+  const fallback = document.getElementById('booking-fallback');
+
+  window.addEventListener('message', (event) => {
+    if (event.origin !== 'https://calendly.com') return;
+    const data = event.data as { event?: string } | null;
+    if (data?.event !== 'calendly.event_scheduled') return;
+
+    widget?.setAttribute('hidden', '');
+    if (fallback) fallback.hidden = true;
+    if (confirmation) {
+      confirmation.hidden = false;
+      confirmation.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      confirmation.focus();
+    }
+  });
+</script>
+
+<!-- Calendly's eigen widget-script. Uitgesteld, en de pagina werkt ook zonder. -->
 <script is:inline async src="https://assets.calendly.com/assets/external/widget.js"></script>

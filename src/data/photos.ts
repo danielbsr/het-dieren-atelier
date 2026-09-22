@@ -1,18 +1,22 @@
 import type { ImageMetadata } from 'astro';
 
 /**
- * Photograph lookup.
+ * Fotozoeker.
  *
- * Photos live in src/assets/portraits/ rather than public/, because only
- * files under src/ pass through Astro's image pipeline — that is what
- * turns one 2400px source into the handful of WebP sizes a layout slot
- * actually needs. Anything in public/ ships byte-for-byte as uploaded.
+ * Foto's staan in src/assets/ en niet in public/, omdat alleen bestanden
+ * onder src/ door Astro's image pipeline gaan — dat is wat van één bron
+ * van 2400px de handvol WebP-formaten maakt die een layout echt nodig
+ * heeft. Alles in public/ wordt byte-voor-byte geserveerd zoals het is.
  *
- * A slot is filled by file name: dropping `nova.webp` into that folder
- * lights up the portrait named "Nova". No data file to edit.
+ * Twee mappen, één zoeker:
+ *   portraits/ — studioportretten van dieren
+ *   rooms/     — interieurbeelden, materialen en behind-the-scenes
+ *
+ * Een plek wordt gevuld op bestandsnaam: `nova.webp` in portraits/ vult
+ * de plek "nova". Geen datamap om bij te werken.
  */
 const files = import.meta.glob<{ default: ImageMetadata }>(
-  '../assets/portraits/*.{jpg,jpeg,png,webp,avif}',
+  '../assets/{portraits,rooms}/*.{jpg,jpeg,png,webp,avif}',
   { eager: true }
 );
 
@@ -27,9 +31,9 @@ const bySlot = new Map<string, ImageMetadata>(
   ])
 );
 
-/** The photograph for a slot, or undefined while the placeholder still stands. */
+/** De foto voor een plek, of undefined zolang de placeholder er staat. */
 export const photo = (slot?: string): ImageMetadata | undefined =>
   slot ? bySlot.get(slot.toLowerCase()) : undefined;
 
-/** Every slot name currently filled — handy when wiring new photography in. */
+/** Elke gevulde plek — handig bij het inhangen van nieuwe fotografie. */
 export const filledSlots = () => [...bySlot.keys()].sort();

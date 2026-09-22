@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Portrait from '../components/Portrait.astro';
+import BookButton from '../components/BookButton.astro';
+import { photo } from '../data/photos';
+import { CTA, NAV } from '../data/site';
+---
+
+<Layout
+  title="Pagina niet gevonden"
+  description="Deze pagina bestaat niet (meer). Ga terug naar het portfolio, de tarieven of de contactpagina van Het Dieren Atelier."
+  noindex
+  showFooterCta
+>
+  <Section space="normal">
+    <div class="grid items-center gap-10 md:grid-cols-2 md:gap-16 lg:gap-20">
+      <Portrait
+        tone="pearl"
+        src={photo('bram')}
+        animal="dog"
+        subject="franse bulldog"
+        sizes="(min-width: 768px) 448px, 100vw"
+        ratio="portrait"
+        alt="Studioportret van een franse bulldog die schuin in de camera kijkt"
+        class="max-w-md"
+      />
+
+      <div>
+        <p class="eyebrow" data-reveal="rise">Foutmelding 404</p>
+        <h1 class="mt-5 text-page leading-[1.04] text-ink" data-reveal="line">
+          Deze pagina is ervandoor.
+        </h1>
+        <p
+          class="mt-6 max-w-[34rem] font-body text-[1.0625rem] leading-relaxed text-muted md:text-lg"
+          data-reveal="rise"
+        >
+          De pagina die je zocht bestaat niet of heeft een nieuw adres gekregen. Hieronder vind je
+          alles terug.
+        </p>
+
+        <ul class="mt-8 flex flex-wrap gap-2" data-reveal="rise">
+          {
+            NAV.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="btn btn-outline inline-flex rounded-full border border-forest/20 px-5 py-2 font-body text-sm text-forest"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div
+          class="mt-9 flex flex-col items-stretch gap-5 sm:flex-row sm:items-center sm:gap-8"
+          data-reveal="rise"
+        >
+          <BookButton block />
+          <a
+            href={CTA.portfolio.href}
+            class="group inline-flex items-center justify-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+          >
+            {CTA.portfolio.label}
+            <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </Section>
+</Layout>

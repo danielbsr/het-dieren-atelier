@@ -1,0 +1,63 @@
+---
+import { USPS } from '../data/site';
+
+/**
+ * Vier beloftes, direct onder de hero.
+ *
+ * Bewust minimaal: dunne lijniconen in dezelfde forest-groen als elke
+ * andere actie, geen gekleurde vlakken, geen kaders. Het blok moet
+ * gelezen worden in de seconde dat iemand eroverheen scrollt.
+ *
+ * Op een telefoon twee kolommen in plaats van vier — vier kolommen op
+ * 375px breed geeft woorden van drie tekens per regel.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const icons = {
+  /** Een rustige ruimte: muur, softbox, vloer. */
+  studio:
+    'M3 19h18M6.5 19V9.2a1 1 0 0 1 .55-.9l4-2a1 1 0 0 1 .9 0l4 2a1 1 0 0 1 .55.9V19M10 19v-4.2h4V19',
+  /** Klok. */
+  clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 7.3V12l3.2 1.9',
+  /** Portret in beeldverhouding, met onderwerp. */
+  portrait:
+    'M5 3.8h14a1.2 1.2 0 0 1 1.2 1.2v14a1.2 1.2 0 0 1-1.2 1.2H5A1.2 1.2 0 0 1 3.8 19V5A1.2 1.2 0 0 1 5 3.8ZM9.6 10.2a2.4 2.4 0 1 0 4.8 0 2.4 2.4 0 0 0-4.8 0ZM7.2 20.2c.7-2.6 2.5-4 4.8-4s4.1 1.4 4.8 4',
+  /** Ingelijst werk aan een muur. */
+  frame: 'M4.5 4.5h15v12h-15v-12ZM8 16.5v3M16 16.5v3M8.2 13.2l3-3.4 2.3 2.6 1.6-1.7 2.2 2.5',
+};
+---
+
+<ul class={`grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 md:gap-8 ${className}`}>
+  {
+    USPS.map((usp) => (
+      <li data-reveal="rise">
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          class="text-forest"
+          aria-hidden="true"
+        >
+          <path
+            d={icons[usp.icon]}
+            stroke="currentColor"
+            stroke-width="1.3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <h3 class="mt-5 font-display text-[1.15rem] leading-snug text-ink md:text-xl">
+          {usp.title}
+        </h3>
+        <p class="mt-2.5 font-body text-[0.9rem] leading-relaxed text-muted md:text-[0.95rem]">
+          {usp.body}
+        </p>
+      </li>
+    ))
+  }
+</ul>

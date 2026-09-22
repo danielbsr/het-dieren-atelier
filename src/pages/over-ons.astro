@@ -1,0 +1,196 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Portrait from '../components/Portrait.astro';
+import Interior from '../components/Interior.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import BookButton from '../components/BookButton.astro';
+import { photo } from '../data/photos';
+import { CTA, STUDIO } from '../data/site';
+
+const fotograaf = photo('fotograaf');
+---
+
+<Layout
+  title="Over ons — dierenfotograaf in Blokker"
+  description="Het Dieren Atelier is een dierenfotostudio in Blokker bij Hoorn. Een team van fotografen en dierenliefhebbers dat de tijd neemt om ieder dier op zijn eigen manier te leren kennen."
+>
+  <!-- ====================================================== Meer dan een foto -->
+  <Section space="normal">
+    <div class="mx-auto max-w-[46rem] text-center">
+      <p class="eyebrow" data-reveal="rise">Over ons</p>
+      <h1 class="mt-5 text-page leading-[1.04] text-ink" data-reveal="line">
+        Meer dan een mooie foto.
+      </h1>
+      <div class="prose-calm mt-9 text-left md:mt-10" data-reveal="rise">
+        <p>
+          Ieder dier heeft een eigen karakter. Een bepaalde blik, houding of eigenwijs trekje dat
+          je uit duizenden herkent.
+        </p>
+        <p>
+          Bij Het Dieren Atelier draait alles om het vastleggen van precies dat. In onze studio
+          nemen we rustig de tijd om jouw dier op zijn gemak te laten voelen en creëren we samen
+          een portret dat echt bij hem of haar past.
+        </p>
+        <p>
+          Geen standaard dierenfoto, maar een tijdloos portret dat je met trots een plek in huis
+          geeft. Persoonlijk. Tijdloos. Helemaal eigen.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ================================================ Geen dier is hetzelfde -->
+  <Section space="normal">
+    <div class="grid items-center gap-10 md:grid-cols-2 md:gap-16 lg:gap-20">
+      <figure data-reveal="image">
+        <div class="zoom-frame aspect-[4/5] overflow-hidden rounded-xl bg-cream-deep">
+          {
+            fotograaf && (
+              <Image
+                src={fotograaf}
+                alt="Fotograaf van Het Dieren Atelier met een golden retriever tegen zich aan, buiten in de zon"
+                widths={[400, 640, 960, 1280]}
+                sizes="(min-width: 768px) 50vw, 100vw"
+                format="webp"
+                quality={82}
+                loading="eager"
+                decoding="async"
+                class="zoom-target h-full w-full object-cover"
+                style="object-position:50% 40%"
+              />
+            )
+          }
+        </div>
+      </figure>
+
+      <div>
+        <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
+          Geen dier is hetzelfde. Gelukkig maar.
+        </h2>
+
+        <div class="prose-calm mt-8" data-reveal="rise">
+          <p>
+            Dieren fotograferen is iedere keer weer anders. De één zit binnen een paar seconden
+            perfect op zijn plek, terwijl de ander liever eerst de hele studio ontdekt. En eerlijk
+            gezegd vinden we juist dat het leukste eraan.
+          </p>
+          <p>
+            We zijn een team van fotografen en dierenliefhebbers en nemen graag de tijd om ieder
+            dier op zijn eigen manier te leren kennen. Stilzitten hoeft niet en perfect poseren al
+            helemaal niet. Met geduld, aandacht en soms een flinke dosis creativiteit zorgen we
+            ervoor dat het karakter van jouw dier terugkomt in het beeld, precies zoals jij hem of
+            haar kent.
+          </p>
+          <p>
+            Want uiteindelijk willen we niet zomaar een mooie foto maken. We willen iets creëren
+            waarvan je over jaren nog steeds denkt: ja, dit is zo typisch mijn dier.
+          </p>
+          <p>
+            Heb je een bijzonder dier, denk je dat een fotoshoot onmogelijk wordt of heb je zelf
+            een leuk idee? Kom maar door. We houden wel van een uitdaging — niets is ons te gek!
+          </p>
+        </div>
+
+        <div class="mt-9" data-reveal="rise">
+          <BookButton block />
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ============================================================= De studio -->
+  <Section space="normal">
+    <div class="grid gap-12 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-20">
+      <h2 class="text-section text-ink" data-reveal="line">De studio.</h2>
+      <div>
+        <p class="max-w-[44rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+          Onze dierenfotostudio staat aan de {STUDIO.street} in {STUDIO.city}, direct naast Hoorn
+          in {STUDIO.region}. Een rustige, afgesloten ruimte: geen inloop, geen andere klanten
+          tijdens jouw fotoshoot. Daglichtonafhankelijke belichting, ruimte om te bewegen, en
+          hoeken om je even terug te trekken voor de dieren die dat nodig hebben. Je parkeert
+          gratis voor de deur en we werken uitsluitend op afspraak.
+        </p>
+
+        <div class="mt-12 grid gap-6 sm:grid-cols-2">
+          <Interior
+            photo="stap-welkom"
+            alt="Fotograaf op de studiovloer tegenover een bruine spaniël, met softbox en achtergrondpapier"
+            ratio="landscape"
+            sizes="(min-width: 640px) 50vw, 100vw"
+          />
+          <Interior
+            photo="stap-fotoshoot"
+            alt="Camerascherm met daarop een labradoodle voor de studioachtergrond"
+            ratio="landscape"
+            sizes="(min-width: 640px) 50vw, 100vw"
+          />
+        </div>
+
+        <a
+          href={CTA.process.href}
+          class="group mt-9 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+          data-reveal="rise"
+        >
+          {CTA.process.label}
+          <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ========================================================== De werkwijze -->
+  <Section space="normal">
+    <div class="grid gap-12 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-20">
+      <h2 class="text-section text-ink" data-reveal="line">Onze aanpak.</h2>
+      <div>
+        <p class="max-w-[44rem] font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+          We fotograferen op vloerniveau, in korte rondes, met pauzes in elke fotoshoot ingebouwd.
+          Geen commando's, geen druk, geen prestatie. Het dier bepaalt wanneer het zover is — onze
+          taak is geduldig genoeg zijn om daarop te wachten, en snel genoeg om het moment te
+          pakken.
+        </p>
+
+        <div class="mt-12 grid grid-cols-3 gap-3 md:gap-6">
+          <Portrait
+            tone="charcoal"
+            src={photo('nova')}
+            animal="dog"
+            subject="australische herder"
+            sizes="(min-width: 768px) 240px, 30vw"
+            ratio="square"
+            hover
+          />
+          <Portrait
+            tone="pearl"
+            src={photo('reza')}
+            animal="cat"
+            subject="zwarte kat"
+            sizes="(min-width: 768px) 240px, 30vw"
+            ratio="square"
+            hover
+          />
+          <Portrait
+            tone="forest"
+            src={photo('pim')}
+            animal="rabbit"
+            subject="konijn"
+            sizes="(min-width: 768px) 240px, 30vw"
+            ratio="square"
+            hover
+          />
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <ClosingCta
+    headline="Kom een keer langs."
+    body="Kies een datum in de agenda — de rest gebeurt rustig, in de studio of bij jou op locatie."
+    tone="charcoal"
+    photo="juno"
+    animal="cat"
+    subject="maine coon"
+  />
+</Layout>

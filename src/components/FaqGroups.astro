@@ -1,0 +1,40 @@
+---
+import Faq from './Faq.astro';
+import type { FaqGroup } from '../data/site';
+
+/**
+ * De volledige FAQ, in rubrieken.
+ *
+ * Eén lijst van vijftig vragen is onleesbaar; de rubrieken van de studio
+ * (voor, tijdens, na, wanddecoratie, locatie, studio, boeken, cadeau)
+ * maken er acht korte lijsten van. De rubriekkoppen zijn <h3>'s onder de
+ * <h2> van de FAQ-sectie, zodat de koppenstructuur van de pagina klopt.
+ */
+interface Props {
+  groups: FaqGroup[];
+  class?: string;
+}
+
+const { groups, class: className = '' } = Astro.props;
+
+const id = (title: string) =>
+  title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+---
+
+<div class={`space-y-14 md:space-y-20 ${className}`}>
+  {
+    groups.map((group) => (
+      <section id={id(group.title)}>
+        <h3 class="font-display text-[1.6rem] text-ink md:text-[2rem]" data-reveal="line">
+          {group.title}
+        </h3>
+        <Faq items={group.items} class="mt-6 md:mt-8" />
+      </section>
+    ))
+  }
+</div>

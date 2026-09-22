@@ -1,0 +1,168 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Section from '../components/Section.astro';
+import { EMAIL_URL, LEGAL_UPDATED, PHONE_URL, STUDIO, withBase } from '../data/site';
+
+/**
+ * Letterlijk aangeleverde tekst van de studio; alleen de opmaak is van
+ * ons.
+ *
+ * Let op: dit beleid verwijst naar een optie 'Cookie-instellingen' op de
+ * website. Die bestaat nog niet — de site zet zelf geen cookies, maar
+ * laadt wel de agenda van Calendly en een kaart van Google Maps, die dat
+ * als externe partij wél kunnen doen. Zolang er geen toestemmingsvenster
+ * is, belooft deze tekst iets wat de site niet doet.
+ */
+---
+
+<Layout
+  title="Cookiebeleid"
+  description="Welke cookies Het Dieren Atelier gebruikt: functionele, analytische en marketingcookies, hoe toestemming werkt en hoe je die weer intrekt."
+  showFooterCta
+>
+  <PageHeader
+    eyebrow="Cookiebeleid"
+    title="Cookiebeleid."
+    intro={`Laatst bijgewerkt: ${LEGAL_UPDATED}.`}
+  />
+
+  <Section space="normal">
+    <div class="prose-legal">
+      <p>
+        Het Dieren Atelier gebruikt cookies en vergelijkbare technieken om onze website goed te
+        laten functioneren en, wanneer van toepassing, inzicht te krijgen in het gebruik van de
+        website en onze marketing.
+      </p>
+      <p>In dit cookiebeleid leggen we uit wat cookies zijn en hoe wij daarmee omgaan.</p>
+
+      <h2>1. Wat zijn cookies?</h2>
+      <p>
+        Cookies zijn kleine bestanden die tijdens een bezoek aan een website op jouw computer,
+        telefoon, tablet of ander apparaat kunnen worden opgeslagen of uitgelezen.
+      </p>
+      <p>Cookies kunnen verschillende functies hebben.</p>
+
+      <h2>2. Functionele cookies</h2>
+      <p>Functionele cookies zijn noodzakelijk om de website goed te laten werken.</p>
+      <p>Ze kunnen bijvoorbeeld worden gebruikt om:</p>
+      <ul>
+        <li>technische websitefuncties te laten werken;</li>
+        <li>instellingen te onthouden;</li>
+        <li>beveiligingsfuncties uit te voeren;</li>
+        <li>een boekingsproces technisch mogelijk te maken.</li>
+      </ul>
+      <p>
+        Voor cookies die strikt noodzakelijk zijn voor de werking van de website is niet altijd
+        voorafgaande toestemming vereist.
+      </p>
+
+      <h2>3. Analytische cookies</h2>
+      <p>Analytische cookies kunnen ons helpen begrijpen hoe bezoekers de website gebruiken.</p>
+      <p>
+        Hiermee kunnen bijvoorbeeld bezoekersaantallen, bezochte pagina's en technische prestaties
+        worden gemeten.
+      </p>
+      <p>
+        Wanneer analytische cookies slechts beperkte gevolgen hebben voor de privacy, kunnen
+        daarvoor andere wettelijke regels gelden dan voor trackingcookies.
+      </p>
+      <p>
+        Wanneer toestemming wettelijk vereist is, worden deze cookies pas geactiveerd nadat
+        toestemming is gegeven.
+      </p>
+
+      <h2>4. Marketing- en trackingcookies</h2>
+      <p>
+        Marketing- en trackingcookies kunnen worden gebruikt om websitegebruik te volgen,
+        resultaten van advertenties te meten of advertenties relevanter te maken.
+      </p>
+      <p>
+        Wanneer hiervoor toestemming vereist is, plaatsen of activeren wij deze cookies niet voordat
+        je hiervoor toestemming hebt gegeven.
+      </p>
+
+      <h2>5. Externe diensten</h2>
+      <p>Onze website kan gebruikmaken van externe diensten, bijvoorbeeld voor:</p>
+      <ul>
+        <li>online afspraken;</li>
+        <li>websiteanalyse;</li>
+        <li>sociale media;</li>
+        <li>kaarten;</li>
+        <li>video;</li>
+        <li>advertenties;</li>
+        <li>communicatie.</li>
+      </ul>
+      <p>
+        Deze externe partijen kunnen afhankelijk van de implementatie cookies of vergelijkbare
+        technieken gebruiken.
+      </p>
+
+      <h2>6. Toestemming</h2>
+      <p>
+        Wanneer toestemming vereist is, vragen we deze via de cookie-instellingen op onze website.
+      </p>
+      <p>
+        Je krijgt daarbij de mogelijkheid om niet-noodzakelijke cookies te accepteren of te
+        weigeren.
+      </p>
+      <p>
+        Niet-noodzakelijke cookies waarvoor toestemming vereist is, mogen niet vooraf zijn
+        aangevinkt of geactiveerd.
+      </p>
+      <p>
+        Het weigeren van niet-noodzakelijke cookies verhindert niet dat je de normale onderdelen van
+        onze website kunt gebruiken.
+      </p>
+
+      <h2>7. Toestemming wijzigen of intrekken</h2>
+      <p>
+        Je kunt een eerder gemaakte cookiekeuze later wijzigen of toestemming intrekken via de optie
+        ‘Cookie-instellingen’ op onze website.
+      </p>
+      <p>Het intrekken van toestemming heeft geen terugwerkende kracht.</p>
+
+      <h2>8. Welke cookies gebruiken wij precies?</h2>
+      <p>
+        De daadwerkelijk gebruikte cookies kunnen veranderen wanneer onze website of gebruikte
+        diensten veranderen.
+      </p>
+      <p>
+        Via onze cookie-instellingen wordt daarom een actuele lijst weergegeven met, waar van
+        toepassing:
+      </p>
+      <ul>
+        <li>naam van de cookie;</li>
+        <li>aanbieder;</li>
+        <li>doel;</li>
+        <li>categorie;</li>
+        <li>bewaartermijn.</li>
+      </ul>
+
+      <h2>9. Persoonsgegevens</h2>
+      <p>
+        Wanneer via cookies persoonsgegevens worden verwerkt, is ook ons
+        <a href={withBase('/privacybeleid')}>Privacybeleid</a> van toepassing.
+      </p>
+
+      <h2>10. Contact</h2>
+      <p>Heb je vragen over het gebruik van cookies? Neem dan contact op met:</p>
+      <p>
+        {STUDIO.name}<br />
+        {STUDIO.street}<br />
+        {STUDIO.postcode} {STUDIO.city}
+      </p>
+      <p>
+        E-mail: <a href={EMAIL_URL}>{STUDIO.email}</a><br />
+        Telefoon/WhatsApp: <a href={PHONE_URL}>{STUDIO.phone}</a>
+      </p>
+
+      <h2>11. Wijzigingen</h2>
+      <p>
+        Dit cookiebeleid kan worden aangepast wanneer onze website, gebruikte diensten of wet- en
+        regelgeving veranderen.
+      </p>
+      <p>De meest actuele versie is beschikbaar op onze website.</p>
+    </div>
+  </Section>
+</Layout>

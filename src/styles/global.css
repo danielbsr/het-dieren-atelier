@@ -51,6 +51,23 @@
     color: var(--color-ink);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
+    /*
+      Ruimte onder de zwevende actiebalk (<StickyActions />), zodat die
+      nooit de laatste regel van de footer afdekt. Het is de enige plek
+      op de site waar iets over de inhoud heen ligt.
+    */
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+
+  /*
+    Niets mag horizontaal uit beeld lopen — de mobiele controle uit punt
+    22 van de feedback, afgedwongen in plaats van gecontroleerd.
+
+    Alleen op <html>, en met `clip` in plaats van `hidden`: `hidden`
+    maakt er een scrollcontainer van en dat breekt de sticky header.
+  */
+  html {
+    overflow-x: clip;
   }
 
   ::selection {
@@ -100,6 +117,65 @@
 
   .prose-calm p + p {
     margin-top: 1.25rem;
+  }
+
+  /*
+    Juridische pagina's: privacybeleid en algemene voorwaarden. Eén
+    stijlregel voor lopende tekst, koppen en lijsten, zodat die pagina's
+    geen eigen opmaak per alinea nodig hebben.
+  */
+  .prose-legal {
+    max-width: 44rem;
+    font-family: var(--font-body);
+    color: var(--color-muted);
+    line-height: 1.75;
+  }
+
+  .prose-legal h2 {
+    margin-top: 3rem;
+    font-size: 1.5rem;
+    color: var(--color-ink);
+  }
+
+  .prose-legal h3 {
+    margin-top: 2rem;
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-ink);
+  }
+
+  .prose-legal h2 + p,
+  .prose-legal h3 + p,
+  .prose-legal h2 + ul,
+  .prose-legal h3 + ul {
+    margin-top: 0.875rem;
+  }
+
+  .prose-legal p,
+  .prose-legal ul {
+    margin-top: 1rem;
+  }
+
+  .prose-legal ul {
+    padding-left: 1.1rem;
+    list-style: disc;
+  }
+
+  .prose-legal li + li {
+    margin-top: 0.4rem;
+  }
+
+  .prose-legal a {
+    color: var(--color-forest);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .prose-legal strong {
+    font-weight: 600;
+    color: var(--color-ink);
   }
 }
 

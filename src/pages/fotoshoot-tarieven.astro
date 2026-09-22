@@ -8,20 +8,29 @@ import Faq from '../components/Faq.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import BookButton from '../components/BookButton.astro';
 import { photo } from '../data/photos';
-import { ADD_ONS, COMPARISON, FAQ_BOOKING, ON_LOCATION, PACKAGES, PACKAGE_NOTE } from '../data/site';
+import {
+  COMPARISON,
+  CTA,
+  EXTRA_PORTRAIT,
+  FAQ_BOOKING,
+  FEATURED_LABEL,
+  ON_LOCATION,
+  PACKAGES,
+  PACKAGE_NOTE,
+} from '../data/site';
 ---
 
 <Layout
-  title="Sessions & pricing — packages from €249"
-  description="Three clear packages: Essential €249, Signature €379, Collection €549. Session length, edited photos and backdrops compared."
+  title="Fotoshoot & tarieven — dierenfotoshoot vanaf €249"
+  description="Drie studiopakketten voor een dierenfotoshoot: Essential €249, Signature €379 en Collection €549. Elk max. 45 minuten. Locatieportret bij jou thuis €695."
 >
   <PageHeader
-    eyebrow="Sessions & pricing"
-    title="Sessions & pricing."
-    intro="Three studio packages, one difference between them: time and variety. And a fourth option, where the studio comes to your home instead."
+    eyebrow="Fotoshoot & tarieven"
+    title="Fotoshoot & tarieven."
+    intro="Drie pakketten in de studio, met één verschil: het aantal professioneel bewerkte portretten. Elke studiofotoshoot duurt maximaal 45 minuten. En er is een vierde optie, waarbij de studio naar jou toe komt."
   />
 
-  <!-- Packages -->
+  <!-- Pakketten -->
   <Section space="normal">
     <PackageCards cta={false} />
     <p
@@ -35,20 +44,22 @@ import { ADD_ONS, COMPARISON, FAQ_BOOKING, ON_LOCATION, PACKAGES, PACKAGE_NOTE }
     </div>
   </Section>
 
-  <!-- Full comparison -->
+  <!-- Volledige vergelijking -->
   <Section space="normal">
-    <h2 class="text-section text-ink" data-reveal="line">Compared, line by line.</h2>
+    <h2 class="text-section text-ink" data-reveal="line">Regel voor regel vergeleken.</h2>
     <p class="mt-4 font-body text-sm text-muted md:hidden" data-reveal="rise">
-      Swipe the table sideways to see all three.
+      Veeg de tabel opzij om alle drie te zien.
     </p>
 
     <div class="-mx-6 mt-8 overflow-x-auto px-6 md:mx-0 md:mt-16 md:px-0" data-reveal="rise">
-      <table class="w-full min-w-[42rem] border-collapse text-left">
-        <caption class="sr-only">Comparison of the Essential, Signature and Collection packages</caption>
+      <table class="w-full min-w-[44rem] border-collapse text-left">
+        <caption class="sr-only">
+          Vergelijking van de pakketten Essential, Signature en Collection
+        </caption>
         <thead>
           <tr class="border-b border-forest/25">
             <th scope="col" class="py-5 pr-6 font-body text-sm font-medium text-muted">
-              <span class="sr-only">Feature</span>
+              <span class="sr-only">Onderdeel</span>
             </th>
             {
               PACKAGES.map((pkg) => (
@@ -56,7 +67,7 @@ import { ADD_ONS, COMPARISON, FAQ_BOOKING, ON_LOCATION, PACKAGES, PACKAGE_NOTE }
                   <span class="block font-display text-xl text-ink">{pkg.name}</span>
                   {pkg.featured && (
                     <span class="mt-2 inline-block rounded-full bg-lime px-3 py-0.5 font-body text-[0.65rem] font-medium uppercase tracking-[0.14em] text-forest-deep">
-                      Most chosen
+                      {FEATURED_LABEL}
                     </span>
                   )}
                 </th>
@@ -87,71 +98,78 @@ import { ADD_ONS, COMPARISON, FAQ_BOOKING, ON_LOCATION, PACKAGES, PACKAGE_NOTE }
       </table>
     </div>
 
-    <p class="mt-8 max-w-[46rem] font-body text-[0.95rem] leading-relaxed text-muted" data-reveal="rise">
-      The on-location session sits outside this table: approx. 90 minutes at your home, 10 edited
-      photos, and your own interior — or a portable backdrop — as the setting.
+    <p
+      class="mt-8 max-w-[46rem] font-body text-[0.95rem] leading-relaxed text-muted"
+      data-reveal="rise"
+    >
+      Het Locatieportret staat buiten deze tabel: tot 1 uur fotografie bij jou op locatie, 2
+      professioneel bewerkte portretten en maximaal 2 huisdieren voor dezelfde prijs.
     </p>
   </Section>
 
-  <!-- What "more backdrops" actually buys -->
+  <!-- Wat "meerdere achtergronden" oplevert -->
   <Section space="tight">
     <div class="grid grid-cols-3 gap-3 md:gap-6">
       <Portrait
         tone="sage"
         src={photo('noor')}
+        subject="bengaal"
+        animal="cat"
         sizes="(min-width: 768px) 355px, 33vw"
         ratio="square"
-        crop="tight"
         hover
       />
       <Portrait
         tone="caramel"
         src={photo('knabbel')}
+        subject="cavia"
+        animal="guineapig"
         sizes="(min-width: 768px) 355px, 33vw"
         ratio="square"
-        crop="tight"
         hover
       />
       <Portrait
         tone="midnight"
         src={photo('storm')}
+        subject="border collie"
+        animal="dog"
         sizes="(min-width: 768px) 355px, 33vw"
         ratio="square"
-        crop="tight"
         hover
       />
     </div>
     <p class="mt-5 font-body text-sm text-muted" data-reveal="rise">
-      The backdrop is chosen for the animal — coat, eyes, character. Larger packages give you
-      two or three of them in one session.
+      De achtergrond wordt gekozen bij het dier — vacht, ogen, karakter. Bij Signature en
+      Collection kies je uit meerdere achtergronden binnen dezelfde fotoshoot.
     </p>
   </Section>
 
-  <!-- Add-ons -->
+  <!-- Extra portretten -->
   <Section space="normal">
-    <h2 class="text-section text-ink" data-reveal="line">Add-ons.</h2>
-    <div class="mt-12 grid gap-6 md:mt-14 md:grid-cols-2">
-      {
-        ADD_ONS.map((addOn) => (
-          <div class="rounded-2xl border border-line p-8" data-reveal="rise">
-            <div class="flex items-baseline justify-between gap-4">
-              <h3 class="font-display text-xl text-ink">{addOn.title}</h3>
-              <span class="shrink-0 font-display text-xl text-forest">{addOn.price}</span>
-            </div>
-            <p class="mt-3 font-body text-[0.95rem] leading-relaxed text-muted">{addOn.body}</p>
-          </div>
-        ))
-      }
+    <div
+      class="grid gap-6 rounded-2xl border border-line p-8 md:grid-cols-[1fr_auto] md:items-center md:gap-12 md:p-10"
+      data-reveal="rise"
+    >
+      <div>
+        <h2 class="font-display text-2xl text-ink">{EXTRA_PORTRAIT.label}</h2>
+        <p class="mt-3 max-w-[40rem] font-body text-[0.95rem] leading-relaxed text-muted">
+          {EXTRA_PORTRAIT.body}
+        </p>
+      </div>
+      <p class="font-display text-[2.25rem] leading-none text-forest">{EXTRA_PORTRAIT.price}</p>
     </div>
   </Section>
 
-  <!-- Which package fits? -->
+  <!-- Welk pakket past? -->
   <Section space="normal">
-    <h2 class="text-section text-ink" data-reveal="line">Which package fits?</h2>
+    <h2 class="text-section text-ink" data-reveal="line">Welk pakket past bij jou?</h2>
     <dl class="mt-12 space-y-10 md:mt-14">
       {
         PACKAGES.map((pkg) => (
-          <div class="grid gap-3 border-t border-line pt-8 md:grid-cols-[10rem_1fr] md:gap-10" data-reveal="rise">
+          <div
+            class="grid gap-3 border-t border-line pt-8 md:grid-cols-[10rem_1fr] md:gap-10"
+            data-reveal="rise"
+          >
             <dt class="font-display text-xl text-forest">{pkg.name}</dt>
             <dd class="max-w-[44rem] font-body text-[1.05rem] leading-relaxed text-muted">
               {pkg.guidance}
@@ -160,7 +178,10 @@ import { ADD_ONS, COMPARISON, FAQ_BOOKING, ON_LOCATION, PACKAGES, PACKAGE_NOTE }
         ))
       }
 
-      <div class="grid gap-3 border-t border-line pt-8 md:grid-cols-[10rem_1fr] md:gap-10" data-reveal="rise">
+      <div
+        class="grid gap-3 border-t border-line pt-8 md:grid-cols-[10rem_1fr] md:gap-10"
+        data-reveal="rise"
+      >
         <dt class="font-display text-xl text-forest">{ON_LOCATION.name}</dt>
         <dd class="max-w-[44rem] font-body text-[1.05rem] leading-relaxed text-muted">
           {ON_LOCATION.guidance}
@@ -173,18 +194,30 @@ import { ADD_ONS, COMPARISON, FAQ_BOOKING, ON_LOCATION, PACKAGES, PACKAGE_NOTE }
     </div>
   </Section>
 
-  <!-- Booking questions -->
+  <!-- Boeken & betalen -->
   <Section space="normal">
     <div class="grid gap-12 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
-      <h2 class="text-section text-ink" data-reveal="line">Before you book.</h2>
+      <div>
+        <h2 class="text-section text-ink" data-reveal="line">Boeken & betalen.</h2>
+        <a
+          href={`${CTA.process.href}#veelgestelde-vragen`}
+          class="group mt-6 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline lg:mt-8"
+          data-reveal="rise"
+        >
+          Alle veelgestelde vragen
+          <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+        </a>
+      </div>
       <Faq items={FAQ_BOOKING} />
     </div>
   </Section>
 
   <ClosingCta
-    headline="Pick your package."
-    body="Pick a date in the calendar — the rest happens calmly, in the studio or at your home."
+    headline="Kies jouw pakket."
+    body="Kies een datum in de agenda — de rest gebeurt rustig, in de studio of bij jou op locatie."
     tone="taupe"
     photo="daan"
+    animal="dog"
+    subject="labrador"
   />
 </Layout>

@@ -1,0 +1,254 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Section from '../components/Section.astro';
+import { EMAIL_URL, LEGAL_UPDATED, PHONE_URL, STUDIO, withBase } from '../data/site';
+
+/**
+ * De tekst op deze pagina is letterlijk aangeleverd door de studio.
+ * Alleen de opmaak is van ons: koppen, lijsten en werkende links naar
+ * e-mail, telefoon en het cookiebeleid. Niets herschrijven zonder
+ * overleg — dit is een juridisch document, geen webtekst.
+ */
+---
+
+<Layout
+  title="Privacybeleid"
+  description="Hoe Het Dieren Atelier omgaat met jouw persoonsgegevens: welke gegevens we verwerken, waarom, hoe lang we ze bewaren en welke rechten je hebt."
+  showFooterCta
+>
+  <PageHeader
+    eyebrow="Privacybeleid"
+    title="Privacybeleid."
+    intro={`Laatst bijgewerkt: ${LEGAL_UPDATED}.`}
+  />
+
+  <Section space="normal">
+    <div class="prose-legal">
+      <p>
+        Het Dieren Atelier vindt het belangrijk dat zorgvuldig met jouw persoonsgegevens wordt
+        omgegaan. In dit privacybeleid leggen we uit welke persoonsgegevens we verwerken, waarom we
+        dat doen, hoe lang we deze bewaren en welke rechten je hebt.
+      </p>
+
+      <h2>1. Wie zijn wij?</h2>
+      <p>
+        {STUDIO.name}<br />
+        {STUDIO.street}<br />
+        {STUDIO.postcode} {STUDIO.city}<br />
+        {STUDIO.country}
+      </p>
+      <p>
+        KvK: {STUDIO.kvk}<br />
+        Btw: {STUDIO.vat}<br />
+        E-mail: <a href={EMAIL_URL}>{STUDIO.email}</a><br />
+        Telefoon/WhatsApp: <a href={PHONE_URL}>{STUDIO.phone}</a>
+      </p>
+      <p>
+        Het Dieren Atelier is verantwoordelijk voor de verwerking van persoonsgegevens zoals
+        beschreven in dit privacybeleid.
+      </p>
+
+      <h2>2. Welke persoonsgegevens verwerken wij?</h2>
+      <p>
+        Afhankelijk van de manier waarop je onze website en diensten gebruikt, kunnen wij onder
+        andere de volgende gegevens verwerken:
+      </p>
+      <ul>
+        <li>voor- en achternaam;</li>
+        <li>e-mailadres;</li>
+        <li>telefoonnummer;</li>
+        <li>adresgegevens wanneer deze nodig zijn voor levering of een fotoshoot op locatie;</li>
+        <li>boekings- en afspraakgegevens;</li>
+        <li>informatie over het gekozen pakket;</li>
+        <li>bestellingen en aankopen;</li>
+        <li>betaal- en factuurgegevens;</li>
+        <li>communicatie via e-mail en WhatsApp;</li>
+        <li>informatie die je zelf aan ons verstrekt over jouw huisdier of fotoshoot;</li>
+        <li>foto's en ander beeldmateriaal dat tijdens een opdracht wordt gemaakt;</li>
+        <li>
+          technische websitegegevens, voor zover deze via cookies of vergelijkbare technieken
+          worden verzameld.
+        </li>
+      </ul>
+
+      <h2>3. Waarvoor gebruiken wij persoonsgegevens?</h2>
+      <p>Wij kunnen persoonsgegevens verwerken om:</p>
+      <ul>
+        <li>een fotoshoot te boeken en plannen;</li>
+        <li>contact met je op te nemen over jouw afspraak;</li>
+        <li>de fotoshoot uit te voeren;</li>
+        <li>jouw gekozen foto's professioneel te bewerken;</li>
+        <li>digitale bestanden te leveren;</li>
+        <li>wanddecoratie te bestellen en leveren;</li>
+        <li>betalingen en onze administratie te verwerken;</li>
+        <li>cadeaubonnen te verwerken;</li>
+        <li>vragen via WhatsApp, e-mail of andere kanalen te beantwoorden;</li>
+        <li>klachten of problemen af te handelen;</li>
+        <li>aan wettelijke en fiscale verplichtingen te voldoen;</li>
+        <li>onze website veilig en goed te laten functioneren;</li>
+        <li>websitegebruik te analyseren wanneer dit wettelijk is toegestaan;</li>
+        <li>
+          marketing- of trackingtechnieken te gebruiken wanneer daarvoor toestemming is vereist en
+          verkregen.
+        </li>
+      </ul>
+
+      <h2>4. Op welke grondslag verwerken wij gegevens?</h2>
+      <p>
+        Wij verwerken persoonsgegevens alleen wanneer daarvoor een geldige wettelijke grondslag
+        bestaat. Afhankelijk van de situatie kan dat zijn:
+      </p>
+      <ul>
+        <li>uitvoering van een overeenkomst;</li>
+        <li>het treffen van maatregelen voorafgaand aan een overeenkomst;</li>
+        <li>een wettelijke verplichting;</li>
+        <li>een gerechtvaardigd belang;</li>
+        <li>jouw toestemming.</li>
+      </ul>
+      <p>
+        Wanneer een verwerking is gebaseerd op toestemming, kun je deze toestemming weer intrekken.
+        Intrekking heeft geen terugwerkende kracht.
+      </p>
+
+      <h2>5. Foto's en beeldmateriaal</h2>
+      <p>
+        Tijdens een fotoshoot worden foto's gemaakt van jouw huisdier en mogelijk, wanneer dit
+        onderdeel van de afspraak is, van jou of andere personen.
+      </p>
+      <p>
+        De foto's worden in eerste instantie gemaakt en verwerkt voor het uitvoeren van de
+        afgesproken fotoshoot, het maken van jouw selectie, professionele nabewerking en levering.
+      </p>
+      <p>
+        Herkenbare foto's van personen worden niet automatisch voor reclame of marketing gebruikt
+        alleen omdat een fotoshoot is geboekt.
+      </p>
+      <p>
+        Wanneer toestemming nodig is voor gebruik van beeldmateriaal voor bijvoorbeeld onze website,
+        portfolio, advertenties of sociale media, vragen wij hiervoor afzonderlijk toestemming.
+      </p>
+
+      <h2>6. Delen wij gegevens met andere partijen?</h2>
+      <p>Wij verkopen jouw persoonsgegevens niet.</p>
+      <p>
+        Wij kunnen persoonsgegevens delen met externe partijen wanneer dit noodzakelijk is voor onze
+        dienstverlening of bedrijfsvoering. Denk bijvoorbeeld aan:
+      </p>
+      <ul>
+        <li>website- en hostingproviders;</li>
+        <li>online boekingssoftware;</li>
+        <li>e-mailproviders;</li>
+        <li>cloudopslag;</li>
+        <li>betaal- en boekhoudsoftware;</li>
+        <li>IT-dienstverleners;</li>
+        <li>producenten en leveranciers van wanddecoratie;</li>
+        <li>analyse- of marketingdiensten wanneer deze op onze website worden gebruikt.</li>
+      </ul>
+      <p>We delen alleen gegevens die redelijkerwijs nodig zijn voor het betreffende doel.</p>
+      <p>
+        Waar dat wettelijk noodzakelijk is, maken we afspraken met partijen die namens ons
+        persoonsgegevens verwerken.
+      </p>
+
+      <h2>7. Online boeken</h2>
+      <p>
+        Wanneer je via onze website of een externe boekingsdienst een afspraak maakt, worden
+        persoonsgegevens verwerkt om jouw reservering mogelijk te maken.
+      </p>
+      <p>De betreffende externe aanbieder kan daarnaast een eigen privacybeleid hanteren.</p>
+
+      <h2>8. WhatsApp</h2>
+      <p>
+        Wanneer je contact met ons opneemt via WhatsApp, verwerken wij de gegevens die nodig zijn om
+        jouw bericht te ontvangen en beantwoorden.
+      </p>
+      <p>
+        Op het gebruik van WhatsApp zijn daarnaast de voorwaarden en het privacybeleid van de
+        aanbieder van WhatsApp van toepassing.
+      </p>
+
+      <h2>9. Betalingen</h2>
+      <p>
+        Voor het verwerken van betalingen kunnen noodzakelijke betaalgegevens worden verwerkt. Wij
+        bewaren niet meer betaalinformatie dan nodig is voor de betaling, administratie en
+        wettelijke verplichtingen.
+      </p>
+
+      <h2>10. Bewaartermijnen</h2>
+      <p>
+        Wij bewaren persoonsgegevens niet langer dan redelijkerwijs noodzakelijk is voor het doel
+        waarvoor deze zijn verzameld, tenzij wij wettelijk verplicht zijn gegevens langer te
+        bewaren.
+      </p>
+      <p>
+        Administratieve en fiscale gegevens bewaren wij gedurende de wettelijk vereiste
+        bewaartermijn.
+      </p>
+      <p>
+        Foto-, selectie- en projectbestanden kunnen tijdelijk worden bewaard voor nabewerking,
+        levering, eventuele nabestellingen en het behandelen van vragen.
+      </p>
+      <p>
+        Het Dieren Atelier garandeert geen permanente archivering van foto's of projectbestanden.
+        Wij adviseren klanten daarom om geleverde bestanden zelf veilig te bewaren.
+      </p>
+
+      <h2>11. Beveiliging</h2>
+      <p>
+        Wij nemen passende technische en organisatorische maatregelen om persoonsgegevens te
+        beschermen tegen verlies, misbruik, onbevoegde toegang, ongewenste openbaarmaking en
+        ongeoorloofde wijzigingen.
+      </p>
+
+      <h2>12. Cookies en vergelijkbare technieken</h2>
+      <p>
+        Onze website kan gebruikmaken van functionele, analytische en – wanneer daarvoor toestemming
+        is gegeven – marketing- of trackingcookies.
+      </p>
+      <p>
+        Meer informatie hierover vind je in ons <a href={withBase('/cookiebeleid')}>Cookiebeleid</a>
+        en via de cookie-instellingen op de website.
+      </p>
+
+      <h2>13. Jouw privacyrechten</h2>
+      <p>Afhankelijk van de situatie heb je onder de AVG onder andere het recht om:</p>
+      <ul>
+        <li>jouw persoonsgegevens in te zien;</li>
+        <li>onjuiste persoonsgegevens te laten corrigeren;</li>
+        <li>in bepaalde gevallen persoonsgegevens te laten verwijderen;</li>
+        <li>de verwerking te laten beperken;</li>
+        <li>bezwaar te maken tegen bepaalde verwerkingen;</li>
+        <li>persoonsgegevens over te dragen wanneer het recht op dataportabiliteit van toepassing is;</li>
+        <li>gegeven toestemming in te trekken.</li>
+      </ul>
+      <p>
+        Wil je gebruikmaken van een van deze rechten? Neem dan contact op via
+        <a href={EMAIL_URL}>{STUDIO.email}</a>.
+      </p>
+      <p>
+        Wij kunnen aanvullende informatie vragen wanneer dat redelijkerwijs noodzakelijk is om jouw
+        identiteit vast te stellen.
+      </p>
+
+      <h2>14. Klachten over privacy</h2>
+      <p>
+        Heb je een vraag of klacht over de manier waarop wij jouw persoonsgegevens verwerken? Neem
+        dan contact met ons op via <a href={EMAIL_URL}>{STUDIO.email}</a>.
+      </p>
+      <p>
+        Je hebt daarnaast het recht om een klacht in te dienen bij de
+        <a href="https://autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener noreferrer"
+          >Autoriteit Persoonsgegevens</a
+        >.
+      </p>
+
+      <h2>15. Wijzigingen</h2>
+      <p>
+        Wij kunnen dit privacybeleid aanpassen wanneer onze dienstverlening, website of de
+        toepasselijke wet- en regelgeving verandert.
+      </p>
+      <p>De meest actuele versie is altijd beschikbaar via onze website.</p>
+    </div>
+  </Section>
+</Layout>

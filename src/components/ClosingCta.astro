@@ -5,23 +5,27 @@ import { photo } from '../data/photos';
 import { type BackdropKey } from '../data/site';
 
 /**
- * The closing block. A portrait with direct eye contact sits beside the
- * decision — eye contact at the moment of choice pulls attention here.
+ * Het afsluitblok. Een portret met direct oogcontact staat naast de
+ * beslissing — oogcontact op het moment van kiezen trekt de aandacht
+ * precies hierheen.
  */
 interface Props {
   headline: string;
   body?: string;
   tone?: BackdropKey;
   animal?: 'dog' | 'cat' | 'rabbit' | 'bird' | 'guineapig';
-  /** Slot name in src/assets/portraits. Every page closes on a different face. */
+  /** Korte omschrijving van het dier, voor de alt-tekst. */
+  subject?: string;
+  /** Bestandsnaam in src/assets/portraits. Elke pagina sluit op een ander gezicht. */
   photo?: string;
 }
 
 const {
   headline,
-  body = 'Pick a date in the calendar — the rest happens calmly, in the studio.',
+  body = 'Kies een datum in de agenda — de rest gebeurt rustig, in de studio.',
   tone = 'pearl',
   animal = 'dog',
+  subject,
   photo: photoSlot,
 } = Astro.props;
 ---
@@ -33,11 +37,10 @@ const {
     <Portrait
       tone={tone}
       animal={animal}
+      subject={subject}
       src={photo(photoSlot)}
       sizes="(min-width: 768px) 448px, 100vw"
       ratio="portrait"
-      mobileRatio="square"
-      crop="tight"
       class="max-w-md"
     />
 

@@ -1,65 +1,75 @@
-# Astro Static Marketing Site Starter
+# Het Dieren Atelier
 
-A minimal Astro starter with Tailwind CSS for building static marketing sites with Ship Studio.
-
-## Features
-
-- **Astro 5** - Static site generation with island architecture
-- **Tailwind CSS 4** - Modern utility-first CSS with CSS variables
-- **Dark Mode** - Automatic dark/light theme based on system preferences
-- **Google Fonts** - Space Grotesk (display) + DM Sans (body)
-- **Responsive** - Mobile-first design patterns
-
-## Getting Started
+De website van Het Dieren Atelier — een dierenfotostudio aan de Gildenweg 3H in
+Blokker, naast Hoorn. Statische site op Astro 5 en Tailwind 4, volledig
+Nederlandstalig.
 
 ```bash
 npm install
-npm run dev
+npm run dev      # http://localhost:4321
+npm run build    # naar ./dist
+npm run preview  # de build lokaal bekijken
 ```
 
-Open [http://localhost:4321](http://localhost:4321) to view your site.
-
-## Project Structure
+## Waar wat staat
 
 ```
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro    # Base layout with fonts and styles
-│   ├── pages/
-│   │   └── index.astro     # Homepage
-│   └── styles/
-│       └── global.css      # Tailwind + CSS variables
-├── public/                  # Static assets
-└── astro.config.mjs        # Astro configuration
+src/
+├── data/
+│   ├── site.ts      ← alle teksten, prijzen, pakketten, FAQ, reviews, navigatie
+│   └── photos.ts    ← zoekt foto's op bestandsnaam
+├── assets/
+│   ├── portraits/   ← studioportretten van dieren
+│   └── rooms/       ← interieurbeelden, materialen, behind the scenes
+├── components/
+├── layouts/Layout.astro   ← <head>, SEO, structured data
+├── pages/           ← één .astro per route
+└── styles/global.css
 ```
 
-## Commands
+**`src/data/site.ts` is de enige plek waar inhoud hoort.** Prijzen, knoplabels,
+FAQ-antwoorden en adresgegevens staan daar en nergens anders, zodat een wijziging
+overal tegelijk doorwerkt. Componenten bevatten geen losse teksten.
 
-| Command         | Action                                       |
-| --------------- | -------------------------------------------- |
-| `npm run dev`   | Start dev server at `localhost:4321`         |
-| `npm run build` | Build production site to `./dist/`           |
-| `npm run preview` | Preview production build locally           |
+Foto's staan in `src/assets/` en niet in `public/`, omdat alleen bestanden onder
+`src/` door Astro's image pipeline gaan — die maakt van één bron de WebP-formaten
+die elke plek in de layout nodig heeft. Een foto wordt gekoppeld op bestandsnaam:
+`nova.webp` in `portraits/` vult de plek `'nova'`. Nieuwe fotografie inhangen:
 
-## Customization
-
-### Colors
-
-Edit the CSS variables in `src/styles/global.css`:
-
-```css
-:root {
-  --background: #fafaf9;
-  --foreground: #1c1917;
-  --muted: #78716c;
-  --accent: #dc2626;
-}
+```bash
+npm run photos -- ~/pad/naar/map
 ```
 
-### Fonts
+## Routes
 
-Fonts are loaded via Google Fonts in `src/layouts/Layout.astro`. Update the import URL and CSS variables to change fonts.
+| Pad                      | Pagina                          |
+| ------------------------ | ------------------------------- |
+| `/`                      | Home                            |
+| `/portfolio`             | Portfolio, met lightbox         |
+| `/fotoshoot-tarieven`    | Pakketten en prijzen            |
+| `/werkwijze`             | Vijf stappen + volledige FAQ    |
+| `/wanddecoratie`         | Fine Art, aluminium, plexiglas  |
+| `/over-ons`              | Over de studio                  |
+| `/contact`               | Calendly-agenda en contact      |
+| `/privacybeleid`         | Privacybeleid (tekst van de studio) |
+| `/cookiebeleid`          | Cookiebeleid (tekst van de studio)  |
+| `/algemene-voorwaarden`  | Algemene voorwaarden (concept)  |
+| `/404`                   | Foutpagina                      |
+| `/sitemap.xml`, `/robots.txt` | Gegenereerd uit `site.ts`  |
 
-## License
+De teksten op `/privacybeleid` en `/cookiebeleid` zijn letterlijk aangeleverd door
+de studio — alleen de opmaak is van ons. Niet herschrijven zonder overleg.
+`/algemene-voorwaarden` is nog een concept en moet juridisch worden nagekeken.
 
-MIT
+## Voor de livegang
+
+1. Zet `INDEXABLE` in `src/data/site.ts` op `true`. Dat haalt in één keer de
+   `noindex`-meta weg en zet `robots.txt` open voor zoekmachines.
+2. Controleer `SITE_URL` in hetzelfde bestand — die bepaalt de canonical-links,
+   de social sharing-URL en de sitemap.
+3. Haal in `astro.config.mjs` de `base` weg zodra de site op een eigen domein
+   staat in plaats van in de submap van GitHub Pages.
+4. Het cookiebeleid belooft een optie 'Cookie-instellingen'. Die bestaat nog
+   niet: de site zet zelf geen cookies, maar laadt wel de agenda van Calendly en
+   een kaart van Google Maps. Bouw een toestemmingsvenster of pas de tekst aan
+   voordat de site live gaat.

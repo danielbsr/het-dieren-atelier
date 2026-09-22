@@ -2,48 +2,59 @@
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import AnimalSilhouette from './AnimalSilhouette.astro';
-import { BACKDROPS, type BackdropKey } from '../data/site';
+import { ANIMAL_NOUN, BACKDROPS, type BackdropKey } from '../data/site';
 
 /**
- * A studio portrait on a hand-picked backdrop.
+ * Een studioportret op een met de hand gekozen achtergrond.
  *
- * Pass `src` once real photography exists — the tinted placeholder is
- * only a stand-in so layout, crop and colour curation can be judged now.
- * Everything else (caption, ratio, tone label) stays identical.
+ * Zolang `src` ontbreekt rendert de getinte placeholder, zodat layout,
+ * uitsnede en kleurcuratie nu al te beoordelen zijn. Al het andere
+ * (bijschrift, verhouding, kleurnaam) blijft identiek.
  */
 interface Props {
   tone: BackdropKey;
   name?: string;
   /**
-   * An import from src/assets (usually via `photo()`), which the build
-   * resizes and re-encodes as WebP. A plain string is passed through to
-   * <img> untouched, for anything already sitting in public/.
+   * Een import uit src/assets (meestal via `photo()`), die de build
+   * herschaalt en hercodeert naar WebP. Een gewone string gaat
+   * onbewerkt door naar <img>, voor alles wat al in public/ staat.
    */
   src?: ImageMetadata | string;
   alt?: string;
   animal?: 'dog' | 'cat' | 'rabbit' | 'bird' | 'guineapig';
+  /** Korte omschrijving van het dier, bv. 'border collie' — voor de alt-tekst. */
+  subject?: string;
   ratio?: 'tall' | 'portrait' | 'square' | 'wide' | 'banner';
   /**
-   * Ratio below `md`. Phones are one column wide: a 3/4.4 portrait that
-   * reads as confident on a desktop column eats a whole phone screen, so
-   * the tall crops shorten rather than scroll.
+   * Verhouding onder `md`. Telefoons zijn één kolom breed: een 3/4.4
+   * portret dat op een desktopkolom zelfverzekerd oogt, vreet een heel
+   * telefoonscherm op — dus de lange uitsnedes worden korter in plaats
+   * van langer te scrollen.
    */
   mobileRatio?: 'tall' | 'portrait' | 'square' | 'wide' | 'banner';
-  /** 'tight' zooms the subject in, as a close face crop would. */
+  /** 'tight' zoomt het onderwerp in, zoals een close-up van een kop. Alleen voor de placeholder. */
   crop?: 'tight' | 'full';
+  /**
+   * Waar de uitsnede vandaan komt als het kader een andere verhouding
+   * heeft dan het bestand. Standaard iets boven het midden: de dieren
+   * staan gecentreerd in het beeld, dus bij een vierkante uitsnede van
+   * een 4:5-bron moet de hap uit de poten komen en niet uit de kop
+   * (punt 8 en 22 van de feedback).
+   */
+  objectPosition?: string;
   caption?: boolean;
-  /** Slow zoom under the cursor. For grids; never for the hero. */
+  /** Langzame zoom onder de cursor. Voor grids; nooit voor de hero. */
   hover?: boolean;
   /**
-   * How wide this slot renders, so the browser can pick the smallest
-   * file that still looks sharp. The default suits the two- and
-   * three-column grids; the hero and the wide blocks override it.
+   * Hoe breed deze plek rendert, zodat de browser het kleinste bestand
+   * kan kiezen dat nog scherp is. De standaard past bij de twee- en
+   * driekoloms grids; de hero en de brede blokken overschrijven hem.
    */
   sizes?: string;
-  /** Above the fold: load it immediately instead of lazily. */
+  /** Boven de vouw: direct laden in plaats van lazy. */
   priority?: boolean;
   class?: string;
-  /** Extra attributes (e.g. data-species) land on the <figure>. */
+  /** Extra attributen (bv. data-species) landen op de <figure>. */
   [key: string]: unknown;
 }
 
@@ -53,9 +64,11 @@ const {
   src,
   alt,
   animal = 'dog',
+  subject,
   ratio = 'portrait',
   mobileRatio,
   crop = 'full',
+  objectPosition = '50% 38%',
   caption = false,
   hover = false,
   sizes = '(min-width: 1024px) 480px, (min-width: 768px) 45vw, 50vw',
@@ -65,9 +78,9 @@ const {
 } = Astro.props;
 
 /**
- * Candidate widths. Nothing on this site renders a photograph wider than
- * ~640 CSS px, so 1440 is the 2× ceiling for the largest slot; Astro
- * drops any candidate larger than the source file.
+ * Kandidaatbreedtes. Niets op deze site rendert een foto breder dan
+ * ~640 CSS px, dus 1440 is het 2×-plafond voor de grootste plek; Astro
+ * laat elke kandidaat vallen die groter is dan het bronbestand.
  */
 const WIDTHS = [320, 480, 640, 960, 1280, 1440];
 
@@ -89,17 +102,23 @@ const mdRatios = {
   banner: 'md:aspect-[21/8]',
 };
 
-// Without a mobile override the single ratio applies at every width.
+// Zonder mobiele override geldt de ene verhouding op elke breedte.
 const ratioClass = mobileRatio ? `${ratios[mobileRatio]} ${mdRatios[ratio]}` : ratios[ratio];
 
 const toneName = backdrop.name.toLowerCase();
-const article = /^[aeiou]/.test(toneName) ? 'an' : 'a';
 
+/**
+ * Alt-teksten in het Nederlands, opgebouwd uit wat we van het beeld
+ * weten: naam, soort en achtergrondkleur. Dat leest voor een schermlezer
+ * als een beschrijving en voor Google als een dierenportret in een
+ * studio — beide zonder dat er per foto een zin met de hand bij hoeft.
+ */
+const noun = subject ?? ANIMAL_NOUN[animal];
 const altText =
   alt ??
   (name
-    ? `Studio portrait of ${name} on ${article} ${toneName} backdrop`
-    : `Studio portrait on ${article} ${toneName} backdrop`);
+    ? `Studioportret van ${name}, een ${noun}, op een ${backdrop.adjective} achtergrond`
+    : `Studioportret van een ${noun} op een ${backdrop.adjective} achtergrond`);
 ---
 
 <figure class={className} data-reveal="image" {...rest}>
@@ -114,6 +133,7 @@ const altText =
           alt={altText}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
+          style={`object-position:${objectPosition}`}
           class="zoom-target h-full w-full object-cover"
         />
       ) : src ? (
@@ -127,11 +147,12 @@ const altText =
           loading={priority ? 'eager' : 'lazy'}
           fetchpriority={priority ? 'high' : 'auto'}
           decoding="async"
+          style={`object-position:${objectPosition}`}
           class="zoom-target h-full w-full object-cover"
         />
       ) : (
         <div class="zoom-target absolute inset-0">
-          {/* Studio key light falling on the backdrop. */}
+          {/* Studiolicht dat op de achtergrond valt. */}
           <div
             class="absolute inset-0"
             style="background:radial-gradient(ellipse 70% 55% at 50% 32%, rgba(255,255,255,0.22), transparent 68%)"
@@ -146,7 +167,7 @@ const altText =
               crop === 'tight' ? 'bottom-[-35%] h-[135%]' : 'bottom-0 h-[82%]'
             }`}
           />
-          <span class="sr-only">{altText} — placeholder, awaiting photography</span>
+          <span class="sr-only">{altText} — placeholder, fotografie volgt</span>
         </div>
       )
     }
@@ -155,7 +176,7 @@ const altText =
   {
     caption && name && (
       <figcaption class="mt-2.5 font-body text-[0.8rem] text-muted md:mt-3 md:text-sm">
-        {name} — {backdrop.name.toLowerCase()}
+        {name} — {toneName}
       </figcaption>
     )
   }

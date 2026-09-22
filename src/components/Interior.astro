@@ -1,0 +1,72 @@
+---
+import { Image } from 'astro:assets';
+import { photo } from '../data/photos';
+
+/**
+ * Een echte interieurfoto: een portret dat al hangt, in een echte kamer.
+ *
+ * Dit verving een CSS-nagebouwde kamer. Zolang er geen fotografie was
+ * deed die mockup zijn werk, maar niemand koopt wanddecoratie op een
+ * tekening — en de feedback vroeg er expliciet om (punt 13). Het
+ * component is bewust dun: een beeld, een verhouding, een bijschrift.
+ */
+interface Props {
+  /** Bestandsnaam in src/assets/rooms. */
+  photo: string;
+  alt: string;
+  /** Het label rechtsonder, bv. "Plexiglas in een woonkamer". */
+  label?: string;
+  ratio?: 'wide' | 'portrait' | 'landscape' | 'tall';
+  sizes?: string;
+  priority?: boolean;
+  class?: string;
+}
+
+const {
+  photo: slot,
+  alt,
+  label,
+  ratio = 'portrait',
+  sizes = '(min-width: 768px) 50vw, 100vw',
+  priority = false,
+  class: className = '',
+} = Astro.props;
+
+const image = photo(slot);
+
+const ratios = {
+  wide: 'aspect-[16/9]',
+  landscape: 'aspect-[4/3]',
+  portrait: 'aspect-[4/5]',
+  tall: 'aspect-[2/3]',
+};
+---
+
+<figure class={className} data-reveal="image">
+  <div class={`zoom-frame relative overflow-hidden rounded-xl bg-cream-deep ${ratios[ratio]}`}>
+    {
+      image && (
+        <Image
+          src={image}
+          alt={alt}
+          widths={[400, 640, 960, 1280, 1600]}
+          sizes={sizes}
+          format="webp"
+          quality={82}
+          loading={priority ? 'eager' : 'lazy'}
+          fetchpriority={priority ? 'high' : 'auto'}
+          decoding="async"
+          class="zoom-target h-full w-full object-cover"
+        />
+      )
+    }
+
+    {
+      label && (
+        <span class="absolute bottom-3 right-4 rounded-full bg-cream/85 px-3 py-1 font-body text-[0.7rem] tracking-wide text-ink/70 backdrop-blur-sm">
+          {label}
+        </span>
+      )
+    }
+  </div>
+</figure>

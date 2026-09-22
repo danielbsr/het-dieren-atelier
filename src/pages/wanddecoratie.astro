@@ -1,0 +1,190 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Section from '../components/Section.astro';
+import Interior from '../components/Interior.astro';
+import Faq from '../components/Faq.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import BookButton from '../components/BookButton.astro';
+import { CTA, FAQ_GROUPS, RECOMMENDED_LABEL, WALL_ART_PRODUCTS } from '../data/site';
+
+const wallArtFaq = FAQ_GROUPS.find((group) => group.title === 'Wanddecoratie')?.items ?? [];
+---
+
+<Layout
+  title="Wanddecoratie — dierenportret op Fine Art, aluminium of plexiglas"
+  description="Laat het portret van jouw hond of kat uitvoeren als hoogwaardige wanddecoratie: Fine Art, aluminium of plexiglas. Persoonlijk advies over materiaal en formaat in onze studio."
+>
+  <PageHeader
+    eyebrow="Wanddecoratie"
+    title="Van foto naar kunstwerk."
+    intro="Een portret komt het best tot zijn recht aan een muur. Na de fotoshoot bekijken we de mogelijkheden samen in de studio — met echte voorbeelden, op ware grootte. Niets hoeft vandaag beslist te worden."
+  />
+
+  <!--
+    De pagina opent op de belofte zelf: een portret dat al hangt, al
+    belicht is, al deel van een kamer is. Alles daaronder is detail.
+  -->
+  <Section space="tight">
+    <Interior
+      photo="interieur-kat-breed"
+      alt="Groot portret van een zwarte kat aan de muur van een lichte woonkamer met fauteuil en bank"
+      ratio="wide"
+      sizes="(min-width: 1200px) 1120px, 100vw"
+      priority
+    />
+
+    <p
+      class="mx-auto mt-12 max-w-[42rem] text-center font-display text-[1.5rem] leading-[1.35] text-ink md:mt-16 md:text-[1.9rem]"
+      data-reveal="rise"
+    >
+      Een fotoshoot eindigt met een bestand. Het werk eindigt aan een muur.
+    </p>
+  </Section>
+
+  <!-- De drie materialen -->
+  <Section space="normal">
+    <div class="space-y-20 md:space-y-36">
+      {
+        WALL_ART_PRODUCTS.map((product, i) => (
+          <article class="grid items-center gap-8 md:grid-cols-2 md:gap-16 lg:gap-20">
+            <div class={i % 2 === 1 ? 'md:order-2' : ''}>
+              <Interior
+                photo={product.photo}
+                alt={product.alt}
+                ratio="portrait"
+                sizes="(min-width: 768px) 50vw, 100vw"
+              />
+            </div>
+
+            <div>
+              <div class="flex flex-wrap items-baseline gap-x-5 gap-y-3 border-b border-line pb-5">
+                <h2 class="font-display text-sub text-ink" data-reveal="line">
+                  {product.name}
+                </h2>
+                {product.recommended && (
+                  <span class="rounded-full bg-lime px-3 py-1 font-body text-[0.65rem] font-medium uppercase tracking-[0.14em] text-forest-deep">
+                    {RECOMMENDED_LABEL}
+                  </span>
+                )}
+              </div>
+
+              <p class="mt-6 font-display text-[1.3rem] leading-snug text-forest" data-reveal="rise">
+                {product.tagline}
+              </p>
+
+              <p
+                class="mt-4 max-w-[34rem] font-body text-[1.05rem] leading-relaxed text-muted"
+                data-reveal="rise"
+              >
+                {product.blurb}
+              </p>
+
+              <ul class="mt-8 space-y-3" data-reveal="rise">
+                {product.points.map((point) => (
+                  <li class="flex gap-3 font-body text-[0.95rem] text-ink/85">
+                    <span class="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-lime" aria-hidden="true" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+
+              <!-- Tweede beeld in de volle 4:5 van het bronbestand: een
+                   ingelijste print waarvan de lijst is afgesneden verkoopt
+                   niets. Smal gehouden zodat het detail blijft, geen
+                   tweede hoofdbeeld wordt. -->
+              <Interior
+                photo={product.detail}
+                alt={product.detailAlt}
+                label={product.detailLabel}
+                ratio="portrait"
+                sizes="(min-width: 768px) 18rem, 60vw"
+                class="mt-9 max-w-[16rem]"
+              />
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- Formaat & advies -->
+  <Section space="normal">
+    <div class="border-y border-line py-14 md:py-20">
+      <div class="grid gap-10 md:grid-cols-2 md:gap-16">
+        <div>
+          <h2 class="text-section leading-[1.1] text-ink" data-reveal="line">
+            Welk formaat past bij jouw muur?
+          </h2>
+          <p
+            class="mt-6 max-w-[38rem] font-body text-lg leading-relaxed text-muted"
+            data-reveal="rise"
+          >
+            Vrijwel ieder gewenst formaat is mogelijk. Het ideale formaat hangt af van het portret,
+            het gekozen materiaal en de plek waar het kunstwerk komt te hangen. Daarom geven we
+            hierover graag persoonlijk advies: in de studio bekijken we samen de mogelijkheden en
+            bepalen we het juiste formaat.
+          </p>
+        </div>
+
+        <div>
+          <Interior
+            photo="aluminium-staand"
+            alt="Groot aluminium portret van een zwarte dog boven een bank in een woonkamer"
+            ratio="landscape"
+            sizes="(min-width: 768px) 32rem, 100vw"
+          />
+          <p class="mt-4 font-body text-sm text-muted">
+            Groot formaat draagt een hele wand. In de studio houden we de maten tegen jouw kamer
+            aan voordat je kiest.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col items-stretch gap-5 sm:flex-row sm:items-center sm:justify-center sm:gap-8 md:mt-16"
+      data-reveal="rise"
+    >
+      <BookButton block />
+      <a
+        href={CTA.packages.href}
+        class="group inline-flex items-center justify-center gap-2 font-body text-forest underline-offset-4 hover:underline"
+      >
+        {CTA.packages.label}
+        <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+  </Section>
+
+  <!-- Tegoed -->
+  <Section width="text" space="normal" class="text-center">
+    <h2 class="text-section leading-[1.1] text-ink" data-reveal="line">
+      Jouw pakket draagt al bij.
+    </h2>
+    <div class="prose-calm mt-8" data-reveal="rise">
+      <p>
+        Het pakket Signature bevat €50 tegoed voor wanddecoratie, het pakket Collection €100. Dat
+        tegoed geldt voor elk materiaal op deze pagina en wordt verrekend zodra je jouw kunstwerk
+        bestelt.
+      </p>
+    </div>
+  </Section>
+
+  <!-- Vragen over wanddecoratie -->
+  <Section space="normal">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
+      <h2 class="text-section text-ink" data-reveal="line">Vragen over wanddecoratie.</h2>
+      <Faq items={wallArtFaq} />
+    </div>
+  </Section>
+
+  <ClosingCta
+    headline="Eerst de fotoshoot, dan de muur."
+    body="Kies een datum in de agenda — de rest gebeurt rustig, in de studio of bij jou op locatie."
+    tone="taupe"
+    photo="duo-cats"
+    animal="cat"
+    subject="twee katten samen"
+  />
+</Layout>

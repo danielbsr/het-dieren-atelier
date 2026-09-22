@@ -1,0 +1,141 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Section from '../components/Section.astro';
+import FaqGroups from '../components/FaqGroups.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import BookButton from '../components/BookButton.astro';
+import { photo } from '../data/photos';
+import { FAQ_GROUPS, STEPS } from '../data/site';
+---
+
+<Layout
+  title="Werkwijze — zo verloopt een dierenfotoshoot"
+  description="Van boeken tot kunstwerk aan de muur: zo verloopt een dierenfotoshoot bij Het Dieren Atelier in Blokker. Vijf stappen, max. 45 minuten, jouw dier bepaalt het tempo."
+>
+  <PageHeader
+    eyebrow="Werkwijze"
+    title="Zo werkt een fotoshoot."
+    intro="Van het boeken tot het kunstwerk aan jouw muur — dit is wat je kunt verwachten, stap voor stap. De korte versie: jouw dier bepaalt het tempo."
+  />
+
+  <!--
+    De vijf stappen. Drie ervan hebben een echte foto; de twee die online
+    gebeuren — boeken en kiezen — krijgen een rustig typografisch vlak in
+    de beeldkolom. Dat houdt het ritme heel in plaats van er een gat te
+    laten vallen waar een placeholder stond.
+  -->
+  <Section space="normal">
+    <div class="space-y-16 md:space-y-32">
+      {
+        STEPS.map((step, i) => {
+          const image = photo(step.photo);
+          return (
+            <article class="grid items-center gap-7 md:grid-cols-2 md:gap-16 lg:gap-20">
+              <div class={i % 2 === 1 ? 'md:order-2' : ''} data-reveal="image">
+                {image ? (
+                  <div class="zoom-frame aspect-[4/3] overflow-hidden rounded-xl bg-cream-deep">
+                    <Image
+                      src={image}
+                      alt={step.alt}
+                      widths={[400, 640, 960, 1280]}
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      format="webp"
+                      quality={82}
+                      loading="lazy"
+                      decoding="async"
+                      class="zoom-target h-full w-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    class="flex aspect-[4/3] flex-col items-center justify-center gap-4 rounded-xl border border-line"
+                    style="background:linear-gradient(155deg,#efe9dc 0%,#e6dfcd 55%,#ddd5c2 100%)"
+                    aria-hidden="true"
+                  >
+                    <span class="font-display text-[5rem] leading-none text-forest/20 md:text-[7rem]">
+                      {step.number}
+                    </span>
+                    <span class="font-body text-[0.8rem] uppercase tracking-[0.18em] text-ink/40">
+                      {step.panelNote}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <span
+                  class="block font-display text-[3rem] leading-none text-forest/25"
+                  data-reveal="rise"
+                >
+                  {step.number}
+                </span>
+                <h2 class="mt-5 font-display text-sub text-ink" data-reveal="line">
+                  {step.title}
+                </h2>
+                <p
+                  class="mt-5 max-w-[34rem] font-body text-[1.05rem] leading-relaxed text-muted"
+                  data-reveal="rise"
+                >
+                  {step.long}
+                </p>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <div class="mt-16 text-center md:mt-24" data-reveal="rise">
+      <BookButton block class="mx-auto max-w-sm" />
+    </div>
+  </Section>
+
+  <!-- Voor onzekere dieren -->
+  <Section space="normal">
+    <div class="rounded-3xl border border-line px-8 py-14 md:px-16 md:py-20">
+      <div class="mx-auto max-w-[42rem] text-center">
+        <h2 class="text-section leading-[1.1] text-ink" data-reveal="line">
+          Druk, schuw of eigenwijs? Prima — welkom.
+        </h2>
+        <p class="mt-8 font-body text-lg leading-relaxed text-muted" data-reveal="rise">
+          De meeste dieren die we fotograferen zijn geen getrainde modellen. Ze blaffen, kruipen
+          onder een stoel of negeren ons de eerste tien minuten volledig. Daar is op gerekend. De
+          fotoshoot heeft ruimte, de studio heeft rustige hoeken en de fotograaf werkt op
+          vloerniveau, op ooghoogte van jouw dier. Wat wij van jou nodig hebben: de favoriete
+          snacks, en geen zorgen. Jouw rust werkt aanstekelijk.
+        </p>
+        <div class="mt-10 flex justify-center" data-reveal="rise">
+          <BookButton block size="md" class="max-w-sm" />
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Volledige FAQ -->
+  <Section space="normal" id="veelgestelde-vragen">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,18rem)_1fr] lg:gap-20">
+      <div>
+        <h2 class="text-section leading-[1.1] text-ink" data-reveal="line">
+          Veelgestelde vragen.
+        </h2>
+        <p class="mt-6 font-body text-[0.95rem] leading-relaxed text-muted" data-reveal="rise">
+          Hier vind je de antwoorden op de meest gestelde vragen over een dierenfotoshoot bij Het
+          Dieren Atelier. Staat jouw vraag er niet tussen? Neem gerust contact met ons op via
+          WhatsApp.
+        </p>
+      </div>
+      <FaqGroups groups={FAQ_GROUPS} />
+    </div>
+  </Section>
+
+  <ClosingCta
+    headline="Klaar om het te plannen?"
+    body="Kies een datum in de agenda — de rest gebeurt rustig, in de studio of bij jou op locatie."
+    tone="charcoal"
+    photo="duo-dogs"
+    animal="dog"
+    subject="golden retriever en teckel samen"
+  />
+</Layout>

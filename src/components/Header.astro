@@ -1,9 +1,11 @@
 ---
 import Logo from './Logo.astro';
 import BookButton from './BookButton.astro';
-import { CTA, NAV, withBase, stripBase } from '../data/site';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { CTA, NAV, WHATSAPP_URL, withBase, stripBase } from '../data/site';
 
-// Compare both sides base-free, so the active link survives a subfolder deploy.
+// Beide kanten zonder base vergelijken, zodat de actieve link een
+// deploy in een submap overleeft.
 const path = stripBase(Astro.url.pathname);
 const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path }));
 ---
@@ -13,20 +15,20 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
   class="sticky top-0 z-50 border-b border-transparent bg-cream/85 backdrop-blur-md transition-[border-color,background-color] duration-300 data-[scrolled]:border-line"
 >
   <div
-    class="mx-auto flex max-w-[75rem] items-center justify-between gap-8 px-6 py-5 transition-[padding] duration-300 md:px-10 data-[scrolled]:py-3"
+    class="mx-auto flex max-w-[75rem] items-center justify-between gap-6 px-6 py-5 transition-[padding] duration-300 md:px-10 xl:gap-8 data-[scrolled]:py-3"
     id="site-header-inner"
   >
-    <a href={withBase('/')} class="shrink-0" aria-label="Het Dieren Atelier — home">
+    <a href={withBase('/')} class="shrink-0" aria-label="Het Dieren Atelier — naar de homepage">
       <Logo class="text-[1.3rem] md:text-[1.5rem]" />
     </a>
 
-    <nav class="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Main">
+    <nav class="hidden items-center gap-5 lg:flex xl:gap-7" aria-label="Hoofdmenu">
       {
         nav.map((item) => (
           <a
             href={item.href}
             aria-current={item.current ? 'page' : undefined}
-            class="relative py-1 font-body text-[0.925rem] text-ink/75 transition-colors hover:text-forest aria-[current=page]:text-forest"
+            class="relative whitespace-nowrap py-1 font-body text-[0.875rem] text-ink/75 transition-colors hover:text-forest aria-[current=page]:text-forest xl:text-[0.925rem]"
           >
             {item.label}
             {item.current && (
@@ -37,9 +39,16 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
       }
     </nav>
 
-    <div class="flex items-center gap-3">
-      <!-- Wrapped rather than given `hidden`: BookButton already sets its own
-           display, and two display utilities on one element is a coin toss. -->
+    <div class="flex shrink-0 items-center gap-3">
+      <!--
+        De boekknop staat op desktop permanent in de header (punt 4 van de
+        feedback) en verdwijnt nooit bij het scrollen — de header krimpt
+        alleen. Onder `sm` neemt de zwevende balk het over.
+
+        Gewrapt in plaats van `hidden` op de knop zelf: BookButton zet al
+        zijn eigen display, en twee display-utilities op één element is
+        een gok.
+      -->
       <span class="hidden sm:block">
         <BookButton size="md" class="!px-6 !py-2.5 !text-[0.9rem]" />
       </span>
@@ -51,7 +60,7 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
         aria-controls="mobile-menu"
         class="btn btn-outline flex h-10 w-10 items-center justify-center rounded-full border border-forest/20 text-forest lg:hidden"
       >
-        <span class="sr-only">Open menu</span>
+        <span class="sr-only">Menu openen</span>
         <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true">
           <path d="M0 1h18M0 6h18M0 11h18" stroke="currentColor" stroke-width="1.4"></path>
         </svg>
@@ -59,13 +68,15 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
     </div>
   </div>
 
-  <!-- Mobile menu -->
-  <div
-    id="mobile-menu"
-    hidden
-    class="border-t border-line bg-cream px-6 pb-8 pt-4 lg:hidden"
-  >
-    <nav class="flex flex-col" aria-label="Mobile">
+  <!-- Mobiel menu -->
+  <div id="mobile-menu" hidden class="border-t border-line bg-cream px-6 pb-8 pt-4 lg:hidden">
+    <nav class="flex flex-col" aria-label="Mobiel menu">
+      <a
+        href={withBase('/')}
+        class="border-b border-line/70 py-4 font-display text-2xl text-ink transition-colors hover:text-forest"
+      >
+        Home
+      </a>
       {
         nav.map((item) => (
           <a
@@ -84,6 +95,15 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
       >
         {CTA.book.label}
       </a>
+      <a
+        href={WHATSAPP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-outline mt-3 flex items-center justify-center gap-2.5 rounded-full border border-forest/25 px-6 py-3.5 font-body font-medium text-forest"
+      >
+        <WhatsAppIcon size={18} />
+        Stel je vraag via WhatsApp
+      </a>
     </nav>
   </div>
 </header>
@@ -94,7 +114,7 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
   const toggle = document.getElementById('menu-toggle');
   const menu = document.getElementById('mobile-menu');
 
-  // Compress the header on scroll — the CTA never disappears.
+  // De header krimpt bij het scrollen — de boekknop verdwijnt nooit.
   const onScroll = () => {
     const scrolled = window.scrollY > 24;
     for (const el of [header, inner]) {
@@ -109,6 +129,7 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
   const setMenu = (open: boolean) => {
     if (!menu || !toggle) return;
     toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('.sr-only')!.textContent = open ? 'Menu sluiten' : 'Menu openen';
     menu.hidden = !open;
   };
 
@@ -116,7 +137,8 @@ const nav = NAV.map((item) => ({ ...item, current: stripBase(item.href) === path
     setMenu(toggle.getAttribute('aria-expanded') !== 'true');
   });
 
-  // Escape closes it — a full-width menu with no visible way out is a trap.
+  // Escape sluit het menu — een schermvullend menu zonder zichtbare
+  // uitgang is een val.
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && menu && !menu.hidden) {
       setMenu(false);

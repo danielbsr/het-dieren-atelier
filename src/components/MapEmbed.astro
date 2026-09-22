@@ -2,16 +2,16 @@
 import { STUDIO } from '../data/site';
 
 /**
- * The studio on the map.
+ * De studio op de kaart.
  *
- * Google's keyless `output=embed` endpoint, so there is no API key to
- * keep alive and no billing account attached to a map that only ever
- * shows one address. The pin is placed by address string — if the
- * studio ever moves, STUDIO.address is the only thing to change.
+ * Google's sleutelloze `output=embed`-endpoint, dus geen API-sleutel om
+ * in leven te houden en geen factuuraccount aan een kaart die maar één
+ * adres laat zien. De speld staat op de adresregel — verhuist de studio
+ * ooit, dan is STUDIO.address het enige dat verandert.
  */
 interface Props {
   class?: string;
-  /** Adds the "Open in Google Maps" link under the frame. */
+  /** Zet de link "Open in Google Maps" onder het kader. */
   link?: boolean;
 }
 
@@ -22,7 +22,7 @@ const { class: className = '', link = false } = Astro.props;
   <div class={`relative overflow-hidden bg-cream-deep ${className}`}>
     <iframe
       src={STUDIO.mapsEmbedUrl}
-      title={`Map showing ${STUDIO.name}, ${STUDIO.address}`}
+      title={`Kaart met ${STUDIO.name}, ${STUDIO.address}`}
       loading="lazy"
       referrerpolicy="no-referrer-when-downgrade"
       class="h-full w-full border-0"

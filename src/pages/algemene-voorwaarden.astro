@@ -1,0 +1,211 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Section from '../components/Section.astro';
+import { EMAIL_URL, LEGAL_UPDATED, PHONE_URL, STUDIO } from '../data/site';
+
+/**
+ * De enige juridische pagina die de studio nog niet zelf heeft
+ * aangeleverd. Opgesteld uit wat vaststaat: tarieven, annulerings-
+ * voorwaarden, levertijden en de 50%-regeling uit de FAQ. Laat dit
+ * nakijken voordat de site live gaat.
+ */
+---
+
+<Layout
+  title="Algemene voorwaarden"
+  description="De algemene voorwaarden van Het Dieren Atelier: boeken en betalen, annuleren, wat een fotoshoot omvat, levering van portretten, wanddecoratie en aansprakelijkheid."
+  showFooterCta
+>
+  <PageHeader
+    eyebrow="Algemene voorwaarden"
+    title="Algemene voorwaarden."
+    intro={`De afspraken rondom een fotoshoot bij Het Dieren Atelier. Laatst bijgewerkt: ${LEGAL_UPDATED}.`}
+  />
+
+  <Section space="normal">
+    <div class="prose-legal">
+      <h2>1. Wie wij zijn</h2>
+      <p>
+        {STUDIO.name}<br />
+        {STUDIO.street}, {STUDIO.postcode} {STUDIO.city}<br />
+        KvK: {STUDIO.kvk}<br />
+        Btw: {STUDIO.vat}<br />
+        E-mail: <a href={EMAIL_URL}>{STUDIO.email}</a><br />
+        Telefoon: <a href={PHONE_URL}>{STUDIO.phone}</a>
+      </p>
+      <p>
+        Deze voorwaarden gelden voor iedere fotoshoot, bestelling en opdracht van
+        {STUDIO.name}, tenzij schriftelijk iets anders is afgesproken.
+      </p>
+
+      <h2>2. Boeken en afspraken</h2>
+      <ul>
+        <li>We werken uitsluitend op afspraak. Je boekt online via de agenda op onze website.</li>
+        <li>Na het boeken ontvang je een bevestiging per e-mail met datum, tijd en adres.</li>
+        <li>
+          De afspraak is definitief zodra je die bevestiging hebt ontvangen. De gereserveerde tijd
+          in de studio is dan exclusief voor jou.
+        </li>
+      </ul>
+
+      <h2>3. Wat een fotoshoot omvat</h2>
+      <ul>
+        <li>
+          Een fotoshoot in de studio duurt <strong>maximaal 45 minuten</strong>, inclusief de tijd
+          om te wennen.
+        </li>
+        <li>
+          Afhankelijk van het gekozen pakket ontvang je <strong>1, 2 of maximaal 3</strong>
+          professioneel bewerkte portretten in hoge resolutie.
+        </li>
+        <li>
+          Een Locatieportret omvat tot 1 uur fotografie op locatie en 2 professioneel bewerkte
+          portretten, voor maximaal 2 huisdieren. Reiskosten zijn afhankelijk van de afstand en
+          worden vooraf besproken.
+        </li>
+        <li>
+          Onbewerkte bestanden worden niet geleverd. Een extra professioneel bewerkt portret kost
+          €50 per portret.
+        </li>
+      </ul>
+
+      <h2>4. Tarieven en betalen</h2>
+      <ul>
+        <li>
+          De tarieven staan op onze website en zijn inclusief btw. Het tarief dat geldt op het
+          moment van boeken is het tarief van jouw fotoshoot.
+        </li>
+        <li>De fotoshoot wordt in de studio betaald. Betalen kan per pin of contant.</li>
+        <li>Wanddecoratie en extra portretten worden apart afgerekend bij het bestellen.</li>
+      </ul>
+
+      <h2>5. Annuleren en verplaatsen</h2>
+      <ul>
+        <li>Laat het ons zo snel mogelijk weten als je afspraak niet door kan gaan.</li>
+        <li>
+          Bij annulering of verplaatsing <strong>binnen 24 uur</strong> voor de afspraak brengen we
+          <strong>€75 annuleringskosten</strong> in rekening.
+        </li>
+        <li>
+          Verschijn je niet op je afspraak, dan behouden we ons het recht voor om de kosten voor de
+          gereserveerde tijd in rekening te brengen.
+        </li>
+        <li>
+          Kunnen wij de afspraak onverhoopt niet nakomen, bijvoorbeeld door ziekte, dan plannen we
+          in overleg een nieuwe datum.
+        </li>
+      </ul>
+
+      <h2>6. Als de fotoshoot niet lukt</h2>
+      <p>
+        Het welzijn van jouw huisdier staat altijd voorop. We nemen pauzes, forceren niets en
+        passen de fotoshoot aan op het tempo van jouw dier. Mocht het ondanks onze inspanningen
+        echt niet lukken om geschikte beelden te maken, dan blijft <strong>50% van het gekozen
+        pakket</strong> verschuldigd; de studio en de tijd waren immers speciaal voor jouw afspraak
+        gereserveerd.
+      </p>
+
+      <h2>7. Selectie en levering</h2>
+      <ul>
+        <li>
+          Na de fotoshoot ontvang je een selectie van de beste beelden in een online
+          selectiegalerij. Daaruit kies je jouw favorieten.
+        </li>
+        <li>
+          Alleen de gekozen beelden worden volledig nabewerkt. De gemiddelde levertijd is
+          <strong>5 tot 10 werkdagen</strong> nadat de definitieve selectie is gemaakt.
+        </li>
+        <li>
+          De keuze van de beelden die in de selectiegalerij komen, en de stijl van de nabewerking,
+          liggen bij de fotograaf.
+        </li>
+        <li>
+          Extra portretten kunnen worden nabesteld zolang de betreffende bestanden nog beschikbaar
+          zijn.
+        </li>
+      </ul>
+
+      <h2>8. Wanddecoratie</h2>
+      <ul>
+        <li>
+          Wanddecoratie wordt op maat geproduceerd. De levertijd is afhankelijk van materiaal en
+          formaat en wordt bij het bestellen doorgegeven.
+        </li>
+        <li>
+          Omdat het om een op maat gemaakt product gaat, is retourneren niet mogelijk, behalve bij
+          een productiefout of transportschade.
+        </li>
+        <li>
+          Meld schade of een gebrek binnen 14 dagen na ontvangst, dan zorgen wij voor een
+          oplossing.
+        </li>
+        <li>
+          Het tegoed voor wanddecoratie uit de pakketten Signature (€50) en Collection (€100) is
+          geldig tot 12 maanden na de fotoshoot en wordt niet uitgekeerd in contanten.
+        </li>
+      </ul>
+
+      <h2>9. Auteursrecht en gebruik</h2>
+      <ul>
+        <li>
+          Het auteursrecht op alle gemaakte beelden blijft bij {STUDIO.name}.
+        </li>
+        <li>
+          Je ontvangt een persoonlijk gebruiksrecht: je mag de portretten onbeperkt privé gebruiken,
+          delen en laten afdrukken.
+        </li>
+        <li>
+          Commercieel gebruik van de beelden is alleen toegestaan na schriftelijke toestemming.
+        </li>
+        <li>
+          Bewerk de geleverde portretten niet zelf verder, zoals met filters of bijsnijden, bij
+          publicatie online.
+        </li>
+        <li>
+          Wij gebruiken beelden alleen voor onze eigen portfolio of social media als je daar vooraf
+          toestemming voor hebt gegeven. Die toestemming kun je altijd intrekken.
+        </li>
+      </ul>
+
+      <h2>10. Jouw huisdier</h2>
+      <ul>
+        <li>
+          Je blijft tijdens de fotoshoot zelf verantwoordelijk voor jouw huisdier en voor het
+          gedrag ervan.
+        </li>
+        <li>
+          Schade aan de studio, apparatuur of eigendommen van derden, veroorzaakt door jouw
+          huisdier, komt voor jouw rekening.
+        </li>
+        <li>
+          Geef vooraf door of er iets is waar we rekening mee moeten houden, zoals angst, een
+          blessure of een dier dat niet los kan.
+        </li>
+        <li>Zieke dieren kunnen we helaas niet fotograferen; we plannen de afspraak dan om.</li>
+      </ul>
+
+      <h2>11. Cadeaubonnen</h2>
+      <ul>
+        <li>Cadeaubonnen zijn 12 maanden geldig vanaf de datum van uitgifte.</li>
+        <li>Een cadeaubon is niet inwisselbaar voor geld.</li>
+        <li>De ontvanger kiest zelf een beschikbare datum voor de fotoshoot.</li>
+      </ul>
+
+      <h2>12. Aansprakelijkheid</h2>
+      <p>
+        Onze aansprakelijkheid is beperkt tot het bedrag van de betreffende opdracht. We zijn niet
+        aansprakelijk voor indirecte schade of gevolgschade. Bij verlies of beschadiging van
+        bestanden door een technische oorzaak doen we er alles aan om te herstellen wat mogelijk
+        is; verdere aansprakelijkheid is uitgesloten.
+      </p>
+
+      <h2>13. Klachten en toepasselijk recht</h2>
+      <p>
+        Ben je ergens niet tevreden over? Laat het ons binnen 14 dagen weten via
+        <a href={EMAIL_URL}>{STUDIO.email}</a>, dan zoeken we samen naar een oplossing. Op alle
+        overeenkomsten is Nederlands recht van toepassing.
+      </p>
+    </div>
+  </Section>
+</Layout>

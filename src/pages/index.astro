@@ -2,11 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Portrait from '../components/Portrait.astro';
+import Interior from '../components/Interior.astro';
+import Usps from '../components/Usps.astro';
 import PackageCards from '../components/PackageCards.astro';
 import Faq from '../components/Faq.astro';
 import ClosingCta from '../components/ClosingCta.astro';
-import RoomMockup from '../components/RoomMockup.astro';
-import MaterialTile from '../components/MaterialTile.astro';
 import Reviews from '../components/Reviews.astro';
 import BookButton from '../components/BookButton.astro';
 import { photo } from '../data/photos';
@@ -18,51 +18,50 @@ import {
   HOME_SELECTION,
   PACKAGE_NOTE,
   STEPS,
-  WALL_ART_TILES,
 } from '../data/site';
 
 /**
- * Curated wall: two large portraits, four smaller, uneven — so the grid
- * reads as a selection rather than a database dump.
+ * Gecureerde wand: twee grote portretten, vier kleinere, ongelijk — zodat
+ * het grid leest als een selectie en niet als een database-dump.
  *
- * On a phone the unevenness is dropped. Two columns of mismatched
- * heights read as a broken grid, not as curation, so every tile becomes
- * the same 4:5 and the variety comes from the animals instead.
+ * Op een telefoon vervalt de ongelijkheid. Twee kolommen met
+ * verschillende hoogtes lezen daar als een kapot grid, niet als curatie,
+ * dus wordt elke tegel dezelfde 4:5 en komt de afwisseling van de dieren.
  */
 const layout = [
-  { span: 'md:col-span-5', ratio: 'tall' as const, crop: 'full' as const },
-  { span: 'md:col-span-4 md:self-end', ratio: 'portrait' as const, crop: 'tight' as const },
-  { span: 'md:col-span-3 md:self-end', ratio: 'square' as const, crop: 'full' as const },
-  { span: 'md:col-span-4', ratio: 'portrait' as const, crop: 'full' as const },
-  { span: 'md:col-span-5', ratio: 'tall' as const, crop: 'tight' as const },
-  { span: 'md:col-span-3 md:self-end', ratio: 'square' as const, crop: 'full' as const },
+  { span: 'md:col-span-5', ratio: 'tall' as const },
+  { span: 'md:col-span-4 md:self-end', ratio: 'portrait' as const },
+  { span: 'md:col-span-3 md:self-end', ratio: 'square' as const },
+  { span: 'md:col-span-4', ratio: 'portrait' as const },
+  { span: 'md:col-span-5', ratio: 'tall' as const },
+  { span: 'md:col-span-3 md:self-end', ratio: 'square' as const },
 ];
 ---
 
 <Layout
-  title="Het Dieren Atelier — Studio portraits of dogs, cats & pets"
-  description="Premium studio portraits of your dog, cat, bird or rabbit — in the studio or at your home. Calm sessions, hand-picked backdrops, finished as wall art."
+  title="Dierenfotograaf in Blokker bij Hoorn"
+  description="Professionele dierenfotoshoot in onze studio in Blokker bij Hoorn. Van portret tot persoonlijk kunstwerk voor aan de muur. Max. 45 minuten, vanaf €249."
 >
-  <!-- ============================================================ 2.1 Hero -->
+  <!-- ============================================================= Hero -->
   <section class="border-b border-line">
     <div
       class="mx-auto grid max-w-[75rem] items-center gap-8 px-6 pb-14 pt-8 md:min-h-[82vh] md:grid-cols-2 md:gap-16 md:px-10 md:pb-24 md:pt-16 lg:gap-24"
     >
       <div>
         <p class="eyebrow" data-reveal="rise">
-          Studio portraits of dogs, cats, birds &amp; rabbits
+          Dierenfotografie in Blokker, naast Hoorn
         </p>
 
         <h1 class="mt-5 text-hero leading-[1] text-ink md:mt-7 md:leading-[0.98]" data-reveal="line">
-          Your pet, as a work of art.
+          Jouw dier. Als kunstwerk.
         </h1>
 
         <p
           class="mt-6 max-w-[34rem] font-body text-[1.0625rem] leading-relaxed text-muted md:mt-8 md:text-xl"
           data-reveal="rise"
         >
-          Professional studio portraits, made calmly and with time — and finished as a piece you
-          will want on your wall for years.
+          Een professionele fotoshoot waarin we het karakter van jouw huisdier vastleggen. Van
+          portret tot persoonlijk kunstwerk voor aan de muur.
         </p>
 
         <div
@@ -81,43 +80,49 @@ const layout = [
       </div>
 
       <!--
-        One still, confident image. It sets the quality bar for the site.
+        Eén stil, zelfverzekerd beeld. Het zet de kwaliteitslat voor de
+        hele site.
 
-        On a phone it follows the words rather than leading them: a
-        photograph of a dog says nothing about what is being sold, and
-        leading with one pushed the booking button clean off the first
-        screen. Text first puts the button at ~490px, and the top of the
-        photo still shows above the fold as a reason to keep scrolling.
-        The 3:4.4 crop squares off there for the same reason.
+        Op een telefoon volgt het de woorden in plaats van ze voor te
+        gaan: een foto van een hond zegt niets over wat er verkocht
+        wordt, en vooropgaan duwde de boekknop van het eerste scherm af.
+
+        De verhouding is overal 4:5 — precies de verhouding van het
+        bronbestand. Daardoor wordt er nergens iets weggesneden en kan de
+        kop van het dier op geen enkel scherm half wegvallen (punt 8).
       -->
       <div>
         <Portrait
-          tone="sage"
+          tone="charcoal"
           animal="dog"
+          subject="golden retriever"
           src={photo('hero')}
-          ratio="tall"
-          mobileRatio="square"
-          crop="tight"
+          ratio="portrait"
           priority
           sizes="(min-width: 768px) 480px, 100vw"
-          alt="Studio portrait of a dog on a sage backdrop"
+          alt="Studioportret van een golden retriever op een antracietkleurige achtergrond"
           class="md:ml-auto md:max-w-[30rem]"
         />
       </div>
     </div>
   </section>
 
-  <!-- ====================================================== 2.2 What we do -->
-  <Section width="text" space="loose" class="text-center">
+  <!-- ============================================================= USP's -->
+  <Section space="tight">
+    <Usps />
+  </Section>
+
+  <!-- ========================================================== Concept -->
+  <Section width="text" space="normal" class="text-center">
     <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
-      A portrait session built around your animal.
+      Een fotoshoot die om jouw dier heen is gebouwd.
     </h2>
     <div class="prose-calm mt-8" data-reveal="rise">
       <p>
-        Het Dieren Atelier is a photography studio for animals. Dogs, cats, birds, rabbits — every
-        pet with a face and a personality. We work slowly, with breaks, treats and time to settle
-        in. The result is not a quick photo. It is a portrait: your animal's character, held still
-        for once, printed and framed for your wall.
+        Het Dieren Atelier is een dierenfotostudio voor honden, katten en andere huisdieren. We
+        werken rustig, met pauzes, snacks en tijd om te wennen. Het resultaat is geen map vol
+        kiekjes, maar één tot drie professioneel bewerkte portretten: het karakter van jouw dier,
+        voor één keer stilgezet — en klaar om aan de muur te hangen.
       </p>
     </div>
     <a
@@ -130,24 +135,11 @@ const layout = [
     </a>
   </Section>
 
-  <!-- One frame, four species — the claim above, shown rather than stated. -->
-  <Section space="tight">
-    <Portrait
-      tone="charcoal"
-      src={photo('family')}
-      sizes="(min-width: 1200px) 1120px, 100vw"
-      ratio="wide"
-      mobileRatio="square"
-      hover
-      alt="Studio portrait of three dogs and a guinea pig together on a charcoal backdrop"
-    />
-  </Section>
-
-  <!-- =============================================== 2.3 Portfolio selection -->
+  <!-- ============================================== Portfolio-selectie -->
   <Section space="normal">
-    <h2 class="text-section text-ink" data-reveal="line">Recent work.</h2>
+    <h2 class="text-section text-ink" data-reveal="line">Recent werk.</h2>
     <p class="mt-4 max-w-[36rem] font-body text-muted md:text-lg" data-reveal="rise">
-      Dogs, cats, birds and rabbits — the animals are the whole point.
+      Honden, katten, vogels en konijnen — de dieren zijn het hele punt.
     </p>
 
     <div class="mt-10 grid grid-cols-2 gap-4 md:mt-16 md:grid-cols-12 md:gap-6">
@@ -157,11 +149,11 @@ const layout = [
             tone={item.tone}
             name={item.name}
             animal={item.animal}
-            src={item.src ?? photo(item.photo)}
+            subject={item.subject}
+            src={photo(item.photo)}
             sizes="(min-width: 1200px) 460px, (min-width: 768px) 40vw, 50vw"
             ratio={layout[i].ratio}
             mobileRatio="portrait"
-            crop={layout[i].crop}
             caption
             hover
             class={layout[i].span}
@@ -170,42 +162,109 @@ const layout = [
       }
     </div>
 
+    <!--
+      Niet iedereen is na de hero al klaar om €249–€549 te boeken. Na het
+      werk en het concept komt daarom eerst de stap ernaartoe — tarieven
+      bekijken — en pas verderop weer de boekknop (punt 2 van de
+      aanvullende feedback).
+    -->
     <div
       class="mt-12 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6 md:mt-14"
       data-reveal="rise"
     >
+      <a
+        href={CTA.packages.href}
+        class="btn btn-solid inline-flex items-center justify-center rounded-full bg-forest px-9 py-4 font-body font-medium text-cream"
+      >
+        {CTA.packages.label}
+      </a>
       <a
         href={CTA.portfolio.href}
         class="btn btn-outline inline-flex items-center justify-center rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest"
       >
         {CTA.portfolio.label}
       </a>
-      <BookButton block />
     </div>
   </Section>
 
-  <!-- ========================================= 2.4 Choose your colour (signature) -->
+  <!-- =================================================== Wanddecoratie -->
+  <!--
+    De sectie die de hele propositie moet dragen: dit is geen fotoshoot,
+    het is een stuk voor aan jouw muur. Daarom echte interieurfoto's,
+    groot — niet een nagebouwde kamer (punt 13).
+  -->
   <Section space="loose">
-    <div class="max-w-[44rem]">
-      <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
-        Every session starts with a colour.
+    <div class="max-w-[46rem]">
+      <p class="eyebrow" data-reveal="rise">Wanddecoratie</p>
+      <h2 class="mt-5 text-section leading-[1.08] text-ink" data-reveal="line">
+        Een portret hoort aan een muur, niet in een telefoon.
       </h2>
       <p
         class="mt-6 font-body text-[1.0625rem] leading-relaxed text-muted md:mt-7 md:text-lg"
         data-reveal="rise"
       >
-        Each portrait is shot on a hand-picked backdrop — from soft pearl to deep charcoal.
-        Together we choose the tones that fit your animal's coat, eyes and character. One backdrop
-        is included in every session; larger packages include up to three.
+        Na de fotoshoot kiezen we samen het formaat en het materiaal dat bij jouw huis past: Fine
+        Art, aluminium of plexiglas. In de studio, met echte voorbeelden in je handen en op ware
+        grootte. Je beslist rustig, nadat je jouw foto's hebt gezien.
       </p>
     </div>
 
-    <!--
-      The swatch chart. Identical crop and scale across all seven —
-      the uniformity is what turns "loud" into "curated". The subjects
-      rotate through four species, so even the colour section says the
-      studio photographs more than dogs.
-    -->
+    <Interior
+      photo="interieur-breed"
+      alt="Groot portret van een zwarte labrador aan de muur van een lichte woonkamer met bank en salontafel"
+      ratio="wide"
+      sizes="(min-width: 1200px) 1120px, 100vw"
+      class="mt-12 md:mt-16"
+    />
+
+    <div class="mt-5 grid gap-5 md:mt-6 md:grid-cols-3 md:gap-6">
+      <Interior
+        photo="fineart-ingelijst"
+        alt="Ingelijste Fine Art-print van een zwarte dog boven een eiken dressoir"
+        label="Fine Art"
+      />
+      <Interior
+        photo="aluminium"
+        alt="Aluminium portret van een border collie op een blauwe achtergrond in een woonkamer"
+        label="Aluminium"
+      />
+      <Interior
+        photo="plexiglas"
+        alt="Plexiglas portret van een ragdollkat boven een houten dressoir"
+        label="Plexiglas"
+      />
+    </div>
+
+    <p class="mt-8 font-body text-sm text-muted md:mt-10" data-reveal="rise">
+      De pakketten Signature en Collection bevatten €50 of €100 tegoed voor wanddecoratie.
+    </p>
+
+    <div class="mt-8" data-reveal="rise">
+      <a
+        href={CTA.wallArt.href}
+        class="btn btn-outline inline-flex items-center justify-center rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest"
+      >
+        {CTA.wallArt.label}
+      </a>
+    </div>
+  </Section>
+
+  <!-- ==================================================== Achtergronden -->
+  <Section space="loose">
+    <div class="max-w-[44rem]">
+      <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
+        Elke fotoshoot begint met een kleur.
+      </h2>
+      <p
+        class="mt-6 font-body text-[1.0625rem] leading-relaxed text-muted md:mt-7 md:text-lg"
+        data-reveal="rise"
+      >
+        Ieder portret wordt gemaakt op een met de hand gekozen achtergrond — van zacht parel tot
+        diep antraciet. Samen kiezen we de tinten die passen bij de vacht, de ogen en het karakter
+        van jouw dier.
+      </p>
+    </div>
+
     <div class="-mx-6 mt-12 overflow-x-auto px-6 pb-2 md:mx-0 md:mt-16 md:overflow-visible md:px-0">
       <ul class="flex min-w-max gap-3 md:grid md:min-w-0 md:grid-cols-7 md:gap-4">
         {
@@ -216,9 +275,8 @@ const layout = [
                 src={photo(slot)}
                 sizes="(min-width: 768px) 150px, 144px"
                 ratio="portrait"
-                crop="tight"
                 hover
-                alt={`Studio portrait on a ${BACKDROPS[tone].name.toLowerCase()} backdrop`}
+                alt={`Studioportret op een ${BACKDROPS[tone].adjective} achtergrond`}
               />
               <div class="mt-3 flex items-center gap-2">
                 <span
@@ -237,27 +295,18 @@ const layout = [
     </div>
 
     <p class="mt-8 font-body text-sm text-muted" data-reveal="rise">
-      Backdrop availability may vary per session date.
+      Welke achtergronden beschikbaar zijn kan per datum verschillen.
     </p>
-
-    <a
-      href={CTA.packages.href}
-      class="group mt-6 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline"
-      data-reveal="rise"
-    >
-      {CTA.packages.label}
-      <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
-    </a>
   </Section>
 
-  <!-- ================================================== 2.5 Package preview -->
+  <!-- ======================================================= Pakketten -->
   <Section space="normal">
     <div class="mx-auto max-w-[40rem] text-center">
       <h2 class="text-section leading-[1.08] text-ink" data-reveal="line">
-        Four ways to book.
+        Vier manieren om te boeken.
       </h2>
       <p class="mt-5 font-body text-muted md:text-lg" data-reveal="rise">
-        Three sessions in the studio — or we bring the studio to your home.
+        Drie fotoshoots in de studio — of we komen met de mobiele studio naar jou toe.
       </p>
     </div>
 
@@ -279,29 +328,31 @@ const layout = [
         href={CTA.packages.href}
         class="group inline-flex items-center justify-center gap-2 font-body text-forest underline-offset-4 hover:underline"
       >
-        {CTA.packages.label}
+        Bekijk alle tarieven
         <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
       </a>
     </div>
   </Section>
 
-  <!-- ==================================================== 2.6 How it works -->
+  <!-- ======================================================= Werkwijze -->
   <Section space="normal">
     <h2 class="max-w-[24ch] text-section leading-[1.08] text-ink" data-reveal="line">
-      Calm from the first minute.
+      Rustig, vanaf de eerste minuut.
     </h2>
 
     <ol
-      class="mt-10 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:mt-16 md:grid-cols-4"
+      class="mt-10 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:mt-16 md:grid-cols-5"
     >
       {
         STEPS.map((step) => (
-          <li class="bg-cream p-7 md:p-8 lg:p-9" data-reveal="rise">
-            <span class="block font-display text-[2.5rem] leading-none text-forest/25 md:text-[2.75rem]">
+          <li class="bg-cream p-7 md:p-6 lg:p-7" data-reveal="rise">
+            <span class="block font-display text-[2.25rem] leading-none text-forest/25 md:text-[2.5rem]">
               {step.number}
             </span>
-            <h3 class="mt-5 font-display text-xl text-ink md:mt-6">{step.title}</h3>
-            <p class="mt-3 font-body text-[0.95rem] leading-relaxed text-muted">{step.short}</p>
+            <h3 class="mt-5 font-display text-lg leading-snug text-ink md:mt-6 md:text-xl">
+              {step.title}
+            </h3>
+            <p class="mt-3 font-body text-[0.9rem] leading-relaxed text-muted">{step.short}</p>
           </li>
         ))
       }
@@ -311,8 +362,8 @@ const layout = [
       class="mx-auto mt-12 max-w-[44rem] text-center font-body text-[1.0625rem] italic leading-relaxed text-ink/80 md:mt-14 md:text-lg"
       data-reveal="rise"
     >
-      No animal has to perform here. Restless dogs and shy cats are our daily work — the session
-      adapts to them, never the other way around.
+      Geen dier hoeft hier te presteren. Drukke honden en schuwe katten zijn ons dagelijks werk —
+      de fotoshoot past zich aan hen aan, nooit andersom.
     </p>
 
     <div class="mt-8 text-center" data-reveal="rise">
@@ -326,111 +377,22 @@ const layout = [
     </div>
   </Section>
 
-  <!-- ======================================================= 2.7 Wall art -->
-  <!--
-    The section that has to carry the whole proposition: this is not a
-    photo shoot, it is a piece for your wall. So it is the most visual
-    block on the page — two rooms, three materials, and the portrait
-    always hanging rather than floating.
-  -->
-  <Section space="loose">
-    <div class="max-w-[46rem]">
-      <p class="eyebrow" data-reveal="rise">Wall art</p>
-      <h2 class="mt-5 text-section leading-[1.08] text-ink" data-reveal="line">
-        A portrait belongs on a wall, not in a phone.
-      </h2>
-      <p
-        class="mt-6 font-body text-[1.0625rem] leading-relaxed text-muted md:mt-7 md:text-lg"
-        data-reveal="rise"
-      >
-        After your session we help you choose the format and the material that fits your home —
-        fine art print, framed, aluminium or acrylic glass. In the studio, with real samples in
-        your hands, at real size. You decide calmly, after seeing your photos.
-      </p>
-    </div>
-
-    <div class="mt-12 grid gap-5 md:mt-16 md:grid-cols-12 md:gap-8">
-      <RoomMockup
-        tone="caramel"
-        photo="saar"
-        furniture="sofa"
-        room="Living room"
-        class="md:col-span-7"
-      />
-      <RoomMockup
-        tone="charcoal"
-        photo="nova"
-        furniture="console"
-        room="Hallway"
-        class="md:col-span-5 md:mt-16"
-      />
-    </div>
-
-    <!-- Three materials. A scroller on a phone, where a 3-up grid makes
-         each sample too small to read as a surface at all. -->
-    <div class="-mx-6 mt-12 overflow-x-auto px-6 pb-2 md:mx-0 md:mt-20 md:overflow-visible md:px-0">
-      <div class="flex min-w-max gap-4 md:grid md:min-w-0 md:grid-cols-3 md:gap-8">
-        <div class="w-56 sm:w-64 md:w-auto">
-          <MaterialTile
-            material="print"
-            photo="bono"
-            label={WALL_ART_TILES[0].label}
-            from={WALL_ART_TILES[0].from}
-          />
-        </div>
-        <div class="w-56 sm:w-64 md:w-auto">
-          <MaterialTile
-            material="aluminium"
-            photo="roos"
-            label={WALL_ART_TILES[1].label}
-            from={WALL_ART_TILES[1].from}
-          />
-        </div>
-        <div class="w-56 sm:w-64 md:w-auto">
-          <MaterialTile
-            material="acrylic"
-            photo="wolke"
-            label={WALL_ART_TILES[2].label}
-            from={WALL_ART_TILES[2].from}
-          />
-        </div>
-      </div>
-    </div>
-
-    <p class="mt-8 font-body text-sm text-muted md:mt-10" data-reveal="rise">
-      Signature and Collection packages include a wall art credit of €50 or €100.
-    </p>
-
-    <div
-      class="mt-8 flex flex-col items-stretch gap-5 sm:flex-row sm:items-center sm:gap-6"
-      data-reveal="rise"
-    >
-      <a
-        href={CTA.wallArt.href}
-        class="btn btn-outline inline-flex items-center justify-center rounded-full border border-forest/25 px-9 py-4 font-body font-medium text-forest"
-      >
-        {CTA.wallArt.label}
-      </a>
-      <BookButton block />
-    </div>
-  </Section>
-
-  <!-- ======================================================== 2.8 Reviews -->
+  <!-- ========================================================= Reviews -->
   <Section space="normal">
     <Reviews />
   </Section>
 
-  <!-- ====================================================== 2.9 Short FAQ -->
+  <!-- ======================================================= Korte FAQ -->
   <Section space="normal">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
       <div>
-        <h2 class="text-section text-ink" data-reveal="line">Good to know.</h2>
+        <h2 class="text-section text-ink" data-reveal="line">Goed om te weten.</h2>
         <a
-          href={CTA.process.href}
+          href={`${CTA.process.href}#veelgestelde-vragen`}
           class="group mt-6 inline-flex items-center gap-2 font-body text-forest underline-offset-4 hover:underline lg:mt-8"
           data-reveal="rise"
         >
-          All questions answered
+          Alle veelgestelde vragen
           <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
         </a>
       </div>
@@ -439,11 +401,13 @@ const layout = [
     </div>
   </Section>
 
-  <!-- =================================================== 2.10 Closing CTA -->
+  <!-- ===================================================== Afsluitende CTA -->
   <ClosingCta
-    headline="Your animal. On your wall."
-    body="Pick a date in the calendar — the rest happens calmly, in the studio or at your home."
+    headline="Jouw dier. Aan jouw muur."
+    body="Kies een datum in de agenda — de rest gebeurt rustig, in de studio of bij jou op locatie."
     tone="charcoal"
     photo="joep"
+    animal="dog"
+    subject="herdershond"
   />
 </Layout>

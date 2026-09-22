@@ -2,20 +2,21 @@
 import { CTA } from '../data/site';
 
 /**
- * The booking button. The only thing on the site that links to Calendly.
+ * De boekknop. Het enige op de site dat naar Calendly linkt.
  *
- * It appears after every section that can end in a decision, so nobody
- * ever has to scroll back up to find it. One label, one destination,
- * one look — repetition is what makes it read as the obvious next step
- * rather than as six different offers.
+ * Hij verschijnt na elke sectie die in een beslissing kan eindigen,
+ * zodat niemand ooit terug hoeft te scrollen om hem te vinden. Eén
+ * label, één bestemming, één uiterlijk — die herhaling is wat hem laat
+ * lezen als de vanzelfsprekende volgende stap in plaats van als zes
+ * verschillende aanbiedingen.
  *
- * Booking lives on someone else's domain, so it opens in a new tab and
- * says so to screen readers.
+ * Boeken gebeurt op andermans domein, dus hij opent in een nieuw tabblad
+ * en zegt dat ook tegen schermlezers.
  */
 interface Props {
   variant?: 'solid' | 'outline';
   size?: 'md' | 'lg';
-  /** Full width below `sm`. A half-width CTA on a phone is a missed tap. */
+  /** Volle breedte onder `sm`. Een halve CTA op een telefoon is een gemiste tik. */
   block?: boolean;
   label?: string;
   class?: string;
@@ -51,5 +52,5 @@ const width = block
   class={`${width} items-center justify-center rounded-full text-center font-body font-medium ${variants[variant]} ${sizes[size]} ${className}`}
 >
   {label}
-  <span class="sr-only"> (opens the booking calendar in a new tab)</span>
+  <span class="sr-only"> (opent de boekingsagenda in een nieuw tabblad)</span>
 </a>

@@ -2,21 +2,28 @@
 import Logo from './Logo.astro';
 import MapEmbed from './MapEmbed.astro';
 import BookButton from './BookButton.astro';
-import { NAV, STUDIO, withBase } from '../data/site';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import {
+  EMAIL_URL,
+  LEGAL_NAV,
+  NAV,
+  PHONE_URL,
+  STUDIO,
+  WHATSAPP_URL,
+  withBase,
+} from '../data/site';
 
 /**
- * The footer's own CTA band is off by default: every page but Contact
- * ends in a <ClosingCta />, and two identical booking buttons a hundred
- * pixels apart stop reading as an invitation and start reading as
- * nagging. Pages without a closing block turn it back on.
+ * Het eigen CTA-blok van de footer staat standaard uit: elke pagina op
+ * Contact na eindigt in een <ClosingCta />, en twee identieke boekknoppen
+ * honderd pixels uit elkaar lezen niet meer als uitnodiging maar als
+ * gezeur. Pagina's zonder afsluitblok zetten hem weer aan.
  */
 interface Props {
   cta?: boolean;
 }
 
 const { cta = false } = Astro.props;
-
-const allPages = NAV;
 ---
 
 <footer class="border-t border-line">
@@ -24,7 +31,7 @@ const allPages = NAV;
     cta && (
       <div class="mx-auto max-w-[75rem] px-6 py-16 text-center md:px-10 md:py-28">
         <h2 class="text-close text-ink" data-reveal="line">
-          Ready when you are.
+          Klaar wanneer jij dat bent.
         </h2>
         <div class="mt-8 flex justify-center" data-reveal="rise">
           <BookButton block class="max-w-sm" />
@@ -34,20 +41,23 @@ const allPages = NAV;
   }
 
   <div class={cta ? 'border-t border-line' : ''}>
-    <div
-      class="mx-auto grid max-w-[75rem] gap-12 px-6 py-16 md:grid-cols-2 md:px-10 lg:grid-cols-4"
-    >
+    <div class="mx-auto grid max-w-[75rem] gap-12 px-6 py-16 md:grid-cols-2 md:px-10 lg:grid-cols-4">
       <div>
-        <a href={withBase('/')} aria-label="Het Dieren Atelier — home">
+        <a href={withBase('/')} aria-label="Het Dieren Atelier — naar de homepage">
           <Logo class="text-[1.4rem] md:text-[1.6rem]" />
         </a>
         <p class="mt-5 max-w-[22rem] font-body text-sm leading-relaxed text-muted">
-          {STUDIO.tagline} {STUDIO.city}, {STUDIO.country}.
+          {STUDIO.tagline} Gevestigd in {STUDIO.city}, direct naast Hoorn in {STUDIO.region}.
         </p>
+        <div class="mt-6">
+          <BookButton size="md" />
+        </div>
       </div>
 
-      <nav aria-label="Footer">
-        <h3 class="font-body text-xs font-medium uppercase tracking-[0.16em] text-ink">Pages</h3>
+      <nav aria-label="Footermenu">
+        <h3 class="font-body text-xs font-medium uppercase tracking-[0.16em] text-ink">
+          Pagina's
+        </h3>
         <ul class="mt-5 space-y-3">
           <li>
             <a
@@ -58,7 +68,7 @@ const allPages = NAV;
             </a>
           </li>
           {
-            allPages.map((item) => (
+            NAV.map((item) => (
               <li>
                 <a
                   href={item.href}
@@ -81,57 +91,78 @@ const allPages = NAV;
             rel="noopener noreferrer"
             class="block transition-colors hover:text-forest"
           >
-            <span class="block">{STUDIO.name}</span>
+            <span class="block text-ink">{STUDIO.name}</span>
             <span class="block">{STUDIO.street}</span>
             <span class="block">{STUDIO.postcode} {STUDIO.city}</span>
             <span class="block">{STUDIO.country}</span>
           </a>
           <p>
-            <a href={`mailto:${STUDIO.email}`} class="transition-colors hover:text-forest">
-              {STUDIO.email}
+            <a href={EMAIL_URL} class="transition-colors hover:text-forest">{STUDIO.email}</a>
+          </p>
+          <p>
+            <a href={PHONE_URL} class="transition-colors hover:text-forest">{STUDIO.phone}</a>
+          </p>
+          <p>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 transition-colors hover:text-forest"
+            >
+              <WhatsAppIcon size={15} />
+              WhatsApp ons
             </a>
           </p>
           <p>
-            <a href={`tel:${STUDIO.phone}`} class="transition-colors hover:text-forest">
-              {STUDIO.phone}
+            <a
+              href={STUDIO.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 transition-colors hover:text-forest"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect
+                  x="2.5"
+                  y="2.5"
+                  width="19"
+                  height="19"
+                  rx="5.5"
+                  stroke="currentColor"
+                  stroke-width="1.6"></rect>
+                <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"></circle>
+                <circle cx="17.6" cy="6.4" r="1.2" fill="currentColor"></circle>
+              </svg>
+              {STUDIO.instagram}
             </a>
           </p>
+          <p class="pt-1 text-muted/80">{STUDIO.parking} · {STUDIO.byAppointment}</p>
         </address>
-        <a
-          href={STUDIO.instagramUrl}
-          class="mt-4 inline-flex items-center gap-2 font-body text-sm text-muted transition-colors hover:text-forest"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect
-              x="2.5"
-              y="2.5"
-              width="19"
-              height="19"
-              rx="5.5"
-              stroke="currentColor"
-              stroke-width="1.6"></rect>
-            <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"></circle>
-            <circle cx="17.6" cy="6.4" r="1.2" fill="currentColor"></circle>
-          </svg>
-          {STUDIO.instagram}
-        </a>
       </div>
 
       <div>
-        <h3 class="font-body text-xs font-medium uppercase tracking-[0.16em] text-ink">The studio</h3>
+        <h3 class="font-body text-xs font-medium uppercase tracking-[0.16em] text-ink">
+          De studio
+        </h3>
         <MapEmbed class="mt-5 h-40 rounded-lg" link />
       </div>
     </div>
 
     <div class="border-t border-line">
       <div
-        class="mx-auto flex max-w-[75rem] flex-col gap-2 px-6 py-6 font-body text-xs text-muted md:flex-row md:items-center md:justify-between md:px-10"
+        class="mx-auto flex max-w-[75rem] flex-col gap-3 px-6 py-6 font-body text-xs text-muted md:flex-row md:items-center md:justify-between md:px-10"
       >
-        <p>© {new Date().getFullYear()} {STUDIO.name}</p>
-        <p class="flex gap-5">
-          <span>Privacy [TO BE SUPPLIED]</span>
-          <span>Terms [TO BE SUPPLIED]</span>
-        </p>
+        <p>© {new Date().getFullYear()} {STUDIO.name} · KvK {STUDIO.kvk} · Btw {STUDIO.vat}</p>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          {
+            LEGAL_NAV.map((item) => (
+              <li>
+                <a href={item.href} class="transition-colors hover:text-forest">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
       </div>
     </div>
   </div>

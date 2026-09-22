@@ -1,0 +1,50 @@
+---
+import { CTA, WHATSAPP_URL } from '../data/site';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+
+/**
+ * De twee dingen die altijd binnen één klik moeten liggen: een vraag
+ * stellen, en boeken.
+ *
+ * Op een telefoon is dat één balkje rechtsonder — WhatsApp naast
+ * "Boek fotoshoot" — en niet twee losse zwevende knoppen: die botsen op
+ * een smal scherm en nemen samen meer ruimte dan de inhoud eronder.
+ *
+ * Op desktop staat de boekknop al permanent in de header, dus blijft
+ * hier alleen de WhatsApp-knop over.
+ *
+ * De balk zit in het document na <main> en krijgt via de body-padding in
+ * global.css ruimte onder de footer, zodat hij nooit de laatste regel
+ * van een pagina afdekt.
+ */
+---
+
+<div
+  class="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-end px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:px-6 md:pb-6"
+>
+  <div
+    class="pointer-events-auto flex items-center gap-2 rounded-full border border-line/80 bg-cream/95 p-1.5 shadow-[0_10px_34px_-12px_rgba(20,42,32,0.45)] backdrop-blur-md"
+  >
+    <a
+      href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn btn-solid flex h-12 w-12 items-center justify-center rounded-full bg-forest text-cream"
+      style="--btn-fill:#128c7e"
+    >
+      <WhatsAppIcon size={22} />
+      <span class="sr-only">Stel je vraag via WhatsApp (opent WhatsApp in een nieuw venster)</span>
+    </a>
+
+    <!-- Alleen op mobiel: op desktop staat dezelfde knop in de header. -->
+    <a
+      href={CTA.book.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn btn-solid flex h-12 items-center justify-center rounded-full bg-forest px-5 font-body text-[0.95rem] font-medium text-cream sm:hidden"
+    >
+      {CTA.bookShort}
+      <span class="sr-only"> (opent de boekingsagenda in een nieuw venster)</span>
+    </a>
+  </div>
+</div>
