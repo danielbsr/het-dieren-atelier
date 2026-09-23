@@ -138,6 +138,48 @@ export const CTA = {
 } as const;
 
 /* ------------------------------------------------------------------ */
+/* Cookies                                                             */
+/* ------------------------------------------------------------------ */
+
+/**
+ * De tekst van het toestemmingsvenster.
+ *
+ * De site plaatst zelf geen cookies: geen statistieken, geen tracking,
+ * geen advertenties. Wat wél toestemming nodig heeft is ingesloten
+ * inhoud van derden — op dit moment alleen de Google Maps-kaart, die
+ * pas laadt nadat iemand daar ja op zegt.
+ *
+ * De boekingsagenda van Calendly staat bewust in de noodzakelijke
+ * categorie: die ís de dienst waarvoor iemand de boekingspagina opent,
+ * en hem achter een extra klik zetten breekt precies waar de site voor
+ * bedoeld is.
+ */
+export const CONSENT = {
+  /** Opgeslagen onder deze sleutel; verhoog de versie om opnieuw te vragen. */
+  storageKey: 'hda-cookie-consent',
+  version: 1,
+  title: 'Cookies op deze website',
+  body: 'Deze website plaatst zelf geen statistiek- of marketingcookies. We laden wel een kaart van Google Maps, en die kan cookies plaatsen. Daar vragen we je eerst toestemming voor.',
+  accept: 'Alles accepteren',
+  reject: 'Alleen noodzakelijk',
+  settings: 'Cookie-instellingen',
+  categories: [
+    {
+      id: 'noodzakelijk',
+      name: 'Noodzakelijk',
+      required: true,
+      body: 'Nodig om de website te laten werken en om een afspraak te kunnen boeken. Hieronder valt de boekingsagenda, omdat die de dienst is waarvoor je de boekingspagina opent.',
+    },
+    {
+      id: 'extern',
+      name: 'Externe inhoud',
+      required: false,
+      body: 'Ingesloten inhoud van andere partijen. Op dit moment alleen de Google Maps-kaart met de route naar de studio.',
+    },
+  ],
+} as const;
+
+/* ------------------------------------------------------------------ */
 /* USP's                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -317,6 +359,11 @@ export const ON_LOCATION = {
   priceNote: 'Reiskosten zijn afhankelijk van de afstand en bespreken we vooraf met je.',
   guidance:
     'Voor dieren die het meest ontspannen zijn in hun eigen omgeving — oudere honden, binnenkatten en dieren die slecht reizen.',
+  /** Bestandsnamen in src/assets/rooms. */
+  photo: 'locatie-portret',
+  alt: 'Witte labradoodle zit in het duin bij het water, met wolkenlucht erachter',
+  photoWide: 'locatie-samen',
+  wideAlt: 'Baasje staat gebogen bij zijn witte labradoodle in een duinlandschap aan het water',
 } as const;
 
 /** Rijen van de vergelijkingstabel op Fotoshoot & tarieven. */
@@ -691,11 +738,16 @@ export const REVIEWS: {
 /**
  * Drie materialen, in de volgorde van toegankelijk naar luxe.
  * `photo`-waarden zijn bestandsnamen in src/assets/rooms.
+ *
+ * `from` is een vanafprijs: het formaat bepaalt de uiteindelijke prijs,
+ * en daar adviseert de studio persoonlijk over. Een vanafprijs geeft de
+ * orde van grootte zonder een bedrag te beloven dat van de maat afhangt.
  */
 export const WALL_ART_PRODUCTS = [
   {
     id: 'fine-art',
     name: 'Fine Art',
+    from: 'Vanaf €79',
     tagline: 'Zacht, mat en tijdloos.',
     blurb:
       'Een zachte, matte en tijdloze uitstraling op museumwaardig papier. Onze meest toegankelijke optie voor wanddecoratie, en ook ingelijst verkrijgbaar.',
@@ -715,6 +767,7 @@ export const WALL_ART_PRODUCTS = [
   {
     id: 'aluminium',
     name: 'Aluminium',
+    from: 'Vanaf €89',
     tagline: 'Modern, strak en mat.',
     blurb:
       'Een strakke en moderne afwerking met een rustige uitstraling. Zonder glas en zonder lijst: het portret lijkt los van de muur te zweven.',
@@ -734,6 +787,7 @@ export const WALL_ART_PRODUCTS = [
   {
     id: 'plexiglas',
     name: 'Plexiglas',
+    from: 'Vanaf €99',
     tagline: 'Diepe kleuren, scherpe details en een luxe afwerking.',
     blurb:
       'Het portret achter gepolijst acrylaat: maximale diepte, glans en kleurkracht. Het materiaal waar studioportretten het meest tot leven komen — en daarom onze aanrader.',
@@ -745,15 +799,30 @@ export const WALL_ART_PRODUCTS = [
     recommended: true,
     photo: 'plexiglas',
     alt: 'Plexiglas portret van een ragdollkat boven een eiken dressoir in een lichte woonkamer',
-    detail: 'plexiglas-staand',
+    detail: 'plexiglas-2',
     detailAlt:
-      'Groot plexiglas portret van een zwarte kat aan een woonkamermuur naast een raam',
-    detailLabel: 'Plexiglas op groot formaat',
+      'Plexiglas portret van een ragdollkat aan een woonkamermuur, met zonlicht erop',
+    detailLabel: 'Plexiglas in een woonkamer',
   },
 ];
 
 /** Het label op het aanbevolen materiaal. */
 export const RECOMMENDED_LABEL = 'Meest aanbevolen';
+
+/**
+ * De drie materialen zoals ze op de homepage staan: een interieurbeeld
+ * per materiaal, met de vanafprijs eronder. Bewust andere beelden dan
+ * de wanddecoratiepagina, zodat wie doorklikt niet dezelfde drie foto's
+ * nog een keer krijgt.
+ */
+export const HOME_MATERIALS = WALL_ART_PRODUCTS.map((product) => ({
+  name: product.name,
+  from: product.from,
+  photo: product.id === 'fine-art' ? 'fineart-ingelijst' : product.photo,
+  alt: product.id === 'fine-art'
+    ? 'Ingelijste Fine Art-print van een zwarte dog boven een eiken dressoir'
+    : product.alt,
+}));
 
 /* ------------------------------------------------------------------ */
 /* Portfolio                                                           */
@@ -798,31 +867,36 @@ export const HOME_SELECTION: PortfolioItem[] = [
  * Portfoliopagina: het volledige bereik, geordend op twee assen
  * tegelijk — geen twee portretten van dezelfde soort naast elkaar, en
  * geen twee op dezelfde achtergrond naast elkaar.
+ *
+ * Het aantal is bewust 24: deelbaar door 1, 2 en 3, dus het grid sluit
+ * op elke breedte met een volle rij af. Bij 23 bleef er rechtsonder een
+ * lege cel staan, wat als een ontbrekende foto las.
  */
 export const PORTFOLIO: PortfolioItem[] = [
   { name: 'Nova', photo: 'nova', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'Australische herder' },
   { name: 'Miep', photo: 'miep', tone: 'pearl', species: 'katten', animal: 'cat', subject: 'Brits korthaar' },
+  { name: 'Storm', photo: 'storm', tone: 'midnight', species: 'honden', animal: 'dog', subject: 'border collie' },
   { name: 'Pip', photo: 'pip', tone: 'softblue', species: 'vogels', animal: 'bird', subject: 'valkparkiet' },
   { name: 'Bono', photo: 'bono', tone: 'pearl', species: 'honden', animal: 'dog', subject: 'teckel' },
   { name: 'Juno', photo: 'juno', tone: 'charcoal', species: 'katten', animal: 'cat', subject: 'Maine Coon' },
-  { name: 'Pim', photo: 'pim', tone: 'forest', species: 'konijnen', animal: 'rabbit', subject: 'konijn' },
-  { name: 'Storm', photo: 'storm', tone: 'midnight', species: 'honden', animal: 'dog', subject: 'border collie' },
-  { name: 'Saar', photo: 'saar', tone: 'caramel', species: 'katten', animal: 'cat', subject: 'ragdoll' },
-  { name: 'Flip', photo: 'flip', tone: 'charcoal', species: 'vogels', animal: 'bird', subject: 'grijze roodstaart' },
   { name: 'Fien', photo: 'fien', tone: 'pearl', species: 'honden', animal: 'dog', subject: 'whippet' },
-  { name: 'Knabbel', photo: 'knabbel', tone: 'caramel', species: 'overig', animal: 'guineapig', subject: 'cavia' },
+  { name: 'Pim', photo: 'pim', tone: 'forest', species: 'konijnen', animal: 'rabbit', subject: 'konijn' },
+  { name: 'Guus', photo: 'guus', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'zwarte dog' },
+  { name: 'Saar', photo: 'saar', tone: 'caramel', species: 'katten', animal: 'cat', subject: 'ragdoll' },
+  { name: 'Roos', photo: 'roos', tone: 'midnight', species: 'honden', animal: 'dog', subject: 'poedel' },
   { name: 'Noor', photo: 'noor', tone: 'sage', species: 'katten', animal: 'cat', subject: 'bengaal' },
   { name: 'Bram', photo: 'bram', tone: 'pearl', species: 'honden', animal: 'dog', subject: 'Franse bulldog' },
+  { name: 'Flip', photo: 'flip', tone: 'charcoal', species: 'vogels', animal: 'bird', subject: 'grijze roodstaart' },
+  { name: 'Knabbel', photo: 'knabbel', tone: 'caramel', species: 'overig', animal: 'guineapig', subject: 'cavia' },
+  { name: 'Koda', photo: 'koda', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'cockapoo-pup' },
   { name: 'Wolke', photo: 'wolke', tone: 'midnight', species: 'katten', animal: 'cat', subject: 'rode kat' },
-  { name: 'Sam', photo: 'sam', tone: 'sage', species: 'vogels', animal: 'bird', subject: 'agapornis' },
-  { name: 'Guus', photo: 'guus', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'zwarte dog' },
-  { name: 'Reza', photo: 'reza', tone: 'pearl', species: 'katten', animal: 'cat', subject: 'zwarte kat' },
-  { name: 'Roos', photo: 'roos', tone: 'midnight', species: 'honden', animal: 'dog', subject: 'poedel' },
   { name: 'Daan', photo: 'daan', tone: 'taupe', species: 'honden', animal: 'dog', subject: 'labrador' },
+  { name: 'Sam', photo: 'sam', tone: 'sage', species: 'vogels', animal: 'bird', subject: 'agapornis' },
   { name: 'Joep', photo: 'joep', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'herdershond' },
-  { name: 'Mila', photo: 'mila', tone: 'pearl', species: 'katten', animal: 'cat', subject: 'kitten' },
-  { name: 'Bo & Nina', photo: 'duo-cats', tone: 'taupe', species: 'katten', animal: 'cat', subject: 'twee katten samen' },
+  { name: 'Reza', photo: 'reza', tone: 'pearl', species: 'katten', animal: 'cat', subject: 'zwarte kat' },
   { name: 'Sep & Tijs', photo: 'duo-dogs', tone: 'charcoal', species: 'honden', animal: 'dog', subject: 'golden retriever en teckel samen' },
+  { name: 'Bo & Nina', photo: 'duo-cats', tone: 'taupe', species: 'katten', animal: 'cat', subject: 'twee katten samen' },
+  { name: 'Mila', photo: 'mila', tone: 'pearl', species: 'katten', animal: 'cat', subject: 'kitten' },
 ];
 
 export const PORTFOLIO_FILTERS = [

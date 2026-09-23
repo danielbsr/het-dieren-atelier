@@ -1,0 +1,202 @@
+---
+import { CONSENT, withBase } from '../data/site';
+
+/**
+ * Toestemming voor ingesloten inhoud van derden.
+ *
+ * De site plaatst zelf geen cookies, dus dit venster heeft precies één
+ * echte schakelaar: laden we externe inhoud (nu alleen de Google
+ * Maps-kaart) of niet. Geen vooraf aangevinkte vakjes, en weigeren is
+ * even zichtbaar en even makkelijk als accepteren — dat is wat het
+ * cookiebeleid belooft en wat de wet vraagt.
+ *
+ * De keuze staat in localStorage, niet in een cookie: er hoeft niets
+ * naar de server, dus een cookie zou hier zelf het probleem zijn.
+ *
+ * `html[data-consent="pending"]` verbergt de zwevende actiebalk zolang
+ * dit venster open staat — zie global.css. Anders botsen twee dingen
+ * rechtsonder op een telefoon.
+ */
+---
+
+<div
+  id="cookie-consent"
+  hidden
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="cookie-consent-title"
+  class="pointer-events-none fixed inset-x-0 bottom-0 z-[60] flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:justify-start md:px-6 md:pb-6"
+>
+  <div
+    class="pointer-events-auto w-full max-w-[34rem] rounded-2xl border border-line bg-cream p-6 shadow-[0_18px_50px_-18px_rgba(20,42,32,0.45)] md:p-7"
+  >
+    <h2 id="cookie-consent-title" class="font-display text-xl text-ink md:text-[1.35rem]">
+      {CONSENT.title}
+    </h2>
+    <p class="mt-3 font-body text-[0.925rem] leading-relaxed text-muted">
+      {CONSENT.body}
+      {' '}
+      <a
+        href={withBase('/cookiebeleid')}
+        class="text-forest underline underline-offset-4 hover:text-forest-deep"
+      >Lees ons cookiebeleid</a>.
+    </p>
+
+    <!-- De categorieën, uitklapbaar. Dicht by default: wie snel wil
+         kiezen hoeft niet langs een lijst, wie wil weten wat er onder
+         zit kan het openklappen. -->
+    <details class="group mt-4 border-t border-line pt-4">
+      <summary
+        class="flex cursor-pointer list-none items-center justify-between gap-4 font-body text-[0.875rem] font-medium text-forest"
+      >
+        Welke categorieën zijn er?
+        <span
+          aria-hidden="true"
+          class="shrink-0 transition-transform duration-300 group-open:rotate-45"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="1.5"></path>
+          </svg>
+        </span>
+      </summary>
+
+      <ul class="mt-4 space-y-4">
+        {
+          CONSENT.categories.map((category) => (
+            <li>
+              <div class="flex items-center gap-3">
+                <span class="font-body text-[0.9rem] font-medium text-ink">{category.name}</span>
+                {category.required ? (
+                  <span class="rounded-full bg-forest/[0.08] px-2.5 py-0.5 font-body text-[0.7rem] text-forest">
+                    Altijd aan
+                  </span>
+                ) : (
+                  <label class="flex cursor-pointer items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id={`consent-${category.id}`}
+                      class="h-4 w-4 accent-[var(--color-forest)]"
+                    />
+                    <span class="font-body text-[0.8rem] text-muted">Toestaan</span>
+                  </label>
+                )}
+              </div>
+              <p class="mt-1.5 font-body text-[0.85rem] leading-relaxed text-muted">
+                {category.body}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </details>
+
+    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+      <button
+        type="button"
+        id="cookie-accept"
+        class="btn btn-solid flex-1 rounded-full bg-forest px-6 py-3 font-body text-[0.925rem] font-medium text-cream"
+      >
+        {CONSENT.accept}
+      </button>
+      <button
+        type="button"
+        id="cookie-reject"
+        class="btn btn-outline flex-1 rounded-full border border-forest/25 px-6 py-3 font-body text-[0.925rem] font-medium text-forest"
+      >
+        {CONSENT.reject}
+      </button>
+      <button
+        type="button"
+        id="cookie-save"
+        hidden
+        class="btn btn-outline flex-1 rounded-full border border-forest/25 px-6 py-3 font-body text-[0.925rem] font-medium text-forest"
+      >
+        Keuze opslaan
+      </button>
+    </div>
+  </div>
+</div>
+
+<script
+  is:inline
+  define:vars={{ KEY: CONSENT.storageKey, VERSION: CONSENT.version }}
+>
+  (() => {
+    const root = document.documentElement;
+    const panel = document.getElementById('cookie-consent');
+    const externBox = document.getElementById('consent-extern');
+    const saveButton = document.getElementById('cookie-save');
+
+    /*
+      localStorage kan gooien in een privévenster of met geblokkeerde
+      site-data. Dan is er geen opgeslagen keuze, en dus ook geen
+      toestemming — externe inhoud blijft uit en het venster verschijnt
+      opnieuw. Dat is de veilige kant om op te falen.
+    */
+    const read = () => {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (!raw) return null;
+        const value = JSON.parse(raw);
+        return value && value.v === VERSION ? value : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const write = (extern) => {
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ v: VERSION, extern, at: Date.now() }));
+      } catch {
+        /* Niets op te slaan: de keuze geldt dan alleen deze sessie. */
+      }
+    };
+
+    /** Zet de keuze door naar de pagina: alles met data-consent-src laadt. */
+    const apply = (extern) => {
+      root.dataset.consentExtern = extern ? 'granted' : 'denied';
+      if (!extern) return;
+      for (const el of document.querySelectorAll('[data-consent-src]')) {
+        if (el.getAttribute('src')) continue;
+        el.setAttribute('src', el.dataset.consentSrc);
+      }
+    };
+
+    const open = () => {
+      const stored = read();
+      if (externBox) externBox.checked = Boolean(stored && stored.extern);
+      // Bij het heropenen via de footer is er al een keuze: dan is
+      // "opslaan" de logische knop, niet "alles accepteren".
+      if (stored && saveButton) saveButton.hidden = false;
+      panel.hidden = false;
+      root.dataset.consent = 'pending';
+    };
+
+    const close = () => {
+      panel.hidden = true;
+      delete root.dataset.consent;
+    };
+
+    const choose = (extern) => {
+      write(extern);
+      apply(extern);
+      close();
+    };
+
+    document.getElementById('cookie-accept')?.addEventListener('click', () => choose(true));
+    document.getElementById('cookie-reject')?.addEventListener('click', () => choose(false));
+    saveButton?.addEventListener('click', () => choose(Boolean(externBox && externBox.checked)));
+
+    // De footerlink uit het cookiebeleid: keuze wijzigen of intrekken.
+    for (const trigger of document.querySelectorAll('[data-cookie-settings]')) {
+      trigger.addEventListener('click', (event) => {
+        event.preventDefault();
+        open();
+      });
+    }
+
+    const stored = read();
+    if (stored) apply(stored.extern);
+    else open();
+  })();
+</script>

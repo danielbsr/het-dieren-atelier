@@ -15,6 +15,7 @@ import {
   COLOUR_STRIP,
   CTA,
   FAQ_SHORT,
+  HOME_MATERIALS,
   HOME_SELECTION,
   PACKAGE_NOTE,
   STEPS,
@@ -80,27 +81,27 @@ const layout = [
       </div>
 
       <!--
-        Eén stil, zelfverzekerd beeld. Het zet de kwaliteitslat voor de
-        hele site.
+        Eén stil, zelfverzekerd beeld — en sinds de tweede feedbackronde
+        geen los studioportret meer, maar een portret dat al aan een
+        muur hangt. De kop zegt "als kunstwerk"; dit beeld laat meteen
+        zien wat dat betekent, in plaats van het pas drie secties lager
+        te tonen.
 
         Op een telefoon volgt het de woorden in plaats van ze voor te
-        gaan: een foto van een hond zegt niets over wat er verkocht
-        wordt, en vooropgaan duwde de boekknop van het eerste scherm af.
+        gaan: vooropgaan duwde de boekknop van het eerste scherm af.
 
-        De verhouding is overal 4:5 — precies de verhouding van het
-        bronbestand. Daardoor wordt er nergens iets weggesneden en kan de
-        kop van het dier op geen enkel scherm half wegvallen (punt 8).
+        2:3 op desktop is vrijwel de verhouding van het bronbestand, dus
+        er wordt nauwelijks iets weggesneden; op mobiel 4:5, waarbij de
+        hap uit de vloer en het plafond komt en het kunstwerk heel blijft.
       -->
       <div>
-        <Portrait
-          tone="charcoal"
-          animal="dog"
-          subject="golden retriever"
-          src={photo('hero')}
-          ratio="portrait"
+        <Interior
+          photo="plexiglas-staand"
+          alt="Groot portret van een zwarte kat op plexiglas aan de muur van een lichte woonkamer"
+          ratio="tall"
+          mobileRatio="portrait"
           priority
           sizes="(min-width: 768px) 480px, 100vw"
-          alt="Studioportret van een golden retriever op een antracietkleurige achtergrond"
           class="md:ml-auto md:max-w-[30rem]"
         />
       </div>
@@ -217,23 +218,21 @@ const layout = [
       class="mt-12 md:mt-16"
     />
 
-    <div class="mt-5 grid gap-5 md:mt-6 md:grid-cols-3 md:gap-6">
-      <Interior
-        photo="fineart-ingelijst"
-        alt="Ingelijste Fine Art-print van een zwarte dog boven een eiken dressoir"
-        label="Fine Art"
-      />
-      <Interior
-        photo="aluminium"
-        alt="Aluminium portret van een border collie op een blauwe achtergrond in een woonkamer"
-        label="Aluminium"
-      />
-      <Interior
-        photo="plexiglas"
-        alt="Plexiglas portret van een ragdollkat boven een houten dressoir"
-        label="Plexiglas"
-      />
-    </div>
+    <!-- Drie materialen met hun vanafprijs, zodat de kosten al op de
+         homepage een orde van grootte krijgen. -->
+    <ul class="mt-5 grid gap-5 md:mt-6 md:grid-cols-3 md:gap-6">
+      {
+        HOME_MATERIALS.map((material) => (
+          <li>
+            <Interior photo={material.photo} alt={material.alt} />
+            <div class="mt-3 flex items-baseline justify-between gap-3">
+              <span class="font-body text-[0.95rem] text-ink">{material.name}</span>
+              <span class="font-display text-lg text-forest">{material.from}</span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
 
     <p class="mt-8 font-body text-sm text-muted md:mt-10" data-reveal="rise">
       De pakketten Signature en Collection bevatten €50 of €100 tegoed voor wanddecoratie.

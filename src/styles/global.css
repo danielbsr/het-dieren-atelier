@@ -330,6 +330,28 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Toestemming voor externe inhoud                                     */
+/*                                                                     */
+/* De kaart-placeholder verdwijnt zodra de iframe ernaast een src      */
+/* heeft gekregen — door een klik op "Kaart tonen" of doordat iemand   */
+/* externe inhoud heeft toegestaan. Eén regel CSS in plaats van een    */
+/* tweede stukje JavaScript dat hetzelfde moet weten.                  */
+/* ------------------------------------------------------------------ */
+
+iframe[src] ~ [data-map-placeholder] {
+  display: none;
+}
+
+/*
+  Zolang het toestemmingsvenster open staat verdwijnt de zwevende
+  actiebalk: op een telefoon staan ze allebei onderaan en dekken ze
+  elkaar af.
+*/
+html[data-consent="pending"] [data-sticky-actions] {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
 /* Hover — pointer devices only                                        */
 /*                                                                     */
 /* Two gestures, both borrowed from the buttons: media breathes        */

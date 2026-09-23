@@ -4,6 +4,7 @@ import MapEmbed from './MapEmbed.astro';
 import BookButton from './BookButton.astro';
 import WhatsAppIcon from './WhatsAppIcon.astro';
 import {
+  CONSENT,
   EMAIL_URL,
   LEGAL_NAV,
   NAV,
@@ -162,6 +163,20 @@ const { cta = false } = Astro.props;
               </li>
             ))
           }
+          <li>
+            <!--
+              Het cookiebeleid belooft dat een eerdere keuze hier te
+              wijzigen of in te trekken is. Een knop en geen link: er is
+              geen pagina achter, hij opent het venster opnieuw.
+            -->
+            <button
+              type="button"
+              data-cookie-settings
+              class="underline-offset-4 transition-colors hover:text-forest hover:underline"
+            >
+              {CONSENT.settings}
+            </button>
+          </li>
         </ul>
       </div>
     </div>

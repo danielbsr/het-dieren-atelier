@@ -49,15 +49,18 @@ import { FAQ_GROUPS, STEPS } from '../data/site';
                     />
                   </div>
                 ) : (
+                  <!--
+                    Het stapnummer stond hier eerst ook, en daarmee twee
+                    keer naast elkaar in beeld. Nu draagt dit vlak alleen
+                    de regel die vertelt waar de stap gebeurt; het nummer
+                    hoort bij de kop ernaast.
+                  -->
                   <div
-                    class="flex aspect-[4/3] flex-col items-center justify-center gap-4 rounded-xl border border-line"
+                    class="flex aspect-[4/3] items-center justify-center rounded-xl border border-line px-8"
                     style="background:linear-gradient(155deg,#efe9dc 0%,#e6dfcd 55%,#ddd5c2 100%)"
                     aria-hidden="true"
                   >
-                    <span class="font-display text-[5rem] leading-none text-forest/20 md:text-[7rem]">
-                      {step.number}
-                    </span>
-                    <span class="font-body text-[0.8rem] uppercase tracking-[0.18em] text-ink/40">
+                    <span class="text-center font-body text-[0.8rem] uppercase tracking-[0.18em] text-ink/45">
                       {step.panelNote}
                     </span>
                   </div>

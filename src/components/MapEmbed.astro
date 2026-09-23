@@ -8,6 +8,13 @@ import { STUDIO } from '../data/site';
  * in leven te houden en geen factuuraccount aan een kaart die maar één
  * adres laat zien. De speld staat op de adresregel — verhuist de studio
  * ooit, dan is STUDIO.address het enige dat verandert.
+ *
+ * De iframe krijgt zijn `src` pas nadat iemand externe inhoud heeft
+ * toegestaan (zie <CookieConsent />), want Google plaatst cookies. Tot
+ * die tijd staat er een vlak met een knop die de kaart alsnog laadt —
+ * één klik, zonder dat de keuze voor de hele site verandert. Het adres
+ * en de link naar Google Maps staan eromheen, dus de route is ook
+ * zonder kaart te vinden.
  */
 interface Props {
   class?: string;
@@ -21,13 +28,29 @@ const { class: className = '', link = false } = Astro.props;
 <div>
   <div class={`relative overflow-hidden bg-cream-deep ${className}`}>
     <iframe
-      src={STUDIO.mapsEmbedUrl}
+      data-consent-src={STUDIO.mapsEmbedUrl}
       title={`Kaart met ${STUDIO.name}, ${STUDIO.address}`}
       loading="lazy"
       referrerpolicy="no-referrer-when-downgrade"
       class="h-full w-full border-0"
-      style="filter:saturate(0.82) contrast(1.02)"
-    ></iframe>
+      style="filter:saturate(0.82) contrast(1.02)"></iframe>
+
+    <!-- Verdwijnt zodra de iframe een src heeft. -->
+    <div
+      class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-5 text-center"
+      data-map-placeholder
+    >
+      <p class="max-w-[22rem] font-body text-[0.8rem] leading-relaxed text-muted">
+        De kaart van Google Maps laadt pas als je externe inhoud toestaat.
+      </p>
+      <button
+        type="button"
+        data-map-load
+        class="btn btn-outline rounded-full border border-forest/25 px-5 py-2 font-body text-[0.8rem] font-medium text-forest"
+      >
+        Kaart tonen
+      </button>
+    </div>
   </div>
 
   {
@@ -50,3 +73,20 @@ const { class: className = '', link = false } = Astro.props;
     )
   }
 </div>
+
+<script>
+  /*
+    "Kaart tonen" laadt alleen deze kaart, voor dit bezoek. Dat is
+    bewust geen site-brede toestemming: iemand die één keer de route wil
+    zien heeft niet gezegd dat alle externe inhoud voortaan mag. Voor dat
+    laatste is er het toestemmingsvenster.
+  */
+  for (const button of document.querySelectorAll<HTMLElement>('[data-map-load]')) {
+    button.addEventListener('click', () => {
+      const frame = button.closest('div.relative')?.querySelector('iframe');
+      if (!frame || frame.getAttribute('src')) return;
+      frame.setAttribute('src', frame.dataset.consentSrc!);
+      button.closest<HTMLElement>('[data-map-placeholder]')?.setAttribute('hidden', '');
+    });
+  }
+</script>

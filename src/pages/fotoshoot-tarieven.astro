@@ -4,6 +4,7 @@ import PageHeader from '../components/PageHeader.astro';
 import Section from '../components/Section.astro';
 import PackageCards from '../components/PackageCards.astro';
 import Portrait from '../components/Portrait.astro';
+import Interior from '../components/Interior.astro';
 import Faq from '../components/Faq.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import BookButton from '../components/BookButton.astro';
@@ -105,6 +106,47 @@ import {
       Het Locatieportret staat buiten deze tabel: tot 1 uur fotografie bij jou op locatie, 2
       professioneel bewerkte portretten en maximaal 2 huisdieren voor dezelfde prijs.
     </p>
+  </Section>
+
+  <!--
+    Het Locatieportret is de duurste optie en had tot nu toe geen enkel
+    beeld. Twee foto's van een echte locatiefotoshoot doen hier meer dan
+    nog een alinea: ze laten zien dat "de mobiele studio" geen figuurlijke
+    uitdrukking is.
+  -->
+  <Section space="normal">
+    <div class="grid items-center gap-8 md:grid-cols-2 md:gap-16">
+      <Interior
+        photo={ON_LOCATION.photoWide}
+        alt={ON_LOCATION.wideAlt}
+        ratio="landscape"
+        sizes="(min-width: 768px) 50vw, 100vw"
+      />
+      <div>
+        <p class="eyebrow" data-reveal="rise">{ON_LOCATION.eyebrow}</p>
+        <h2 class="mt-5 text-section leading-[1.08] text-ink" data-reveal="line">
+          {ON_LOCATION.blurb}
+        </h2>
+        <p
+          class="mt-6 max-w-[34rem] font-body text-[1.05rem] leading-relaxed text-muted"
+          data-reveal="rise"
+        >
+          {ON_LOCATION.intro} In de tuin, op het strand of gewoon in de woonkamer — we werken waar
+          jouw dier zich het prettigst voelt.
+        </p>
+        <p class="mt-4 font-body text-sm text-muted" data-reveal="rise">
+          {ON_LOCATION.priceNote}
+        </p>
+      </div>
+    </div>
+
+    <Interior
+      photo={ON_LOCATION.photo}
+      alt={ON_LOCATION.alt}
+      ratio="wide"
+      sizes="(min-width: 1200px) 1120px, 100vw"
+      class="mt-8 md:mt-12"
+    />
   </Section>
 
   <!-- Wat "meerdere achtergronden" oplevert -->

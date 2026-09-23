@@ -40,6 +40,27 @@ const wallArtFaq = FAQ_GROUPS.find((group) => group.title === 'Wanddecoratie')?.
     >
       Een fotoshoot eindigt met een bestand. Het werk eindigt aan een muur.
     </p>
+
+    <!-- De vanafprijzen in één oogopslag, voordat de materialen los
+         worden uitgelegd. Het formaat bepaalt de eindprijs, dus dit is
+         een ondergrens en geen prijslijst. -->
+    <ul
+      class="mx-auto mt-10 flex max-w-[42rem] flex-col justify-center gap-4 sm:flex-row sm:gap-10"
+      data-reveal="rise"
+    >
+      {
+        WALL_ART_PRODUCTS.map((product) => (
+          <li class="flex items-baseline justify-between gap-3 border-b border-line pb-3 sm:justify-center sm:border-0 sm:pb-0">
+            <span class="font-body text-[0.95rem] text-ink">{product.name}</span>
+            <span class="font-display text-lg text-forest">{product.from}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-4 text-center font-body text-sm text-muted" data-reveal="rise">
+      De uiteindelijke prijs hangt af van het formaat. Daar adviseren we persoonlijk over in de
+      studio.
+    </p>
   </Section>
 
   <!-- De drie materialen -->
@@ -67,6 +88,9 @@ const wallArtFaq = FAQ_GROUPS.find((group) => group.title === 'Wanddecoratie')?.
                     {RECOMMENDED_LABEL}
                   </span>
                 )}
+                <span class="ml-auto shrink-0 font-display text-xl text-forest" data-reveal="rise">
+                  {product.from}
+                </span>
               </div>
 
               <p class="mt-6 font-display text-[1.3rem] leading-snug text-forest" data-reveal="rise">

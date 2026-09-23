@@ -17,6 +17,12 @@ interface Props {
   /** Het label rechtsonder, bv. "Plexiglas in een woonkamer". */
   label?: string;
   ratio?: 'wide' | 'portrait' | 'landscape' | 'tall';
+  /**
+   * Verhouding onder `md`. Een 2:3 hero die op een desktopkolom klopt
+   * vreet een heel telefoonscherm op, dus de lange uitsnedes worden
+   * korter in plaats van langer te scrollen.
+   */
+  mobileRatio?: 'wide' | 'portrait' | 'landscape' | 'tall';
   sizes?: string;
   priority?: boolean;
   class?: string;
@@ -27,6 +33,7 @@ const {
   alt,
   label,
   ratio = 'portrait',
+  mobileRatio,
   sizes = '(min-width: 768px) 50vw, 100vw',
   priority = false,
   class: className = '',
@@ -40,10 +47,20 @@ const ratios = {
   portrait: 'aspect-[4/5]',
   tall: 'aspect-[2/3]',
 };
+
+const mdRatios = {
+  wide: 'md:aspect-[16/9]',
+  landscape: 'md:aspect-[4/3]',
+  portrait: 'md:aspect-[4/5]',
+  tall: 'md:aspect-[2/3]',
+};
+
+// Zonder mobiele override geldt de ene verhouding op elke breedte.
+const ratioClass = mobileRatio ? `${ratios[mobileRatio]} ${mdRatios[ratio]}` : ratios[ratio];
 ---
 
 <figure class={className} data-reveal="image">
-  <div class={`zoom-frame relative overflow-hidden rounded-xl bg-cream-deep ${ratios[ratio]}`}>
+  <div class={`zoom-frame relative overflow-hidden rounded-xl bg-cream-deep ${ratioClass}`}>
     {
       image && (
         <Image
