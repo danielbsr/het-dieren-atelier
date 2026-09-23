@@ -163,6 +163,17 @@
     list-style: disc;
   }
 
+  /* De algemene voorwaarden zijn genummerd per artikel, dus de nummers
+     tellen mee als inhoud en niet als opmaak. */
+  .prose-legal ol {
+    padding-left: 1.4rem;
+    list-style: decimal;
+  }
+
+  .prose-legal ol li::marker {
+    color: var(--color-forest);
+  }
+
   .prose-legal li + li {
     margin-top: 0.4rem;
   }

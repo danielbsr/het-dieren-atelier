@@ -2,209 +2,530 @@
 import Layout from '../layouts/Layout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Section from '../components/Section.astro';
-import { EMAIL_URL, LEGAL_UPDATED, PHONE_URL, STUDIO } from '../data/site';
+import { EMAIL_URL, LEGAL_UPDATED, PHONE_URL, STUDIO, withBase } from '../data/site';
 
 /**
- * De enige juridische pagina die de studio nog niet zelf heeft
- * aangeleverd. Opgesteld uit wat vaststaat: tarieven, annulerings-
- * voorwaarden, levertijden en de 50%-regeling uit de FAQ. Laat dit
- * nakijken voordat de site live gaat.
+ * Letterlijk aangeleverde tekst van de studio (versie september 2026);
+ * alleen de opmaak is van ons. Niet herschrijven zonder overleg — dit is
+ * een juridisch document, geen webtekst.
+ *
+ * De slotnotitie van het aangeleverde document vroeg om de officiële
+ * handelsnaam, het KvK-nummer en het btw-nummer op de website te zetten.
+ * Die staan in artikel 1 en onderaan bij de contactgegevens, uit
+ * STUDIO in src/data/site.ts.
  */
 ---
 
 <Layout
   title="Algemene voorwaarden"
-  description="De algemene voorwaarden van Het Dieren Atelier: boeken en betalen, annuleren, wat een fotoshoot omvat, levering van portretten, wanddecoratie en aansprakelijkheid."
+  description="De algemene voorwaarden van Het Dieren Atelier: boeken en annuleren, wat een fotoshoot omvat, levering, fysieke producten, auteursrecht, betaling en aansprakelijkheid."
   showFooterCta
 >
   <PageHeader
     eyebrow="Algemene voorwaarden"
     title="Algemene voorwaarden."
-    intro={`De afspraken rondom een fotoshoot bij Het Dieren Atelier. Laatst bijgewerkt: ${LEGAL_UPDATED}.`}
+    intro={`De afspraken rondom een fotoshoot bij Het Dieren Atelier. Versie ${LEGAL_UPDATED}.`}
   />
 
   <Section space="normal">
     <div class="prose-legal">
-      <h2>1. Wie wij zijn</h2>
+      <h2>Artikel 1 — Definities en identiteit</h2>
+      <ol>
+        <li>
+          In deze algemene voorwaarden wordt onder ‘Het Dieren Atelier’ verstaan: de aanbieder van
+          professionele huisdierenfotografie en bijbehorende digitale en fysieke fotoproducten,
+          gevestigd aan {STUDIO.street}, {STUDIO.city}. KvK: {STUDIO.kvk}. Btw:
+          {' '}{STUDIO.vat}.
+        </li>
+        <li>
+          Contactgegevens: <a href={EMAIL_URL}>{STUDIO.email}</a> en
+          {' '}<a href={PHONE_URL}>{STUDIO.phone}</a>.
+        </li>
+        <li>
+          Onder ‘klant’ wordt verstaan iedere consument of opdrachtgever die een fotoshoot boekt,
+          een voucher gebruikt, een bestelling plaatst of anderszins een overeenkomst met Het Dieren
+          Atelier aangaat.
+        </li>
+        <li>
+          Onder ‘fotoshoot’ wordt verstaan een fotografieafspraak in de studio of, indien
+          afzonderlijk overeengekomen, op locatie.
+        </li>
+        <li>
+          Onder ‘maatwerkproduct’ wordt verstaan een product dat volgens keuzes of specificaties van
+          de klant wordt vervaardigd, waaronder een foto op plexiglas, acrylblok of ander
+          gepersonaliseerd materiaal.
+        </li>
+      </ol>
+
+      <h2>Artikel 2 — Toepasselijkheid en totstandkoming</h2>
+      <ol>
+        <li>
+          Deze algemene voorwaarden zijn van toepassing op alle aanbiedingen, boekingen, vouchers,
+          fotoshoots, bestellingen, overeenkomsten en leveringen van Het Dieren Atelier.
+        </li>
+        <li>
+          Een overeenkomst komt tot stand zodra een boeking of bestelling door Het Dieren Atelier of
+          de gebruikte boekings- of verkoopomgeving is bevestigd, of zodra de klant een aanbod
+          aanvaardt.
+        </li>
+        <li>
+          Bij een actie via een externe aanbieder gelden naast deze voorwaarden ook de duidelijk
+          gecommuniceerde actievoorwaarden. Bij strijdigheid geldt voor de specifieke actie hetgeen
+          bij aankoop uitdrukkelijk aan de klant is toegezegd, met inachtneming van dwingend
+          consumentenrecht.
+        </li>
+        <li>
+          Afwijkende afspraken gelden alleen wanneer deze schriftelijk of elektronisch zijn
+          bevestigd.
+        </li>
+      </ol>
+
+      <h2>Artikel 3 — Aanbod, pakketten en prijzen</h2>
+      <ol>
+        <li>
+          Het aanbod vermeldt zo duidelijk mogelijk wat in een pakket of actie is inbegrepen, zoals
+          het aantal huisdieren, het aantal eindbeelden, de duur van de shoot en de wijze van
+          levering.
+        </li>
+        <li>
+          Tenzij anders vermeld zijn aan consumenten gecommuniceerde prijzen inclusief toepasselijke
+          btw.
+        </li>
+        <li>
+          Extra digitale beelden, extra huisdieren, extra fotografietijd, fysieke producten, grotere
+          formaten, bijzondere bewerkingen en andere upgrades zijn alleen inbegrepen wanneer dit
+          uitdrukkelijk is vermeld.
+        </li>
+        <li>
+          Prijzen voor fysieke producten zijn afhankelijk van onder meer materiaal, formaat en
+          uitvoering. De prijs wordt voorafgaand aan de definitieve bestelling kenbaar gemaakt.
+        </li>
+        <li>
+          Kennelijke schrijf-, publicatie- of prijsfouten binden Het Dieren Atelier niet wanneer
+          voor de klant redelijkerwijs duidelijk moest zijn dat sprake was van een vergissing.
+        </li>
+      </ol>
+
+      <h2>Artikel 4 — Boeking en duur van de fotoshoot</h2>
+      <ol>
+        <li>Een afspraak is definitief nadat deze is bevestigd.</li>
+        <li>
+          De klant dient op tijd aanwezig te zijn. Bij te late aankomst mag Het Dieren Atelier de
+          resterende fotografietijd verkorten wanneer dit nodig is om volgende afspraken niet te
+          laten uitlopen.
+        </li>
+        <li>
+          Voor introductieacties en actieboekingen kan een maximale fotoshootduur van 45 minuten
+          gelden. De voor de klant geldende duur staat in het geboekte aanbod.
+        </li>
+        <li>
+          Een genoemde duur is de gereserveerde afspraaktijd en geeft geen garantie op een bepaald
+          minimumaantal gemaakte foto's.
+        </li>
+        <li>
+          Meer dan het in het pakket opgenomen aantal huisdieren is uitsluitend mogelijk na
+          voorafgaand overleg en kan tot een meerprijs of langere afspraak leiden.
+        </li>
+      </ol>
+
+      <h2>Artikel 5 — Huisdieren, gedrag en veiligheid</h2>
+      <ol>
+        <li>
+          De eigenaar of begeleider blijft te allen tijde verantwoordelijk voor het huisdier en voor
+          voldoende toezicht en controle.
+        </li>
+        <li>
+          De klant meldt vooraf omstandigheden die relevant zijn voor een veilige shoot, waaronder
+          agressie, bijtgedrag, ernstige angst, besmettelijke aandoeningen of andere risico's.
+        </li>
+        <li>
+          Het Dieren Atelier mag een shoot onderbreken of beëindigen wanneer voortzetting naar
+          redelijk oordeel onveilig of onverantwoord is voor het dier, de klant, medewerkers of
+          eigendommen.
+        </li>
+        <li>
+          Het gedrag van dieren is niet volledig voorspelbaar. Het Dieren Atelier kan daarom geen
+          specifieke houding, blik, pose, samenwerking of exact vooraf bedacht beeld garanderen.
+        </li>
+        <li>
+          De klant is aansprakelijk voor door zijn of haar dier veroorzaakte schade voor zover die
+          schade aan de klant kan worden toegerekend volgens de wet.
+        </li>
+      </ol>
+
+      <h2>Artikel 6 — Fotoshoots op locatie</h2>
+      <ol>
+        <li>Een fotoshoot op locatie is mogelijk wanneer dit vooraf afzonderlijk is overeengekomen.</li>
+        <li>
+          Een locatieshoot valt niet automatisch onder studioacties, vouchers of introductietarieven,
+          tenzij dit uitdrukkelijk in de betreffende actie staat.
+        </li>
+        <li>
+          Voor locatieshoots kunnen een afzonderlijk tarief, reistijd, reiskosten en andere
+          voorwaarden gelden. Deze worden vooraf met de klant afgestemd.
+        </li>
+        <li>
+          De klant is verantwoordelijk voor toestemming om op de gekozen locatie te fotograferen
+          wanneer die toestemming noodzakelijk is.
+        </li>
+      </ol>
+
+      <h2>Artikel 7 — Annuleren, verplaatsen en niet verschijnen</h2>
+      <ol>
+        <li>Annuleren of verplaatsen dient zo snel mogelijk te worden doorgegeven.</li>
+        <li>
+          Bij annulering of verplaatsing binnen 24 uur voor aanvang van de afspraak kan Het Dieren
+          Atelier EUR 75 in rekening brengen, voor zover dit redelijk is en vooraf aan de klant is
+          meegedeeld.
+        </li>
+        <li>
+          Bij niet verschijnen zonder tijdige annulering kan de gereserveerde afspraak als gebruikt
+          worden beschouwd en kan een betaalde reservering of voucher vervallen, voor zover dit
+          vooraf duidelijk is gecommuniceerd en wettelijk is toegestaan.
+        </li>
+        <li>
+          Wanneer Het Dieren Atelier een afspraak wegens ziekte, technische problemen, overmacht of
+          andere onvoorziene omstandigheden moet verplaatsen, wordt in overleg een vervangende datum
+          aangeboden.
+        </li>
+        <li>
+          Voor zover de klant op grond van dwingend consumentenrecht recht heeft op terugbetaling,
+          blijven die wettelijke rechten onverminderd gelden.
+        </li>
+      </ol>
+
+      <h2>Artikel 8 — Acties, vouchers en Regio Acties</h2>
+      <ol>
+        <li>
+          Voor vouchers en acties kunnen specifieke beschikbaarheidsdagen, boekingsperioden en
+          geldigheidstermijnen gelden.
+        </li>
+        <li>
+          Een voucher geeft uitsluitend recht op de onderdelen die in de actieomschrijving zijn
+          opgenomen.
+        </li>
+        <li>
+          Een voucher of korting is niet inwisselbaar voor contant geld en is niet met andere
+          kortingsacties te combineren, tenzij anders vermeld.
+        </li>
+        <li>
+          Indien bij een Regio Acties-aanbieding een extra korting van EUR 50 op een fysiek
+          kunstwerk wordt aangeboden, geldt deze korting uitsluitend volgens de voorwaarden van die
+          specifieke actie en voor een daarvoor in aanmerking komende upgrade.
+        </li>
+        <li>
+          Indien een klant een uitgebreider pakket kiest, kan dit ook voor minder huisdieren worden
+          gebruikt wanneer de betreffende actie dit toestaat. Het aantal geleverde eindbeelden wordt
+          bepaald door het gekozen pakket.
+        </li>
+      </ol>
+
+      <h2>Artikel 9 — Selectie, nabewerking en artistieke stijl</h2>
+      <ol>
+        <li>
+          Het Dieren Atelier bepaalt de fotografische en technische werkwijze en behoudt creatieve
+          vrijheid binnen de overeengekomen stijl.
+        </li>
+        <li>
+          De klant kiest, afhankelijk van het pakket, de gewenste eindbeelden volgens de afgesproken
+          selectiewijze.
+        </li>
+        <li>
+          Alleen de in het pakket opgenomen of aanvullend bestelde beelden worden professioneel
+          nabewerkt en geleverd.
+        </li>
+        <li>
+          RAW-bestanden, onbewerkte bestanden, testopnamen en niet-geselecteerde beelden worden niet
+          geleverd, tenzij schriftelijk anders overeengekomen.
+        </li>
+        <li>
+          Professionele nabewerking kan onder meer kleurcorrectie, uitsnede, contrast, retouche en
+          artistieke afwerking omvatten.
+        </li>
+        <li>
+          Een verschil in persoonlijke smaak is op zichzelf geen gebrek wanneer het geleverde werk
+          overeenkomt met de afgesproken dienst en de kenbare stijl van Het Dieren Atelier.
+        </li>
+        <li>
+          Op beeldschermen, printers en verschillende materialen kunnen kleur, helderheid, contrast
+          en scherpte enigszins anders worden weergegeven.
+        </li>
+      </ol>
+
+      <h2>Artikel 10 — Digitale levering en bewaartermijn</h2>
+      <ol>
+        <li>Digitale eindbeelden worden geleverd in de afgesproken resolutie en bestandsvorm.</li>
+        <li>
+          De gebruikelijke levertijd bedraagt circa 5 tot 10 werkdagen na selectie, tenzij bij de
+          opdracht anders is afgesproken.
+        </li>
+        <li>
+          Levertijden zijn streeftermijnen, tenzij uitdrukkelijk schriftelijk een fatale termijn is
+          overeengekomen.
+        </li>
+        <li>
+          Na levering is de klant zelf verantwoordelijk voor het downloaden, veilig bewaren en maken
+          van back-ups van de bestanden.
+        </li>
+        <li>
+          Het Dieren Atelier garandeert niet dat bronbestanden, selecties of geleverde bestanden
+          onbeperkt worden bewaard. De klant wordt daarom geadviseerd de bestanden direct na
+          levering veilig op te slaan.
+        </li>
+      </ol>
+
+      <h2>Artikel 11 — Fysieke producten en maatwerk</h2>
+      <ol>
+        <li>
+          De klant kan, indien aangeboden, digitale beelden laten uitvoeren als fysiek kunstwerk,
+          waaronder plexiglas, acrylblok of andere beschikbare materialen.
+        </li>
+        <li>
+          Materiaal, formaat, uitsnede en uitvoering worden vóór productie afgestemd of door de
+          klant gekozen.
+        </li>
+        <li>
+          Na definitieve goedkeuring en het starten van de productie kan een maatwerkbestelling in
+          beginsel niet meer kosteloos worden gewijzigd.
+        </li>
+        <li>
+          Gepersonaliseerde producten die volgens specificaties van de klant worden vervaardigd
+          kunnen op grond van de wettelijke uitzondering zijn uitgesloten van het herroepingsrecht.
+          Dit doet geen afbreuk aan wettelijke rechten bij gebreken of non-conformiteit.
+        </li>
+        <li>
+          Kleine kleur- en materiaalverschillen die inherent zijn aan productie,
+          beeldschermweergave of materiaalsoort gelden niet automatisch als productiefout.
+        </li>
+        <li>
+          De klant dient een fysiek product na ontvangst zo spoedig mogelijk te controleren. Bij
+          zichtbare transportschade of een vermoedelijke productiefout wordt gevraagd dit zo snel
+          mogelijk met duidelijke foto's te melden.
+        </li>
+        <li>
+          Bij een gegronde klacht krijgt Het Dieren Atelier een redelijke gelegenheid om herstel,
+          vervanging of een andere passende wettelijke oplossing aan te bieden.
+        </li>
+        <li>
+          Schade door vallen, stoten, krassen, vocht, zonlicht, verkeerd ophangen, onjuist reinigen
+          of ander onjuist gebruik geldt niet als productiefout.
+        </li>
+      </ol>
+
+      <h2>Artikel 12 — Betaling</h2>
+      <ol>
+        <li>Betaling vindt plaats op de bij boeking, voucher, factuur of bestelling aangegeven wijze.</li>
+        <li>
+          Aanvullende bestellingen en upgrades worden apart afgerekend wanneer deze niet in het
+          oorspronkelijke pakket zijn inbegrepen.
+        </li>
+        <li>
+          Voor maatwerkproducten kan volledige of gedeeltelijke vooruitbetaling worden verlangd
+          voordat productie wordt gestart.
+        </li>
+        <li>
+          Indien de klant niet tijdig betaalt, gelden de wettelijke regels voor verzuim, rente en
+          buitengerechtelijke incassokosten. Bij consumenten wordt eerst de wettelijk vereiste
+          kosteloze aanmaning en betalingstermijn gegeven voordat incassokosten verschuldigd kunnen
+          worden.
+        </li>
+      </ol>
+
+      <h2>Artikel 13 — Herroepingsrecht bij online boekingen</h2>
+      <ol>
+        <li>
+          Wanneer een consument op afstand een overeenkomst sluit, kunnen wettelijke regels over
+          herroeping van toepassing zijn.
+        </li>
+        <li>
+          Voor diensten die op uitdrukkelijk verzoek van de consument volledig binnen de wettelijke
+          bedenktijd zijn uitgevoerd, kan het herroepingsrecht onder de wettelijke voorwaarden
+          vervallen nadat de consument daarmee vooraf heeft ingestemd en heeft erkend dat het
+          herroepingsrecht na volledige uitvoering vervalt.
+        </li>
+        <li>
+          Voor maatwerkproducten die volgens specificaties van de consument zijn vervaardigd, kan de
+          wettelijke uitzondering op het herroepingsrecht gelden.
+        </li>
+        <li>
+          Niets in deze voorwaarden beperkt een herroepingsrecht dat de consument volgens dwingend
+          recht daadwerkelijk heeft.
+        </li>
+      </ol>
+
+      <h2>Artikel 14 — Auteursrecht en gebruiksrechten</h2>
+      <ol>
+        <li>
+          Het auteursrecht op de gemaakte foto's berust bij de maker/fotograaf, tenzij schriftelijk
+          anders overeengekomen.
+        </li>
+        <li>
+          Na volledige betaling ontvangt de particuliere klant het overeengekomen gebruiksrecht voor
+          persoonlijk, niet-commercieel gebruik van de geleverde beelden.
+        </li>
+        <li>
+          De klant mag geleverde digitale foto's voor persoonlijk gebruik bewaren, delen en laten
+          afdrukken, tenzij bij het product of de licentie uitdrukkelijk andere afspraken zijn
+          gemaakt.
+        </li>
+        <li>
+          Commercieel gebruik, wederverkoop, licentiering aan derden of gebruik door een onderneming
+          is alleen toegestaan met voorafgaande schriftelijke toestemming.
+        </li>
+        <li>
+          Het is niet toegestaan auteursrechtelijke aanduidingen of watermerken te verwijderen
+          wanneer een geleverd voorbeeldbestand daarvan is voorzien.
+        </li>
+      </ol>
+
+      <h2>Artikel 15 — Gebruik door Het Dieren Atelier en toestemming</h2>
+      <ol>
+        <li>
+          Herkenbare foto's van personen worden niet voor portfolio, website, advertenties of
+          sociale media gebruikt zonder geldige grondslag, waaronder waar nodig toestemming.
+        </li>
+        <li>
+          Voor foto's van huisdieren kan Het Dieren Atelier eveneens toestemming vragen voor
+          portfolio- of marketinggebruik, met name wanneer daarbij de eigenaar, persoonsgegevens of
+          andere herleidbare informatie wordt gepubliceerd.
+        </li>
+        <li>
+          Wanneer toestemming de grondslag is, kan deze voor toekomstig gebruik worden ingetrokken.
+          Een intrekking heeft geen terugwerkende kracht voor verwerking die vóór de intrekking
+          rechtmatig plaatsvond.
+        </li>
+        <li>
+          Een verzoek om marketingtoestemming staat los van de kernprestatie van de fotoshoot,
+          tenzij partijen uitdrukkelijk een afzonderlijke samenwerking of portfolio-afspraak zijn
+          aangegaan.
+        </li>
+      </ol>
+
+      <h2>Artikel 16 — Persoonsgegevens</h2>
+      <ol>
+        <li>
+          Het Dieren Atelier verwerkt persoonsgegevens voor onder meer boekingen, klantcontact,
+          uitvoering van de fotoshoot, selectie en levering, betalingen, administratie en
+          klantenservice.
+        </li>
+        <li>
+          Verdere informatie over doeleinden, grondslagen, bewaartermijnen, ontvangers en
+          privacyrechten wordt opgenomen in het
+          {' '}<a href={withBase('/privacybeleid')}>privacybeleid</a> van Het Dieren Atelier.
+        </li>
+        <li>
+          De klant dient geen persoonsgegevens van derden te verstrekken zonder daarvoor bevoegd te
+          zijn.
+        </li>
+      </ol>
+
+      <h2>Artikel 17 — Klachten</h2>
+      <ol>
+        <li>Klachten kunnen worden gemeld via <a href={EMAIL_URL}>{STUDIO.email}</a>.</li>
+        <li>
+          De klant wordt gevraagd een klacht zo spoedig mogelijk na ontdekking duidelijk te
+          omschrijven en, indien relevant, foto's of andere informatie mee te sturen.
+        </li>
+        <li>
+          Het Dieren Atelier onderzoekt de klacht en krijgt een redelijke gelegenheid om bij een
+          gegronde klacht een passende oplossing te bieden.
+        </li>
+        <li>Deze klachtenregeling beperkt de wettelijke rechten van consumenten niet.</li>
+      </ol>
+
+      <h2>Artikel 18 — Aansprakelijkheid</h2>
+      <ol>
+        <li>
+          Het Dieren Atelier is aansprakelijk voor schade voor zover die aansprakelijkheid uit de
+          wet voortvloeit.
+        </li>
+        <li>
+          Niets in deze voorwaarden sluit aansprakelijkheid uit of beperkt deze wanneer een
+          dergelijke uitsluiting of beperking op grond van dwingend recht niet is toegestaan.
+        </li>
+        <li>
+          Voor zover wettelijk toegestaan is Het Dieren Atelier niet aansprakelijk voor schade die
+          ontstaat doordat de klant onjuiste of onvolledige informatie heeft verstrekt of instructies
+          met betrekking tot veiligheid niet opvolgt.
+        </li>
+        <li>
+          De klant is zelf verantwoordelijk voor persoonlijke eigendommen die naar de studio of een
+          locatie worden meegenomen.
+        </li>
+      </ol>
+
+      <h2>Artikel 19 — Overmacht</h2>
+      <ol>
+        <li>
+          Onder overmacht wordt verstaan een omstandigheid buiten de redelijke invloed van Het
+          Dieren Atelier waardoor nakoming tijdelijk of blijvend onmogelijk of onredelijk bezwarend
+          wordt, zoals ernstige ziekte, brand, storing, uitval van essentiële apparatuur,
+          overheidsmaatregelen of extreme weersomstandigheden.
+        </li>
+        <li>
+          Bij overmacht wordt de klant zo snel mogelijk geïnformeerd en wordt waar redelijk een
+          nieuwe datum of andere passende oplossing aangeboden.
+        </li>
+        <li>Wettelijke rechten van consumenten blijven van toepassing.</li>
+      </ol>
+
+      <h2>Artikel 20 — Cadeaubonnen</h2>
+      <ol>
+        <li>
+          Indien Het Dieren Atelier cadeaubonnen aanbiedt, gelden de op de cadeaubon of bij aankoop
+          vermelde geldigheids- en gebruiksvoorwaarden.
+        </li>
+        <li>Cadeaubonnen zijn niet inwisselbaar voor contant geld, tenzij de wet anders bepaalt.</li>
+        <li>
+          Wanneer een gekozen dienst duurder is dan de waarde van de cadeaubon, betaalt de klant het
+          verschil bij.
+        </li>
+      </ol>
+
+      <h2>Artikel 21 — Wijziging van de voorwaarden</h2>
+      <ol>
+        <li>
+          Het Dieren Atelier kan deze algemene voorwaarden voor toekomstige overeenkomsten wijzigen.
+        </li>
+        <li>
+          Voor een reeds gesloten overeenkomst blijft in beginsel de versie gelden die bij het
+          sluiten van die overeenkomst van toepassing was, tenzij een wijziging wettelijk
+          noodzakelijk is of met de klant wordt overeengekomen.
+        </li>
+      </ol>
+
+      <h2>Artikel 22 — Toepasselijk recht en geschillen</h2>
+      <ol>
+        <li>Op overeenkomsten met Het Dieren Atelier is Nederlands recht van toepassing.</li>
+        <li>Partijen proberen een geschil eerst in onderling overleg op te lossen.</li>
+        <li>
+          Voor consumenten blijven de dwingendrechtelijke regels over bevoegde rechter en
+          consumentenbescherming onverminderd van toepassing.
+        </li>
+      </ol>
+
+      <h2>Artikel 23 — Slotbepaling</h2>
+      <ol>
+        <li>
+          Indien een bepaling uit deze voorwaarden nietig, vernietigbaar of anderszins niet
+          afdwingbaar blijkt, blijven de overige bepalingen zoveel mogelijk van kracht.
+        </li>
+        <li>
+          Deze voorwaarden zijn bedoeld om samen met de concrete boekingsbevestiging,
+          pakketomschrijving, actievoorwaarden en het
+          {' '}<a href={withBase('/privacybeleid')}>privacybeleid</a> te worden gelezen.
+        </li>
+        <li>Versie: {LEGAL_UPDATED}.</li>
+      </ol>
+
+      <h2>Contactgegevens</h2>
       <p>
         {STUDIO.name}<br />
         {STUDIO.street}, {STUDIO.postcode} {STUDIO.city}<br />
         KvK: {STUDIO.kvk}<br />
         Btw: {STUDIO.vat}<br />
         E-mail: <a href={EMAIL_URL}>{STUDIO.email}</a><br />
-        Telefoon: <a href={PHONE_URL}>{STUDIO.phone}</a>
-      </p>
-      <p>
-        Deze voorwaarden gelden voor iedere fotoshoot, bestelling en opdracht van
-        {STUDIO.name}, tenzij schriftelijk iets anders is afgesproken.
-      </p>
-
-      <h2>2. Boeken en afspraken</h2>
-      <ul>
-        <li>We werken uitsluitend op afspraak. Je boekt online via de agenda op onze website.</li>
-        <li>Na het boeken ontvang je een bevestiging per e-mail met datum, tijd en adres.</li>
-        <li>
-          De afspraak is definitief zodra je die bevestiging hebt ontvangen. De gereserveerde tijd
-          in de studio is dan exclusief voor jou.
-        </li>
-      </ul>
-
-      <h2>3. Wat een fotoshoot omvat</h2>
-      <ul>
-        <li>
-          Een fotoshoot in de studio duurt <strong>maximaal 45 minuten</strong>, inclusief de tijd
-          om te wennen.
-        </li>
-        <li>
-          Afhankelijk van het gekozen pakket ontvang je <strong>1, 2 of maximaal 3</strong>
-          professioneel bewerkte portretten in hoge resolutie.
-        </li>
-        <li>
-          Een Locatieportret omvat tot 1 uur fotografie op locatie en 2 professioneel bewerkte
-          portretten, voor maximaal 2 huisdieren. Reiskosten zijn afhankelijk van de afstand en
-          worden vooraf besproken.
-        </li>
-        <li>
-          Onbewerkte bestanden worden niet geleverd. Een extra professioneel bewerkt portret kost
-          €50 per portret.
-        </li>
-      </ul>
-
-      <h2>4. Tarieven en betalen</h2>
-      <ul>
-        <li>
-          De tarieven staan op onze website en zijn inclusief btw. Het tarief dat geldt op het
-          moment van boeken is het tarief van jouw fotoshoot.
-        </li>
-        <li>De fotoshoot wordt in de studio betaald. Betalen kan per pin of contant.</li>
-        <li>Wanddecoratie en extra portretten worden apart afgerekend bij het bestellen.</li>
-      </ul>
-
-      <h2>5. Annuleren en verplaatsen</h2>
-      <ul>
-        <li>Laat het ons zo snel mogelijk weten als je afspraak niet door kan gaan.</li>
-        <li>
-          Bij annulering of verplaatsing <strong>binnen 24 uur</strong> voor de afspraak brengen we
-          <strong>€75 annuleringskosten</strong> in rekening.
-        </li>
-        <li>
-          Verschijn je niet op je afspraak, dan behouden we ons het recht voor om de kosten voor de
-          gereserveerde tijd in rekening te brengen.
-        </li>
-        <li>
-          Kunnen wij de afspraak onverhoopt niet nakomen, bijvoorbeeld door ziekte, dan plannen we
-          in overleg een nieuwe datum.
-        </li>
-      </ul>
-
-      <h2>6. Als de fotoshoot niet lukt</h2>
-      <p>
-        Het welzijn van jouw huisdier staat altijd voorop. We nemen pauzes, forceren niets en
-        passen de fotoshoot aan op het tempo van jouw dier. Mocht het ondanks onze inspanningen
-        echt niet lukken om geschikte beelden te maken, dan blijft <strong>50% van het gekozen
-        pakket</strong> verschuldigd; de studio en de tijd waren immers speciaal voor jouw afspraak
-        gereserveerd.
-      </p>
-
-      <h2>7. Selectie en levering</h2>
-      <ul>
-        <li>
-          Na de fotoshoot ontvang je een selectie van de beste beelden in een online
-          selectiegalerij. Daaruit kies je jouw favorieten.
-        </li>
-        <li>
-          Alleen de gekozen beelden worden volledig nabewerkt. De gemiddelde levertijd is
-          <strong>5 tot 10 werkdagen</strong> nadat de definitieve selectie is gemaakt.
-        </li>
-        <li>
-          De keuze van de beelden die in de selectiegalerij komen, en de stijl van de nabewerking,
-          liggen bij de fotograaf.
-        </li>
-        <li>
-          Extra portretten kunnen worden nabesteld zolang de betreffende bestanden nog beschikbaar
-          zijn.
-        </li>
-      </ul>
-
-      <h2>8. Wanddecoratie</h2>
-      <ul>
-        <li>
-          Wanddecoratie wordt op maat geproduceerd. De levertijd is afhankelijk van materiaal en
-          formaat en wordt bij het bestellen doorgegeven.
-        </li>
-        <li>
-          Omdat het om een op maat gemaakt product gaat, is retourneren niet mogelijk, behalve bij
-          een productiefout of transportschade.
-        </li>
-        <li>
-          Meld schade of een gebrek binnen 14 dagen na ontvangst, dan zorgen wij voor een
-          oplossing.
-        </li>
-        <li>
-          Het tegoed voor wanddecoratie uit de pakketten Signature (€50) en Collection (€100) is
-          geldig tot 12 maanden na de fotoshoot en wordt niet uitgekeerd in contanten.
-        </li>
-      </ul>
-
-      <h2>9. Auteursrecht en gebruik</h2>
-      <ul>
-        <li>
-          Het auteursrecht op alle gemaakte beelden blijft bij {STUDIO.name}.
-        </li>
-        <li>
-          Je ontvangt een persoonlijk gebruiksrecht: je mag de portretten onbeperkt privé gebruiken,
-          delen en laten afdrukken.
-        </li>
-        <li>
-          Commercieel gebruik van de beelden is alleen toegestaan na schriftelijke toestemming.
-        </li>
-        <li>
-          Bewerk de geleverde portretten niet zelf verder, zoals met filters of bijsnijden, bij
-          publicatie online.
-        </li>
-        <li>
-          Wij gebruiken beelden alleen voor onze eigen portfolio of social media als je daar vooraf
-          toestemming voor hebt gegeven. Die toestemming kun je altijd intrekken.
-        </li>
-      </ul>
-
-      <h2>10. Jouw huisdier</h2>
-      <ul>
-        <li>
-          Je blijft tijdens de fotoshoot zelf verantwoordelijk voor jouw huisdier en voor het
-          gedrag ervan.
-        </li>
-        <li>
-          Schade aan de studio, apparatuur of eigendommen van derden, veroorzaakt door jouw
-          huisdier, komt voor jouw rekening.
-        </li>
-        <li>
-          Geef vooraf door of er iets is waar we rekening mee moeten houden, zoals angst, een
-          blessure of een dier dat niet los kan.
-        </li>
-        <li>Zieke dieren kunnen we helaas niet fotograferen; we plannen de afspraak dan om.</li>
-      </ul>
-
-      <h2>11. Cadeaubonnen</h2>
-      <ul>
-        <li>Cadeaubonnen zijn 12 maanden geldig vanaf de datum van uitgifte.</li>
-        <li>Een cadeaubon is niet inwisselbaar voor geld.</li>
-        <li>De ontvanger kiest zelf een beschikbare datum voor de fotoshoot.</li>
-      </ul>
-
-      <h2>12. Aansprakelijkheid</h2>
-      <p>
-        Onze aansprakelijkheid is beperkt tot het bedrag van de betreffende opdracht. We zijn niet
-        aansprakelijk voor indirecte schade of gevolgschade. Bij verlies of beschadiging van
-        bestanden door een technische oorzaak doen we er alles aan om te herstellen wat mogelijk
-        is; verdere aansprakelijkheid is uitgesloten.
-      </p>
-
-      <h2>13. Klachten en toepasselijk recht</h2>
-      <p>
-        Ben je ergens niet tevreden over? Laat het ons binnen 14 dagen weten via
-        <a href={EMAIL_URL}>{STUDIO.email}</a>, dan zoeken we samen naar een oplossing. Op alle
-        overeenkomsten is Nederlands recht van toepassing.
+        Telefoon/WhatsApp: <a href={PHONE_URL}>{STUDIO.phone}</a>
       </p>
     </div>
   </Section>
