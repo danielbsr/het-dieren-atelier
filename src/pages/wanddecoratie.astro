@@ -7,13 +7,15 @@ import Faq from '../components/Faq.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import BookButton from '../components/BookButton.astro';
 import { CTA, FAQ_GROUPS, RECOMMENDED_LABEL, WALL_ART_PRODUCTS } from '../data/site';
+import { wallArtSchema } from '../data/schema';
 
 const wallArtFaq = FAQ_GROUPS.find((group) => group.title === 'Wanddecoratie')?.items ?? [];
 ---
 
 <Layout
-  title="Wanddecoratie — dierenportret op Fine Art, aluminium of plexiglas"
-  description="Laat het portret van jouw hond of kat uitvoeren als hoogwaardige wanddecoratie: Fine Art, aluminium of plexiglas. Persoonlijk advies over materiaal en formaat in onze studio."
+  title="Dierenportret als wanddecoratie"
+  description="Het portret van jouw hond of kat als wanddecoratie: Fine Art vanaf €79, aluminium vanaf €89 of plexiglas vanaf €99. Met persoonlijk advies over formaat."
+  schema={[wallArtSchema()]}
 >
   <PageHeader
     eyebrow="Wanddecoratie"

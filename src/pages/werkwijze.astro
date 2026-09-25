@@ -9,11 +9,13 @@ import ClosingCta from '../components/ClosingCta.astro';
 import BookButton from '../components/BookButton.astro';
 import { photo } from '../data/photos';
 import { FAQ_GROUPS, STEPS } from '../data/site';
+import { faqSchema } from '../data/schema';
 ---
 
 <Layout
-  title="Werkwijze — zo verloopt een dierenfotoshoot"
-  description="Van boeken tot kunstwerk aan de muur: zo verloopt een dierenfotoshoot bij Het Dieren Atelier in Blokker. Vijf stappen, max. 45 minuten, jouw dier bepaalt het tempo."
+  title="Zo verloopt een dierenfotoshoot"
+  description="Van boeken tot kunstwerk aan de muur: zo verloopt een dierenfotoshoot in Blokker. Vijf stappen, max. 45 minuten, jouw dier bepaalt het tempo."
+  schema={[faqSchema(FAQ_GROUPS)]}
 >
   <PageHeader
     eyebrow="Werkwijze"

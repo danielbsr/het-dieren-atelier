@@ -9,6 +9,7 @@ import Faq from '../components/Faq.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import BookButton from '../components/BookButton.astro';
 import { photo } from '../data/photos';
+import { packagesSchema } from '../data/schema';
 import {
   COMPARISON,
   CTA,
@@ -22,8 +23,9 @@ import {
 ---
 
 <Layout
-  title="Fotoshoot & tarieven — dierenfotoshoot vanaf €249"
+  title="Dierenfotoshoot & tarieven — vanaf €249"
   description="Drie studiopakketten voor een dierenfotoshoot: Essential €249, Signature €379 en Collection €549. Elk max. 45 minuten. Locatieportret bij jou thuis €695."
+  schema={[packagesSchema()]}
 >
   <PageHeader
     eyebrow="Fotoshoot & tarieven"

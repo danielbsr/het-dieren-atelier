@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import StickyActions from '../components/StickyActions.astro';
 import CookieConsent from '../components/CookieConsent.astro';
 import { INDEXABLE, SITE_URL, STUDIO, withBase } from '../data/site';
+import { studioSchema } from '../data/schema';
 
 interface Props {
   /** Verschijnt in het tabblad en in Google. Zonder de studionaam — die plakken we erachter. */
@@ -16,6 +17,8 @@ interface Props {
   ogImage?: string;
   /** Uit op juridische pagina's, die Google niet hoeft te tonen. */
   noindex?: boolean;
+  /** Extra JSON-LD voor deze pagina, naast het bedrijfsschema. */
+  schema?: Record<string, unknown>[];
 }
 
 const {
@@ -24,6 +27,7 @@ const {
   showFooterCta = false,
   ogImage = '/og-image.jpg',
   noindex = false,
+  schema = [],
 } = Astro.props;
 
 const fullTitle = title.includes(STUDIO.name) ? title : `${title} | ${STUDIO.name}`;
@@ -41,36 +45,10 @@ const canonical = new URL(
 const ogImageUrl = new URL(ogImage, SITE_URL).href;
 
 /**
- * Structured data voor lokale vindbaarheid: adres, telefoon, openings-
- * vorm en prijsklasse. Google gebruikt dit voor de bedrijfskaart naast
- * de zoekresultaten.
+ * Structured data: het bedrijf op elke pagina, plus wat een pagina zelf
+ * meegeeft (FAQ, pakketten, materialen) — zie src/data/schema.ts.
  */
-const localBusiness = {
-  '@context': 'https://schema.org',
-  '@type': 'PhotographyBusiness',
-  name: STUDIO.name,
-  description:
-    'Dierenfotostudio in Blokker bij Hoorn. Professionele studioportretten van honden, katten en andere huisdieren, afgewerkt als wanddecoratie.',
-  url: SITE_URL,
-  image: ogImageUrl,
-  email: STUDIO.email,
-  telephone: STUDIO.phone,
-  priceRange: '€249 - €695',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: STUDIO.street,
-    postalCode: STUDIO.postcode,
-    addressLocality: STUDIO.city,
-    addressRegion: STUDIO.region,
-    addressCountry: 'NL',
-  },
-  areaServed: ['Blokker', 'Hoorn', 'Noord-Holland'],
-  sameAs: [STUDIO.instagramUrl],
-  vatID: STUDIO.vat,
-  identifier: { '@type': 'PropertyValue', name: 'KVK', value: STUDIO.kvk },
-  publicAccess: false,
-  availableLanguage: 'nl',
-};
+const structuredData = [studioSchema(ogImageUrl), ...schema];
 ---
 
 <!doctype html>
@@ -130,11 +108,11 @@ const localBusiness = {
       rel="stylesheet"
     />
 
-    <script
-      type="application/ld+json"
-      set:html={JSON.stringify(localBusiness)}
-      is:inline
-    />
+    {
+      structuredData.map((data) => (
+        <script type="application/ld+json" set:html={JSON.stringify(data)} is:inline />
+      ))
+    }
   </head>
   <body>
     <a
