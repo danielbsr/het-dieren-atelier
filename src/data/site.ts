@@ -396,6 +396,8 @@ export const COMPARISON: { label: string; values: [string, string, string] }[] =
 /**
  * Vijf stappen, van boeken tot het kunstwerk aan de muur.
  * `photo` verwijst naar een bestandsnaam in src/assets — zie photos.ts.
+ * Stap 01 en 04 gebeuren online en tonen daarom een scherm (`screen`,
+ * zie StepScreen.astro). Komt er later toch een foto, dan wint `photo`.
  */
 export const STEPS = [
   {
@@ -404,8 +406,8 @@ export const STEPS = [
     short: 'Kies online een datum en tijd die jou uitkomt.',
     long: 'Kies in de agenda een beschikbare datum en tijd. Je ontvangt een bevestiging en een korte voorbereiding: neem de favoriete snacks en eventueel een speeltje mee. Veel meer voorbereiding is er niet.',
     photo: undefined as string | undefined,
-    alt: '',
-    panelNote: 'Online, in een paar klikken',
+    screen: 'agenda',
+    alt: 'Illustratie van de online agenda: een datum is gekozen en de boeking is bevestigd',
   },
   {
     number: '02',
@@ -429,8 +431,8 @@ export const STEPS = [
     short: 'Samen of via de online galerij kies je de mooiste beelden.',
     long: 'Na de fotoshoot krijg je een selectie van de beste beelden te zien in een online selectiegalerij. Daaruit kies je jouw favoriete portret of portretten. Alleen die beelden worden volledig professioneel nabewerkt.',
     photo: undefined as string | undefined,
-    alt: '',
-    panelNote: 'In jouw persoonlijke selectiegalerij',
+    screen: 'galerij',
+    alt: 'Illustratie van de online selectiegalerij met zes portretten van een golden retriever, waarvan er twee als favoriet zijn gemarkeerd',
   },
   {
     number: '05',

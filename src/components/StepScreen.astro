@@ -1,0 +1,144 @@
+---
+/**
+ * Beeld voor de twee werkwijze-stappen die online gebeuren: boeken en
+ * favorieten kiezen. Die stappen hebben geen studiomoment om te
+ * fotograferen, dus tonen we wat de klant op dat moment echt ziet: een
+ * scherm. Gebouwd in HTML in plaats van als afbeelding, zodat het scherp
+ * blijft en meeschaalt met het kader (alle maten in em, de lettergrootte
+ * volgt de breedte van het kader via container-eenheden).
+ *
+ * Bewust weggelaten: een maandnaam en tijdsloten in de agenda. Een maand
+ * veroudert, en tijden zouden openingstijden suggereren die we niet
+ * kennen. De galerij toont één golden retriever uit één fotoshoot —
+ * zo ziet een selectiegalerij er echt uit, en geen portfolio.
+ */
+import { Image } from 'astro:assets';
+import { photo } from '../data/photos';
+
+interface Props {
+  kind: 'agenda' | 'galerij';
+  label: string;
+}
+
+const { kind, label } = Astro.props;
+
+// Agenda: een maand die op woensdag begint, 30 dagen. Dagen vóór de 9e
+// zijn voorbij, de 18e is gekozen.
+const days = [
+  ...Array.from({ length: 2 }, () => null),
+  ...Array.from({ length: 30 }, (_, i) => i + 1),
+  ...Array.from({ length: 3 }, () => null),
+];
+const PAST = 8;
+const CHOSEN = 18;
+
+// Galerij: zes beelden van dezelfde golden retriever; twee uitsnedes
+// zijn ingezoomd, zoals een fotograaf ook variaties van één pose levert.
+// De bronbreedte is ruim gekozen: liggende beelden en de ingezoomde
+// uitsnedes vullen hun vierkantje met veel meer pixels dan de slotbreedte.
+const frames = [
+  { slot: 'hero', position: '50% 30%', favorite: true },
+  { slot: 'hond-wide', position: '50% 50%' },
+  { slot: 'duo-dogs', position: '50% 45%', favorite: true },
+  { slot: 'family', position: '42% 50%' },
+  { slot: 'hero', position: '50% 50%', zoom: 'scale-[1.9] origin-[50%_24%]' },
+  { slot: 'hond-wide', position: '50% 40%', zoom: 'scale-[1.5] origin-[50%_35%]' },
+].map((f) => ({ ...f, image: photo(f.slot)! }));
+const favorites = frames.filter((f) => f.favorite).length;
+---
+
+<div
+  role="img"
+  aria-label={label}
+  class="@container relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-line"
+  style="background:linear-gradient(155deg,#efe9dc 0%,#e6dfcd 55%,#ddd5c2 100%)"
+>
+  <div class={kind === 'agenda' ? 'text-[2.8cqw] md:text-[2.7cqw]' : 'text-[2.5cqw] md:text-[2.2cqw]'}>
+    {
+      kind === 'agenda' ? (
+        <div class="relative">
+          <div class="card-hover rounded-[1.4em] border border-line bg-cream p-[1.8em] shadow-[0_2em_3.5em_-2em_rgb(20_42_32/0.35)]">
+            <div class="flex items-center justify-between gap-[2em]">
+              <span class="font-display text-[1.45em] leading-none text-ink">Kies een datum</span>
+              <span class="flex gap-[0.4em] text-muted">
+                <span class="grid size-[1.9em] place-items-center rounded-full border border-line">‹</span>
+                <span class="grid size-[1.9em] place-items-center rounded-full border border-line">›</span>
+              </span>
+            </div>
+            <div class="mt-[1.4em] grid grid-cols-7 gap-y-[0.35em] text-center font-body">
+              {['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'].map((d) => (
+                <span class="pb-[0.5em] text-[0.8em] uppercase tracking-[0.12em] text-muted">{d}</span>
+              ))}
+              {days.map((day) => (
+                <span
+                  class:list={[
+                    'mx-auto grid size-[2.3em] place-items-center rounded-full',
+                    day === CHOSEN && 'bg-forest font-medium text-cream',
+                    day !== null && day !== CHOSEN && day <= PAST && 'text-ink/25',
+                    day !== null && day !== CHOSEN && day > PAST && 'font-medium text-ink',
+                  ]}
+                >
+                  {day}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <span class="absolute -bottom-[1.2em] -right-[2.2em] flex items-center gap-[0.6em] rounded-full bg-forest py-[0.75em] pl-[0.8em] pr-[1.2em] font-body text-[0.95em] font-medium text-cream shadow-[0_1.2em_2.4em_-1em_rgb(20_42_32/0.55)]">
+            <span class="grid size-[1.5em] place-items-center rounded-full bg-lime text-forest-deep">
+              <svg viewBox="0 0 16 16" class="size-[0.9em]" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3.5 8.5l3 3 6-7" />
+              </svg>
+            </span>
+            Bevestiging ontvangen
+          </span>
+        </div>
+      ) : (
+        <div class="card-hover w-[31em] rounded-[1.4em] border border-line bg-cream p-[1.5em] shadow-[0_2em_3.5em_-2em_rgb(20_42_32/0.35)] md:w-[34em]">
+          <div class="flex items-baseline justify-between gap-[1.5em]">
+            <span class="font-display text-[1.35em] leading-none text-ink">Jouw selectiegalerij</span>
+            <span class="flex items-center gap-[0.4em] font-body text-[0.85em] text-muted">
+              <svg viewBox="0 0 24 24" class="size-[1.1em] text-forest" fill="currentColor">
+                <path d="M12 20.5l-1.4-1.3C5.4 14.5 2 11.4 2 7.6 2 4.5 4.4 2 7.5 2c1.7 0 3.4.8 4.5 2.1C13.1 2.8 14.8 2 16.5 2 19.6 2 22 4.5 22 7.6c0 3.8-3.4 6.9-8.6 11.6L12 20.5z" />
+              </svg>
+              {favorites} gekozen
+            </span>
+          </div>
+          <div class="mt-[1.2em] grid grid-cols-3 gap-[0.6em]">
+            {frames.map((f) => (
+              <div
+                class:list={[
+                  'relative aspect-square overflow-hidden rounded-[0.6em] bg-forest-deep',
+                  f.favorite && 'outline-2 outline-offset-2 outline-forest',
+                ]}
+              >
+                <Image
+                  src={f.image}
+                  alt=""
+                  widths={[320, 640]}
+                  sizes="(min-width: 768px) 22vw, 48vw"
+                  format="webp"
+                  quality={78}
+                  loading="lazy"
+                  decoding="async"
+                  class:list={['h-full w-full object-cover', f.zoom]}
+                  style={`object-position:${f.position}`}
+                />
+                <span
+                  class:list={[
+                    'absolute right-[0.45em] top-[0.45em] grid size-[1.7em] place-items-center rounded-full',
+                    f.favorite ? 'bg-cream text-forest' : 'bg-cream/25 text-cream',
+                  ]}
+                >
+                  <svg viewBox="0 0 24 24" class="size-[0.95em]" fill={f.favorite ? 'currentColor' : 'none'} stroke="currentColor" stroke-width="2">
+                    <path d="M12 20.5l-1.4-1.3C5.4 14.5 2 11.4 2 7.6 2 4.5 4.4 2 7.5 2c1.7 0 3.4.8 4.5 2.1C13.1 2.8 14.8 2 16.5 2 19.6 2 22 4.5 22 7.6c0 3.8-3.4 6.9-8.6 11.6L12 20.5z" />
+                  </svg>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</div>
