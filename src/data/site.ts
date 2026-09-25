@@ -91,7 +91,7 @@ export const INDEXABLE = false;
  * wijst hierheen — via <BookButton />, het enige component dat eraan mag
  * linken.
  */
-export const BOOKING_URL = 'https://calendly.com/ymlproductions-info/het-dieren-atelier';
+export const BOOKING_URL = 'https://calendly.com/hetdierenatelier/het-dieren-atelier';
 
 /* ------------------------------------------------------------------ */
 /* Navigatie & CTA's                                                   */
